@@ -78,6 +78,24 @@ export function tagDaRepresentada(slug: string): string {
 }
 
 /**
+ * ⚠️ **PÁGINA LIVRE (PRA-124) É O CASO MAIS ESTREITO QUE EXISTE: UMA ROTA, E
+ * SÓ ELA — mesmo estando ligada da home e do rodapé.** `/arquitetos` e
+ * `/contato` são o destino das duas portas da home, e
+ * `/politica-de-privacidade` está no rodapé, que mora no layout e portanto em
+ * TODA rota do site. Mesmo assim a etiqueta é uma só, por marca de página: o
+ * que a home e o rodapé mostram é o RÓTULO do link — texto fixo em
+ * `components/portas.tsx` e `components/rodape.tsx` —, e nenhuma letra da
+ * composição vaza para fora da própria rota. Trocar um bloco de `/contato` não
+ * pode invalidar a página estática de quatro marcas que não mudaram.
+ *
+ * ⚠️ Uma etiqueta POR endereço, nunca uma só para as três: editar a política de
+ * privacidade não invalida `/arquitetos`. Mesma regra de `tagDaRepresentada`.
+ */
+export function tagDaPaginaLivre(slug: string): string {
+  return `pagina:${slug}`;
+}
+
+/**
  * ⚠️ **PEÇA, ARQUIVO3D E ACABAMENTO — UM SÓ LUGAR, NÃO SEIS.** Diferente de
  * representada, nenhum dos três aparece em outra rota além da página da PRÓPRIA
  * marca (PRA-120): não há galeria, não há ledger de `/quem-somos`, não há
@@ -103,6 +121,7 @@ export type MudancaNoPainel =
   | { colecao: "home" }
   | { colecao: "quem-somos" }
   | { colecao: "prancha" }
+  | { colecao: "paginas"; slug: string }
   | {
       colecao: "pecas" | "arquivos3d" | "acabamentos";
       representadaSlug: string;
@@ -148,6 +167,11 @@ export function tagsDaMudanca(mudanca: MudancaNoPainel): string[] {
        para uma etiqueta só que ninguém precisa lembrar de invalidar as duas. */
     case "prancha":
       return [TAG_REPRESENTADAS];
+    /* ⚠️ **PÁGINA LIVRE: UMA ROTA, APESAR DE A HOME E O RODAPÉ APONTAREM PARA
+       ELA.** Ver a nota completa em `tagDaPaginaLivre` — o que está fora da
+       rota é o RÓTULO do link, que é texto fixo em código, não composição. */
+    case "paginas":
+      return [tagDaPaginaLivre(mudanca.slug)];
     case "pecas":
     case "arquivos3d":
     case "acabamentos":

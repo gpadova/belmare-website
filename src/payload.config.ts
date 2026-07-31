@@ -12,6 +12,7 @@ import { Acabamentos } from "@/collections/acabamentos";
 import { Arquivos } from "@/collections/arquivos";
 import { Arquivos3d } from "@/collections/arquivos3d";
 import { Imagens } from "@/collections/imagens";
+import { Paginas } from "@/collections/paginas";
 import { Pecas } from "@/collections/pecas";
 import { Projetos } from "@/collections/projetos";
 import { Representadas } from "@/collections/representadas";
@@ -125,12 +126,22 @@ export default buildConfig({
     },
   },
 
+  /**
+   * ⚠️ `Paginas` (PRA-124) é a única coleção que não guarda uma COISA do acervo:
+   * ela guarda a COMPOSIÇÃO de três rotas — `/arquitetos`, `/contato` e
+   * `/politica-de-privacidade`. As três nunca foram escritas em código, então
+   * não há argumento de desenho a proteger nelas. A home, `/quem-somos` e
+   * `/representadas/[marca]` continuam de espinha fixa e não entram aqui: a
+   * sequência daquelas páginas É o argumento delas, e o que é editável dentro
+   * delas já são os globais `Home` e `QuemSomos`.
+   */
   collections: [
     Representadas,
     Pecas,
     Arquivos3d,
     Acabamentos,
     Projetos,
+    Paginas,
     Imagens,
     Arquivos,
     Usuarios,

@@ -30,8 +30,9 @@ institucional de uma marca, legenda de materiais de uma peça, dados de contato.
 _Avoid_: editável, conteúdo
 
 A classificação campo a campo — feita uma vez em PRA-119 e estendida por PRA-120 (Peça,
-Arquivo3D, Acabamento), PRA-122 (os globais Empresa, Home e QuemSomos) e PRA-123 (a Prancha,
-onde o campo é geometria em vez de texto) — está registrada em
+Arquivo3D, Acabamento), PRA-122 (os globais Empresa, Home e QuemSomos), PRA-123 (a Prancha,
+onde o campo é geometria em vez de texto) e PRA-124 (a Página, onde o campo é a COMPOSIÇÃO) —
+está registrada em
 `docs/classificacao-de-texto.md`. Consulte-a antes de reabrir a discussão para um campo já
 classificado; estenda-a, em vez de recomeçar, quando uma coleção nova entrar. A seção "o que
 PRA-122 recusou a transformar em campo" existe para que a lista do que fica **fixo** não precise
@@ -47,8 +48,11 @@ _Avoid_: template, layout fixo
 
 **Página livre**:
 Uma página cuja composição é um array de blocos escolhidos e ordenados no
-painel — `/arquitetos`, `/contato` e páginas futuras. Existe onde não há
-argumento de desenho a proteger.
+painel — `/arquitetos`, `/contato` e `/politica-de-privacidade`. Existe onde não
+há argumento de desenho a proteger: as três nunca foram escritas em código, e
+nascem CMS-nativas. O ENDEREÇO continua sendo decisão de código — uma rota nova
+é um arquivo novo em `app/(frontend)/` mais uma linha em `lib/site.ts#ROTAS_LIVRES`,
+e o painel só oferece os endereços que já existem.
 _Avoid_: page builder, landing page
 
 **Seção anulável**:

@@ -1,4 +1,4 @@
-# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento, Empresa, Home, QuemSomos, Prancha
+# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento, Empresa, Home, QuemSomos, Prancha, Página
 
 Registro exaustivo, pedido pela decisão 3 da spec e por PRA-119: toda string tocada pela
 migração do conteúdo de `lib/representadas.ts` e `lib/acervo.ts` para o Payload, classificada
@@ -18,6 +18,15 @@ ticket onde a classificação teve mais consequência, porque um global é exata
 pessoa bem-intencionada põe tudo. **A lista do que NÃO virou campo vale mais do que a do que
 virou**, e está registrada abaixo justamente para o próximo ticket não precisar reabrir cada
 string.
+
+**PRA-124 estendeu esta tabela** com a coleção `Página` — e ela desloca a pergunta um nível
+acima de tudo o que veio antes. Nas nove entradas anteriores a pergunta era "este TEXTO é
+gerado, fixo ou campo?"; aqui a pergunta é "a SEQUÊNCIA das seções é gerada, fixa ou campo?".
+A resposta divide o site em dois, e a divisão é a mesma de `CONTEXT.md`: em `/quem-somos`, na
+home e na página de marca a sequência é **fixa**, porque ela É o argumento; nas três rotas que
+nunca foram escritas em código — `/arquitetos`, `/contato`, `/politica-de-privacidade` — ela é
+**campo**, porque não há argumento a proteger. O ENDEREÇO de uma página livre continua sendo
+decisão de código, e por isso não é texto digitado: é uma escolha dentro de `ROTAS_LIVRES`.
 
 **PRA-123 estendeu esta tabela** com o global `Prancha` — e é o único caso em que um CAMPO não
 é texto nem arquivo, e sim GEOMETRIA: quatro porcentagens por chamada. A pergunta que a
@@ -131,6 +140,42 @@ sem quebrar nada visivelmente.
 | `chamadas[].rotuloX`, `.rotuloY` | Campo | Onde a etiqueta numerada pousa, em porcentagem da caixa da imagem. Digitável nos campos numéricos **e** arrastável no campo de pinos — o mesmo valor, dois caminhos, porque um campo só de mouse tranca do lado de fora quem não usa mouse. |
 | `chamadas[].alvoX`, `.alvoY` | Campo | Onde a linha de chamada encosta no objeto. Independente da etiqueta de propósito: a etiqueta pousa em área vazia, o alvo pousa no objeto, e são justamente os dois lugares que uma fotografia nova desloca de forma diferente. |
 
+## Coleção `paginas` (`src/collections/paginas.ts`) — PRA-124
+
+A única coleção do projeto que não guarda uma COISA do acervo: ela guarda a **composição** de
+três rotas. As três nunca existiram em código, então não há um "antes" cujo argumento precise
+ser defendido — ao contrário da prancha e das representadas, que eram código migrado.
+
+| Campo | Camada | Por quê |
+|---|---|---|
+| `slug` | Campo **escolhido**, nunca digitado | O endereço é decisão de código: uma rota nova é um arquivo em `app/(frontend)/` mais uma linha em `lib/site.ts#ROTAS_LIVRES`. O `select` da coleção monta as opções a partir desse MESMO registro, então o painel só oferece endereços que já resolvem. Um campo de texto livre aqui seria o espelho exato da falha que `lib/site.ts` descreve para o menu: uma página composta, publicada, e existindo em URL nenhuma. `unique`: uma rota, uma composição. |
+| `titulo` | Campo | O h1 da página. **É o contraste que fecha a decisão de PRA-122**: o h1 da home é FIXO porque é o argumento do desenho e já derrubou duas versões; este é campo porque a rota inteira nasceu no CMS e não tem argumento a proteger. É a diferença entre espinha fixa e página livre, escrita num campo só. |
+| `resumo` | Campo | A descrição do resultado de busca — a única superfície do site que se lê antes do site. Obrigatório: sem ela o Google inventa um trecho, e o trecho que ele escolhe raramente é o que interessa. |
+| `composicao` | Campo — **e é o único campo do projeto cujo valor é uma ORDEM** | Quais blocos, em que sequência. Recusa lista vazia ao publicar (rascunho atravessa, história 17). Aqui a assimetria com `/quem-somos` é o assunto inteiro do ticket: lá a ordem é fixa e não existe array nenhum; aqui a ordem é o único desenho que a página tem. |
+| `composicao[].prosa.titulo` | Campo | O h2 de uma seção. Opcional: nem toda seção de um documento tem título, e obrigá-lo forçaria o operador a inventar um para o primeiro parágrafo. |
+| `composicao[].prosa.corpo` | Campo (texto formatado) | **O único campo de texto formatado do projeto**, e ele existe por causa de um documento: uma política de privacidade chega estruturada de quem a escreveu, e colar essa estrutura tem que funcionar. O editor é deliberadamente MENOR que o padrão — ver a lista de recusas abaixo. |
+| `composicao[].caminhos.itens[].rotulo`, `.apoio` | Campo | O que o visitante quer, na voz dele, e o que há atrás do clique. |
+| `composicao[].caminhos.itens[].destino` | Campo (rádio) | Página do site ou conversa de WhatsApp. **É o seam de PRA-126**: o formulário de proposta comercial entra como um terceiro valor aqui, não como um bloco novo. |
+| `composicao[].caminhos.itens[].rota` | Campo **escolhido** | As opções saem de `lib/site.ts#DESTINOS_DE_CAMINHO`. Mesma razão do `slug`: um campo de URL livre é como um 404 entra no site pelas mãos do operador — e é também por onde o e-mail comercial de uma fábrica entraria, que é o único erro que este projeto trata como de negócio e não de código. |
+| `composicao[].caminhos.itens[].contexto`, `composicao[].fecho.contexto` | Campo | A continuação de "Oi! Vim pelo site: …". É a única qualificação de lead que o site tem, e custa zero. |
+| `composicao[].fecho.rotulo` | Campo | O que a faixa diz. Em branco, o componente escreve "Falar pelo WhatsApp" — o mesmo padrão que `/catalogos` e a página de marca já usam. |
+| `composicao[].ficha.titulo` | Campo | O h2 sobre a ficha. **É o único campo do bloco inteiro** — ver a linha da ficha na tabela de gerado abaixo. |
+
+## Página — o que PRA-124 recusou a transformar em campo
+
+| Texto / decisão | Onde mora | Por que não é campo |
+|---|---|---|
+| **A sequência de `/quem-somos`, da home e da página de marca** | Fixo, em código (`app/(frontend)/quem-somos/page.tsx`, `lib/representadas.ts#secoesDaRepresentada`) | A recusa que define o ticket. As três têm **espinha fixa** e NÃO ganharam construtor de blocos: a sequência é o argumento, e `/quem-somos` carrega uma lista vinculante do que nunca pode aparecer nela — foto de equipe, missão/visão/valores, contador animado, prosa em superlativo. Um array de blocos ali é exatamente a ferramenta que contorna essa lista, e ele não existe. |
+| O conjunto de URLs do site | **Fixo** — três arquivos em `app/(frontend)/` mais `lib/site.ts#ROTAS_LIVRES` | Um segmento dinâmico `[pagina]` teria dado as três rotas de graça e, junto, o poder de inventar endereço no painel. Ver a linha de `slug` acima. |
+| O sobretítulo em mono que abre cada página livre | **Gerado** de `lib/paginas.ts#rotuloDaRotaLivre` | Ele nomeia a ROTA, e a rota é decisão de código. Um campo aqui seria a segunda cópia do nome da página — a que continua dizendo "Contato" depois de a rota virar outra coisa. |
+| Endereço, telefones, e-mail, Instagram, território e CNPJ dentro de `/contato` | **Gerado** do cadastro da empresa (`components/paginas/ficha-belmare.tsx`, sobre `lib/empresa-consulta.ts`) | **É a razão de o bloco "Ficha da Belmare" existir sem campo de conteúdo.** Sem ele, a única saída do operador para montar `/contato` seria digitar os cinco dentro de um bloco de texto: duas cópias do mesmo telefone, e a segunda é a que ninguém lembra de corrigir. O que ele escolhe é SE a ficha aparece e ONDE. O território, especificamente, continua saindo da malha do IBGE pela mesma razão de PRA-122. |
+| Alinhamento, recuo, tabela, citação, sublinhado, tachado, código, cor e upload dentro do texto formatado | **Fixo** — o editor de `collections/blocos.ts#EDITOR_DE_PAGINA` não os oferece | O padrão do Payload traz todos. Cada um é uma decisão de tipografia sendo tomada por quem escreve, não por quem desenhou o sistema — e este site tem uma escala única, sem cor de marca, sem raio e sem sombra. Texto centralizado ou uma palavra sublinhada é como uma página livre deixa de pertencer ao site. |
+| O `h1` dentro do texto formatado | **Fixo** — o editor começa em `h2` | A página já tem um `h1`, e ele é campo próprio no topo. Dois `h1` numa rota é defeito de leitura assistiva e de busca, e é o que um construtor de blocos produz quando cada bloco escolhe o próprio nível. |
+| A numeração das seções de uma página livre | **Não existe** (`components/paginas/secao.tsx`) | Os blocos de `/quem-somos` são numerados porque a sequência é o argumento daquela página. Numa página livre a ordem é conveniência de quem montou: numerá-la emprestaria ao arranjo do operador uma autoridade de documento que ele não tem. |
+| Bloco de imagem, galeria, colunas, espaçador, divisor, destaque numérico, contador, depoimento, logos de clientes, acordeão/FAQ, vídeo e HTML incorporado | **Não existem na biblioteca** (`collections/blocos.ts`) | A lista completa, com o motivo de cada um, está no cabeçalho daquele arquivo. Em resumo: fotografia solta é como um mock entra sem a marcação gerada; layout não é conteúdo; e contador, depoimento e prova social são a mesma lista que `/quem-somos` já recusa — um bloco que os produz em `/arquitetos` é aquela página com outro endereço. |
+| O formulário de proposta comercial de `/contato` | **Não construído** — é PRA-126 | O caminho "quero revender" é hoje um WhatsApp com contexto próprio: funciona, chega marcado de onde veio, e não promete um formulário que não existe. O seam é um terceiro valor no rádio `destino`. |
+| **A redação da política de privacidade** | **Não é nossa** — fora de escopo por decisão da spec | O que a seed publica é (a) um aviso inequívoco, em negrito e na primeira linha da página, de que o documento aguarda revisão jurídica e (b) o levantamento factual do que o site faz com dados, conferido contra o código. Texto legal inventado com cara de revisado é pior do que página vazia: ninguém o confere depois. Não há banner de cookie, e a ausência é decisão — o site não instala rastreador de terceiros, e um banner que pede consentimento para nada é teatro de conformidade. |
+
 ## Prancha — o que PRA-123 recusou a transformar em campo
 
 | Texto | Onde mora | Por que não é campo |
@@ -191,7 +236,7 @@ ao alcance de um global e ficou no código de propósito.
 | O parágrafo do bloco 04 de `/quem-somos` (a prancha do território) | `components/quem-somos/prancha-territorio.tsx` | O único dos seis blocos sem campo. Ele nomeia os três estados, conta as representadas e nomeia a cidade da sede — e as três coisas saem do dado que desenha a prancha ao lado ou do cadastro. Texto livre ali é como a prosa passa a dizer "quatro estados" ao lado de um desenho com três. |
 | Os cinco CNAEs (código e descrição) | `lib/registro.ts#CNAES` | Transcrição do cadastro nacional. Um campo de texto é precisamente a ferramenta que convida alguém a reescrever uma descrição oficial "com palavras melhores" — a única coisa que essa página não pode fazer sem perder a autoridade inteira. E o P1 continua aberto: os códigos de atacado ao lado do de representação sugerem uma conclusão que o cliente não confirmou, e um campo editável é por onde essa conclusão entraria em texto visível. |
 | O nome público anterior e a fonte dele | `lib/registro.ts#NOME_PUBLICO_ANTERIOR` | Citação com fonte declarada. Reescrevê-la em melhores palavras quebraria exatamente o que ela prova. |
-| A navegação do site (os quatro itens do menu) | `lib/site.ts#NAVEGACAO` | Não é conteúdo dentro do desenho: é quais rotas existem. Uma rota nova exige uma página nova, que é código — um item de menu editável só serviria para apontar para um 404 que o operador não tem como criar. |
+| A navegação do site (os quatro itens do menu) | `lib/site.ts#NAVEGACAO` | Não é conteúdo dentro do desenho: é quais rotas existem. Uma rota nova exige uma página nova, que é código — um item de menu editável só serviria para apontar para um 404 que o operador não tem como criar. **[PRA-124]** A mesma regra passou a valer do outro lado: o endereço de uma página livre é escolhido dentro de `ROTAS_LIVRES`, nunca digitado. |
 | A descrição de SEO do layout e o `title` padrão | `app/(frontend)/layout.tsx` | Só `openGraph.siteName` passou a ler o painel, porque é o nome público da empresa. O resto é a mesma prosa fixa da home. |
 | A prancha do território (a malha do IBGE) | `lib/territorio.ts` | Fora de escopo por decisão 4 da spec: é dado regerado da fonte, não desenho a editar. |
 

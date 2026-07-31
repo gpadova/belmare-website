@@ -1,0 +1,399 @@
+import config from "@payload-config";
+import { getPayload, type Payload } from "payload";
+
+import { ROTAS_LIVRES } from "@/lib/site";
+
+/**
+ * O seed das três páginas livres de PRA-124 — `/arquitetos`, `/contato` e
+ * `/politica-de-privacidade`.
+ *
+ * Como rodar: `pnpm payload run src/seed/semear-paginas.ts`, ou `pnpm db:seed`,
+ * que roda este por último — a ficha de `/contato` lê o cadastro da empresa, e
+ * ele é semeado antes.
+ *
+ * ⚠️ **AS TRÊS ERAM 404 ATÉ ESTE TICKET, E É POR ISSO QUE O SEED PUBLICA.** As
+ * duas portas da home levavam a lugar nenhum e o link de política de privacidade
+ * do rodapé — que aparece em TODA rota do site, inclusive na própria 404 —
+ * também. Uma rota livre sem composição publicada continua sendo 404 de
+ * propósito (ver `components/paginas/rota-livre.tsx`): não há reserva em código
+ * para cair, porque estas três nascem CMS-nativas. Sem este seed, o ticket
+ * entregaria três rotas que só existem depois de alguém montá-las à mão.
+ *
+ * ⚠️ **REEXECUÇÃO: PULA O QUE JÁ EXISTE, NUNCA SOBRESCREVE.** Mesma política dos
+ * outros três seeds. Aqui ela é literal: o que está gravado é uma COMPOSIÇÃO que
+ * alguém montou arrastando blocos, e uma segunda execução que a reescrevesse
+ * apagaria o trabalho sem aviso.
+ *
+ * ⚠️ `_status: "published"` explícito em cada `data`. `draft: false` sozinho NÃO
+ * publica — o padrão do campo é `"draft"` (achado de PRA-118). Sem esta linha as
+ * três entram como rascunho e as rotas continuam em 404.
+ *
+ * ⚠️ **A POLÍTICA DE PRIVACIDADE ABAIXO NÃO É TEXTO JURÍDICO, E ELA DIZ ISSO NA
+ * PRÓPRIA PÁGINA.** A redação é de advogado e está fora do escopo deste ticket.
+ * O que vai ao ar é (a) um aviso inequívoco de que o documento aguarda revisão
+ * jurídica e (b) o LEVANTAMENTO FACTUAL do que este site de fato faz — que
+ * dados chegam, por onde, o que ele não instala. Nada disso é redação legal
+ * fantasiada de revisada: texto legal plausível é justamente o que ninguém
+ * confere depois. O advogado cola por cima; a página já existe e já é editável.
+ */
+
+/* ------------------------------------------------------------------------- *
+   Construtores de texto formatado.
+
+   O editor grava a árvore serializada do lexical, e escrevê-la à mão neste
+   arquivo seria trezentas linhas de JSON em que um `version` errado quebra o
+   campo sem sintoma. Estas quatro funções montam só o que o editor das páginas
+   livres oferece — parágrafo, dois níveis de título, negrito e lista.
+ * ------------------------------------------------------------------------- */
+
+/** Negrito no lexical é uma máscara de bits no nó de texto; 1 é o primeiro. */
+const NEGRITO = 1;
+
+type No = Record<string, unknown>;
+
+function textoSimples(valor: string, formato = 0): No {
+  return {
+    type: "text",
+    detail: 0,
+    format: formato,
+    mode: "normal",
+    style: "",
+    text: valor,
+    version: 1,
+  };
+}
+
+/** Um parágrafo. `negrito: true` marca a frase inteira — é o que o aviso de
+ *  revisão jurídica usa, e o único negrito de todo o conteúdo semeado. */
+function paragrafo(valor: string, negrito = false): No {
+  return {
+    type: "paragraph",
+    children: [textoSimples(valor, negrito ? NEGRITO : 0)],
+    direction: "ltr",
+    format: "",
+    indent: 0,
+    textFormat: negrito ? NEGRITO : 0,
+    textStyle: "",
+    version: 1,
+  };
+}
+
+function titulo(valor: string, nivel: "h2" | "h3" = "h2"): No {
+  return {
+    type: "heading",
+    tag: nivel,
+    children: [textoSimples(valor)],
+    direction: "ltr",
+    format: "",
+    indent: 0,
+    version: 1,
+  };
+}
+
+function listaDePontos(itens: string[]): No {
+  return {
+    type: "list",
+    listType: "bullet",
+    tag: "ul",
+    start: 1,
+    children: itens.map((item, i) => ({
+      type: "listitem",
+      value: i + 1,
+      children: [textoSimples(item)],
+      direction: "ltr",
+      format: "",
+      indent: 0,
+      version: 1,
+    })),
+    direction: "ltr",
+    format: "",
+    indent: 0,
+    version: 1,
+  };
+}
+
+function documento(nos: No[]) {
+  return {
+    root: {
+      type: "root",
+      children: nos,
+      direction: "ltr" as const,
+      format: "" as const,
+      indent: 0,
+      version: 1,
+    },
+  };
+}
+
+/* ------------------------------------------------------------------------- *
+   As três composições.
+ * ------------------------------------------------------------------------- */
+
+/**
+ * `/arquitetos` — hub de trabalho, não página de venda.
+ *
+ * ⚠️ O caminho dos arquivos 3D é WhatsApp e não rota: `/arquivos-3d` continua
+ * 404 até PRA-127, e a lista de destinos internos do painel não o oferece de
+ * propósito (`lib/site.ts#DESTINOS_DE_CAMINHO`). O apoio diz o que existe hoje
+ * em vez de escrever "em breve".
+ */
+const ARQUITETOS = {
+  slug: "arquitetos",
+  titulo: "Catálogos, arquivos 3D e cartas de acabamento.",
+  resumo:
+    "O material que a Belmare entrega a quem especifica mobiliário de área externa: catálogos das fábricas representadas, blocos 3D, cartas de tecido e pintura, e uma pessoa do outro lado para responder medida e prazo.",
+  composicao: [
+    {
+      blockType: "prosa",
+      corpo: documento([
+        paragrafo(
+          "A Belmare representa fábricas de mobiliário de área externa e atende quem especifica: medida, acabamento, prazo e ficha cotada saem daqui, não de um formulário. O que a fábrica publica está na página dela; o que ela não publica, a Belmare pergunta.",
+        ),
+        paragrafo(
+          "Nenhum pedido passa pela fábrica sem passar por quem representa — o que significa que a resposta sobre um projeto específico vem de quem conhece as quatro linhas ao mesmo tempo.",
+        ),
+      ]),
+    },
+    {
+      blockType: "caminhos",
+      titulo: "O material",
+      itens: [
+        {
+          rotulo: "Os catálogos das representadas",
+          apoio:
+            "Um documento por fábrica, com edição declarada antes do clique — e com o peso do arquivo, quando ele já está em disco.",
+          destino: "rota",
+          rota: "/catalogos",
+        },
+        {
+          rotulo: "O que cada fábrica resolve",
+          apoio:
+            "Quem assina cada coleção, o vocabulário de categorias da própria fábrica e a ficha técnica que ela publica.",
+          destino: "rota",
+          rota: "/representadas",
+        },
+        {
+          rotulo: "Arquivos 3D e cartas de acabamento",
+          apoio:
+            "A biblioteca por formato ainda não está no ar. Diga a peça e o formato — SketchUp, DWG, Revit — e a Belmare manda o bloco ou a amostra.",
+          destino: "whatsapp",
+          contexto:
+            "sou arquiteto e preciso de um arquivo 3D ou de uma carta de acabamento",
+        },
+      ],
+    },
+    {
+      blockType: "fecho",
+      rotulo: "Falar com quem representa",
+      contexto: "vim pela página de arquitetos e queria falar sobre uma especificação",
+    },
+  ],
+};
+
+/**
+ * `/contato` — a porta B, onde ela bifurca.
+ *
+ * ⚠️ **"QUERO REVENDER" É O SEAM DE PRA-126.** Hoje é um caminho de WhatsApp com
+ * contexto próprio; quando o formulário de proposta existir, ele vira um destino
+ * de tipo `formulario` sem que este arquivo mude de forma. Ver
+ * `collections/blocos.ts`.
+ */
+const CONTATO = {
+  slug: "contato",
+  titulo: "Onde comprar, e como revender.",
+  resumo:
+    "A Belmare não vende direto: ela indica a loja mais próxima que trabalha com a peça, e recebe a proposta de quem quer revender as fábricas que representa no Sul do Brasil.",
+  composicao: [
+    {
+      blockType: "prosa",
+      corpo: documento([
+        paragrafo(
+          "A Belmare é representação comercial: ela não fabrica e não vende ao consumidor. Quem quer comprar é levado até a loja mais próxima que trabalha com a peça; quem quer revender fala direto com quem responde pelas fábricas no Sul do Brasil.",
+        ),
+        paragrafo(
+          "Os dois caminhos terminam na mesma pessoa, e é por isso que a resposta chega sabendo o que cada fábrica consegue entregar.",
+        ),
+      ]),
+    },
+    {
+      blockType: "caminhos",
+      titulo: "Por onde seguir",
+      itens: [
+        {
+          rotulo: "Quero comprar",
+          apoio:
+            "Diga a peça e a cidade. A Belmare indica a loja mais próxima que a tem — ou responde a dúvida de medida e acabamento antes de você ir até lá.",
+          destino: "whatsapp",
+          contexto: "quero comprar e preciso saber qual loja trabalha com a peça",
+        },
+        {
+          rotulo: "Quero revender",
+          apoio:
+            "Loja de mobiliário, escritório ou operação de área externa: mande a cidade e o perfil da operação, e a Belmare responde com as condições da fábrica.",
+          destino: "whatsapp",
+          contexto: "quero propor uma revenda",
+        },
+        {
+          rotulo: "Sou arquiteto ou designer",
+          apoio:
+            "Catálogos, arquivos 3D e cartas de acabamento das representadas, num lugar só.",
+          destino: "rota",
+          rota: "/arquitetos",
+        },
+      ],
+    },
+    {
+      blockType: "ficha",
+      titulo: "A empresa",
+    },
+  ],
+};
+
+/**
+ * `/politica-de-privacidade` — a página existe, a redação é de advogado.
+ *
+ * ⚠️ Cada afirmação factual abaixo foi conferida contra o código deste
+ * repositório em 31/07/2026, e nenhuma delas é conclusão jurídica:
+ *
+ *   · não há formulário em nenhuma rota do site (PRA-126 ainda não existe);
+ *   · o único dado que chega da parte do visitante é o que ele escreve numa
+ *     conversa de WhatsApp, num e-mail ou num telefonema iniciados por ele;
+ *   · não há Google Analytics, tag manager, pixel de rede social nem qualquer
+ *     outro rastreador de terceiros — a busca por eles no repositório não
+ *     devolve nada;
+ *   · as fontes são servidas pelo próprio domínio (`next/font` as baixa no
+ *     build), então nem elas geram requisição para terceiro;
+ *   · os únicos cookies são a sessão de quem entra no painel e o cookie de
+ *     pré-visualização de rascunho do Next — nenhum dos dois existe para o
+ *     visitante comum;
+ *   · os arquivos pesados (catálogos, fotografias) são servidos de um bucket
+ *     Cloudflare R2, que registra acesso como qualquer servidor de arquivos.
+ */
+const PRIVACIDADE = {
+  slug: "politica-de-privacidade",
+  titulo: "Política de privacidade",
+  resumo:
+    "Como a Belmare Representações trata os dados de quem entra em contato pelo site. Documento em elaboração: o texto abaixo é o levantamento do que o site faz, e aguarda revisão jurídica.",
+  composicao: [
+    {
+      blockType: "prosa",
+      corpo: documento([
+        paragrafo(
+          "Aviso: este documento ainda não passou por revisão jurídica. O texto abaixo é o levantamento factual do que este site faz com dados — não é, e não deve ser lido como, uma política de privacidade em vigor. A redação definitiva será publicada aqui assim que revisada.",
+          true,
+        ),
+        paragrafo(
+          "Enquanto isso, o que segue descreve o funcionamento real do site, conferido contra o código que o gera. Para qualquer pergunta sobre dados, fale com a Belmare pelos canais listados em Contato.",
+        ),
+
+        titulo("O que este site coleta"),
+        paragrafo(
+          "Nenhuma página deste site tem formulário. Não há cadastro, não há login de visitante e não há campo em que alguém deixe nome, e-mail ou telefone. O único dado pessoal que chega até a Belmare é o que a própria pessoa escreve numa conversa iniciada por ela — WhatsApp, e-mail ou telefone —, e ele chega pelo aplicativo ou pelo provedor correspondente, não por este site.",
+        ),
+
+        titulo("Rastreamento e cookies"),
+        paragrafo(
+          "O site não instala ferramenta de análise de audiência, gerenciador de tags nem pixel de rede social. As fontes tipográficas são servidas pelo próprio domínio, de modo que a visita não gera requisição para terceiros por causa delas. Existem dois cookies no sistema, e nenhum dos dois alcança o visitante comum:",
+        ),
+        listaDePontos([
+          "a sessão de quem entra no painel de edição, que é da equipe da Belmare;",
+          "o cookie de pré-visualização de rascunho, criado apenas quando alguém do painel abre uma página ainda não publicada.",
+        ]),
+        paragrafo(
+          "Por não haver rastreador a consentir, o site não exibe banner de cookies.",
+        ),
+
+        titulo("Arquivos e registros de acesso"),
+        paragrafo(
+          "Catálogos, fotografias e demais arquivos são servidos a partir de armazenamento em nuvem contratado para este fim. Como qualquer servidor de arquivos, ele registra o acesso — endereço de origem, data e arquivo pedido — para operação e segurança do serviço.",
+        ),
+
+        titulo("Compartilhamento"),
+        paragrafo(
+          "A Belmare é o único interlocutor: nenhum contato recebido é repassado automaticamente às fábricas representadas, e nenhum endereço de e-mail comercial de fábrica é publicado neste site. Quando um pedido precisa chegar à fábrica, é a Belmare quem o encaminha.",
+        ),
+
+        titulo("Seus direitos e como exercê-los"),
+        paragrafo(
+          "Esta seção — prazos de guarda, base legal de cada tratamento, encarregado pelo tratamento de dados e o procedimento para pedir acesso, correção ou eliminação — aguarda a redação jurídica. Até lá, qualquer pedido sobre dados pode ser feito pelos canais da página de Contato e será respondido pela Belmare.",
+        ),
+      ]),
+    },
+  ],
+};
+
+/* ------------------------------------------------------------------------- *
+   A execução.
+ * ------------------------------------------------------------------------- */
+
+type Composicao = { slug: string; titulo: string; resumo: string; composicao: unknown[] };
+
+async function semearPagina(
+  payload: Payload,
+  pagina: Composicao,
+): Promise<"criada" | "existente"> {
+  const { docs } = await payload.find({
+    collection: "paginas",
+    where: { slug: { equals: pagina.slug } },
+    limit: 1,
+    depth: 0,
+  });
+
+  if (docs.length > 0) {
+    console.log(`  já existe — pulando ("/${pagina.slug}")`);
+    return "existente";
+  }
+
+  await payload.create({
+    collection: "paginas",
+    draft: false,
+    data: { ...pagina, _status: "published" },
+  } as never);
+
+  console.log(
+    `  publicada ("/${pagina.slug}") — ${pagina.composicao.length} bloco(s)`,
+  );
+  return "criada";
+}
+
+async function semear(): Promise<void> {
+  const payload = await getPayload({ config });
+
+  console.log("Semeando as três páginas livres no Payload...\n");
+
+  const composicoes = [ARQUITETOS, CONTATO, PRIVACIDADE] as Composicao[];
+
+  /* ⚠️ Prova, não suposição: uma composição para um endereço que não é rota
+     seria uma página publicada em URL nenhuma. O registro de rotas é o mesmo que
+     a coleção usa para montar a lista de opções — se este seed e ele
+     divergirem, é aqui que se descobre, e não em produção. */
+  for (const { slug } of composicoes) {
+    if (!ROTAS_LIVRES.some((rota) => rota.slug === slug)) {
+      throw new Error(
+        `"${slug}" não está em ROTAS_LIVRES (lib/site.ts) — não há arquivo de rota para essa página, e ela ficaria publicada sem URL.`,
+      );
+    }
+  }
+
+  const resultados = { criada: 0, existente: 0 };
+  for (const pagina of composicoes) {
+    console.log(`- /${pagina.slug}`);
+    resultados[await semearPagina(payload, pagina)]++;
+  }
+
+  console.log(
+    `\n${resultados.criada} publicada(s), ${resultados.existente} já existia(m) e foi(ram) preservada(s).`,
+  );
+  console.log(
+    "\n⚠️  A política de privacidade foi publicada com um AVISO de que aguarda\n" +
+      "    revisão jurídica, e o corpo dela é o levantamento do que o site faz —\n" +
+      "    não texto legal. Cole a redação do advogado por cima, no painel, em\n" +
+      "    \"O site › Páginas › Política de privacidade\".",
+  );
+
+  await payload.destroy();
+}
+
+// `payload run` importa este módulo diretamente — daí o `await` de topo de
+// nível, e não um export que outra coisa chama.
+await semear();

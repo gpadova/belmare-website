@@ -40,14 +40,34 @@ describe("enderecoDePreview", () => {
     );
   });
 
+  test("a página livre abre na rota dela — a mesma URL que o iframe carrega", () => {
+    /* PRA-124. O live preview do painel não tem um caminho próprio para ver
+       rascunho: o iframe carrega EXATAMENTE esta `/preview?...`, e o token
+       continua sendo conferido uma vez só, na rota. */
+    expect(enderecoDePreview("paginas", "contato")).toBe("/contato");
+    expect(enderecoDePreview("paginas", "politica-de-privacidade")).toBe(
+      "/politica-de-privacidade",
+    );
+  });
+
+  test("página livre com endereço fora do registro de rotas não abre preview", () => {
+    /* Diferente de uma representada — cujo slug é texto livre e cuja rota sabe
+       devolver 404 —, `/qualquer-coisa` não é rota de página nenhuma. Abrir o
+       preview ali mostraria um 404 ao operador e diria que a composição dele
+       sumiu; `undefined` faz a rota responder com a recusa escrita. */
+    expect(enderecoDePreview("paginas", "quem-somos")).toBeUndefined();
+    expect(enderecoDePreview("paginas", "inventada")).toBeUndefined();
+  });
+
   test("coleção desconhecida não inventa destino", () => {
-    expect(enderecoDePreview("paginas", "contato")).toBeUndefined();
+    expect(enderecoDePreview("pecas", "qualquer")).toBeUndefined();
     expect(enderecoDePreview(null, "trisol")).toBeUndefined();
   });
 
   test("sem endereço, não há o que abrir", () => {
     expect(enderecoDePreview("representadas", "")).toBeUndefined();
     expect(enderecoDePreview("representadas", null)).toBeUndefined();
+    expect(enderecoDePreview("paginas", "")).toBeUndefined();
   });
 });
 

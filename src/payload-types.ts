@@ -72,6 +72,7 @@ export interface Config {
     arquivos3d: Arquivos3D;
     acabamentos: Acabamento;
     projetos: Projeto;
+    paginas: Pagina;
     imagens: Imagen;
     arquivos: Arquivo;
     usuarios: Usuario;
@@ -87,6 +88,7 @@ export interface Config {
     arquivos3d: Arquivos3DSelect<false> | Arquivos3DSelect<true>;
     acabamentos: AcabamentosSelect<false> | AcabamentosSelect<true>;
     projetos: ProjetosSelect<false> | ProjetosSelect<true>;
+    paginas: PaginasSelect<false> | PaginasSelect<true>;
     imagens: ImagensSelect<false> | ImagensSelect<true>;
     arquivos: ArquivosSelect<false> | ArquivosSelect<true>;
     usuarios: UsuariosSelect<false> | UsuariosSelect<true>;
@@ -473,6 +475,135 @@ export interface Projeto {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * As três páginas montadas por blocos: Arquitetos, Contato e Política de privacidade. Escolha o endereço, escreva o título e monte a página arrastando blocos. As demais páginas do site têm sequência desenhada e não se montam aqui.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "paginas".
+ */
+export interface Pagina {
+  id: number;
+  /**
+   * Qual das páginas do site esta composição preenche. Só aparecem aqui os endereços que já existem — uma página nova exige uma rota nova, que é código. Cada endereço recebe uma composição só.
+   */
+  slug: 'arquitetos' | 'contato' | 'politica-de-privacidade';
+  /**
+   * O título grande que abre a página, e o nome dela na aba do navegador. ⚠️ Nomeie o que o visitante veio buscar, não o setor da empresa: "Catálogos, arquivos 3D e acabamentos" diz mais do que "Área do arquiteto".
+   */
+  titulo: string;
+  /**
+   * Uma ou duas frases descrevendo o que ESTÁ nesta página — é o texto que aparece no resultado de busca, a única superfície do site que se lê antes do site. ⚠️ Não prometa aqui o que a página não entrega: quem clica chega já desmentido.
+   */
+  resumo: string;
+  /**
+   * Os blocos desta página, na ordem em que aparecem. Arraste para reordenar — a pré-visualização ao lado acompanha. Quatro blocos, com papéis que não se sobrepõem: texto, caminhos, a ficha da Belmare e a faixa de WhatsApp.
+   */
+  composicao?: (BlocoDeProsa | BlocoDeCaminhos | BlocoDeFicha | BlocoDeFecho)[] | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDeProsa".
+ */
+export interface BlocoDeProsa {
+  /**
+   * O título que abre esta seção. Deixe em branco quando o texto continua a seção anterior — é o caso do primeiro parágrafo de quase toda página.
+   */
+  titulo?: string | null;
+  /**
+   * Parágrafos, subtítulos, listas e links. Bloco mal preenchido não vai ao ar: a página desenha um bloco a menos, nunca um bloco quebrado. ⚠️ Não escreva aqui o endereço, o telefone, o CNPJ nem o e-mail da Belmare: eles têm o bloco "Ficha da Belmare", que os lê do cadastro e nunca discorda dele. Redigitados aqui, envelhecem sem ninguém perceber.
+   */
+  corpo: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'prosa';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDeCaminhos".
+ */
+export interface BlocoDeCaminhos {
+  /**
+   * O que a lista abaixo oferece — "Por onde seguir", "O que você precisa". Em branco, os caminhos aparecem direto.
+   */
+  titulo?: string | null;
+  /**
+   * Um caminho por escolha real. Bloco mal preenchido não vai ao ar: a página desenha um bloco a menos, nunca um bloco quebrado.
+   */
+  itens?:
+    | {
+        /**
+         * Escrito na voz de quem lê, não na da empresa — "Quero comprar", "Baixar os catálogos". Um rótulo que descreve o setor da Belmare em vez do desejo do visitante não é uma escolha, é um organograma.
+         */
+        rotulo: string;
+        /**
+         * Uma linha dizendo o que acontece ao clicar. Em branco, o caminho fica só com o rótulo.
+         */
+        apoio?: string | null;
+        destino: 'rota' | 'whatsapp';
+        /**
+         * Só as páginas que já existem aparecem aqui. Uma rota que ainda não foi construída não é oferecida: um caminho para um 404 é pior do que caminho nenhum.
+         */
+        rota?:
+          | ('/representadas' | '/catalogos' | '/quem-somos' | '/arquitetos' | '/contato' | '/politica-de-privacidade')
+          | null;
+        /**
+         * A mensagem chega no WhatsApp já escrita — "Oi! Vim pelo site: …". Escreva a continuação na primeira pessoa: "queria propor uma revenda", "queria os catálogos das representadas". É a única qualificação de lead que o site tem, e ela custa zero.
+         */
+        contexto?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'caminhos';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDeFicha".
+ */
+export interface BlocoDeFicha {
+  /**
+   * Sobre a ficha — "Onde encontrar", "A empresa". Em branco, a ficha abre direto. ⚠️ Este é o único bloco sem conteúdo para preencher, e é de propósito: endereço, telefones, e-mail, Instagram, território e CNPJ saem do cadastro em "O site › A Belmare". Corrigir um telefone lá corrige aqui, no rodapé e em toda página que use esta ficha, de uma vez. O que estiver em branco no cadastro simplesmente não aparece.
+   */
+  titulo?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'ficha';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDeFecho".
+ */
+export interface BlocoDeFecho {
+  /**
+   * Em branco, escreve "Falar pelo WhatsApp". Troque quando a página pede algo mais específico — "Pedir os catálogos num pedido só".
+   */
+  rotulo?: string | null;
+  /**
+   * A continuação de "Oi! Vim pelo site: …", na primeira pessoa. ⚠️ Sem número de WhatsApp cadastrado a faixa inteira não é desenhada — um botão que é o elemento mais pesado da página e abre um contato inexistente é pior do que botão nenhum.
+   */
+  contexto: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'fecho';
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "usuarios".
  */
@@ -544,6 +675,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projetos';
         value: number | Projeto;
+      } | null)
+    | ({
+        relationTo: 'paginas';
+        value: number | Pagina;
       } | null)
     | ({
         relationTo: 'imagens';
@@ -715,6 +850,74 @@ export interface ProjetosSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "paginas_select".
+ */
+export interface PaginasSelect<T extends boolean = true> {
+  slug?: T;
+  titulo?: T;
+  resumo?: T;
+  composicao?:
+    | T
+    | {
+        prosa?: T | BlocoDeProsaSelect<T>;
+        caminhos?: T | BlocoDeCaminhosSelect<T>;
+        ficha?: T | BlocoDeFichaSelect<T>;
+        fecho?: T | BlocoDeFechoSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDeProsa_select".
+ */
+export interface BlocoDeProsaSelect<T extends boolean = true> {
+  titulo?: T;
+  corpo?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDeCaminhos_select".
+ */
+export interface BlocoDeCaminhosSelect<T extends boolean = true> {
+  titulo?: T;
+  itens?:
+    | T
+    | {
+        rotulo?: T;
+        apoio?: T;
+        destino?: T;
+        rota?: T;
+        contexto?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDeFicha_select".
+ */
+export interface BlocoDeFichaSelect<T extends boolean = true> {
+  titulo?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlocoDeFecho_select".
+ */
+export interface BlocoDeFechoSelect<T extends boolean = true> {
+  rotulo?: T;
+  contexto?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

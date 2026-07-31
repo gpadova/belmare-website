@@ -7,6 +7,7 @@ import {
   TAG_REPRESENTADAS,
   TAG_RODAPE,
   TAG_SITE,
+  tagDaPaginaLivre,
   tagDaRepresentada,
   tagsDaMudanca,
 } from "@/lib/revalidacao";
@@ -110,6 +111,36 @@ describe("tagsDaMudanca", () => {
 
     expect(tagsDaMudanca({ colecao: "prancha" })).not.toContain(TAG_SITE);
     expect(tagsDaMudanca({ colecao: "prancha" })).not.toContain(TAG_HOME);
+  });
+
+  test("uma página livre deriva só a rota dela — PRA-124, apesar da home e do rodapé", () => {
+    /* O caso mais contraintuitivo do arquivo. `/arquitetos` e `/contato` são o
+       destino das duas portas da HOME, e `/politica-de-privacidade` está no
+       RODAPÉ, que mora no layout e portanto em toda rota do site — a mesma
+       descrição que dá `TAG_SITE` à identidade da empresa. Mesmo assim a
+       etiqueta é uma só: o que a home e o rodapé mostram é o RÓTULO do link,
+       texto fixo em código, e nenhuma letra da composição vaza para fora da
+       própria rota. Estar linkado de toda parte não é o mesmo que aparecer em
+       toda parte. */
+    expect(tagsDaMudanca({ colecao: "paginas", slug: "contato" })).toEqual([
+      tagDaPaginaLivre("contato"),
+    ]);
+
+    expect(tagsDaMudanca({ colecao: "paginas", slug: "politica-de-privacidade" }))
+      .not.toContain(TAG_SITE);
+    expect(tagsDaMudanca({ colecao: "paginas", slug: "politica-de-privacidade" }))
+      .not.toContain(TAG_RODAPE);
+    expect(
+      tagsDaMudanca({ colecao: "paginas", slug: "arquitetos" }),
+    ).not.toContain(TAG_HOME);
+  });
+
+  test("cada página livre recebe a própria etiqueta — editar /contato não invalida /arquitetos", () => {
+    const contato = tagsDaMudanca({ colecao: "paginas", slug: "contato" });
+
+    expect(contato).toContain(tagDaPaginaLivre("contato"));
+    expect(contato).not.toContain(tagDaPaginaLivre("arquitetos"));
+    expect(contato).not.toContain(tagDaPaginaLivre("politica-de-privacidade"));
   });
 
   test("projeto deriva só a etiqueta de /quem-somos — PRA-121, o caso sem slug de marca", () => {

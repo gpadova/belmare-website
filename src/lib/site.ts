@@ -24,3 +24,56 @@ export const NAVEGACAO = [
   { rotulo: "Catálogos", href: "/catalogos" },
   { rotulo: "Arquivos 3D", href: "/arquivos-3d" },
 ] as const;
+
+/**
+ * As três rotas de **página livre** que existem em código — PRA-124.
+ *
+ * ⚠️ **ESTA LISTA É O QUE IMPEDE O PAINEL DE PUBLICAR UMA PÁGINA SEM ROTA.** A
+ * nota acima diz por que a navegação não é editável: "um item de menu editável
+ * só serviria para apontar para um 404 que o operador não tem como criar". A
+ * coleção `Página` tem exatamente o mesmo risco pelo outro lado — um campo de
+ * endereço livre deixaria o operador compor uma página inteira, publicá-la, e
+ * ela não existir em URL nenhuma. Por isso o endereço de uma página livre não é
+ * texto digitado: é uma ESCOLHA dentro desta lista, e a lista só cresce quando
+ * um arquivo de rota nasce em `app/(frontend)/`. Ver `collections/paginas.ts`.
+ *
+ * ⚠️ **AS TRÊS SÃO PÁGINA LIVRE PORQUE NUNCA FORAM ESCRITAS EM CÓDIGO.** Não há
+ * argumento de desenho a proteger nelas — nascem CMS-nativas. A home,
+ * `/quem-somos` e `/representadas/[marca]` continuam de **espinha fixa** e não
+ * ganham construtor de blocos: a sequência de `/quem-somos` É o argumento dela.
+ * Ver `CONTEXT.md`, seção "Composição de página".
+ *
+ * O `rotulo` é o sobretítulo em mono que abre cada uma dessas páginas — o mesmo
+ * lugar onde `/catalogos` escreve "Catálogos". É **gerado** daqui, e não um
+ * campo: ele nomeia a rota, e a rota é decisão de código.
+ */
+export const ROTAS_LIVRES = [
+  { slug: "arquitetos", rotulo: "Arquitetos e designers" },
+  { slug: "contato", rotulo: "Contato" },
+  { slug: "politica-de-privacidade", rotulo: "Política de privacidade" },
+] as const;
+
+/**
+ * Para onde um caminho de página livre pode apontar DENTRO do site.
+ *
+ * ⚠️ **`/arquivos-3d` NÃO ESTÁ AQUI DE PROPÓSITO, E É O ÚNICO ITEM AUSENTE.**
+ * Ele é o quarto link interno morto do site e continua 404 até PRA-127. Está na
+ * `NAVEGACAO` acima porque o menu é decisão de estrutura tomada de uma vez; num
+ * campo do painel ele seria outra coisa — a Belmare montando, com as próprias
+ * mãos, um caminho que leva a lugar nenhum, sem ter como saber disso. Uma lista
+ * de opções que só contém rota viva é a versão do painel da mesma regra que
+ * mantém a navegação fora do CMS.
+ *
+ * ⚠️ Não é a `NAVEGACAO`, e não deve virar ela: o menu tem quatro itens por
+ * decisão de desenho (topo curto), enquanto um caminho pode apontar para
+ * `/arquitetos` e `/contato`, que ficam FORA do menu justamente para preservar
+ * o peso das duas portas da home.
+ */
+export const DESTINOS_DE_CAMINHO = [
+  { href: "/representadas", rotulo: "Representadas" },
+  { href: "/catalogos", rotulo: "Catálogos" },
+  { href: "/quem-somos", rotulo: "Quem somos" },
+  { href: "/arquitetos", rotulo: "Arquitetos e designers" },
+  { href: "/contato", rotulo: "Contato" },
+  { href: "/politica-de-privacidade", rotulo: "Política de privacidade" },
+] as const;

@@ -1,3 +1,5 @@
+import { ehRotaLivre, enderecoDaPaginaLivre } from "@/lib/paginas";
+
 /**
  * A lógica pura por trás do preview de rascunho — decisão 8 da spec.
  *
@@ -15,10 +17,18 @@
  * operador está editando texto e trocando fotografia dentro de um layout que
  * não se move — abrir `/representadas/[marca]` sob o modo de rascunho do
  * Next já mostra tudo o que ele precisa ver. O live preview do Payload é
- * reservado às páginas livres (PRA-124, que ainda não existem): lá a
- * composição muda enquanto se arrasta um bloco, e ver isso acontecer é o
- * ponto inteiro. Construir o iframe aqui seria pagar o componente caro onde
- * ele não se paga — ver decisão 8.
+ * reservado às páginas livres: lá a composição muda enquanto se arrasta um
+ * bloco, e ver isso acontecer é o ponto inteiro. Construir o iframe para a
+ * espinha fixa seria pagar o componente caro onde ele não se paga —
+ * decisão 8.
+ *
+ * ⚠️ **PRA-124 ACRESCENTOU `paginas` A ESTE ARQUIVO, E NÃO SUBSTITUIU NADA.**
+ * O iframe do painel carrega A MESMA `/preview?...` que o botão "Visualizar"
+ * abre numa aba — não existe um segundo caminho para ver rascunho, e o token
+ * continua sendo conferido no mesmo lugar, uma vez. O que muda no iframe é do
+ * lado do site: `components/paginas/atualiza-em-preview.tsx` pede uma
+ * atualização da rota a cada mensagem do painel, e ele só é renderizado sob o
+ * modo de rascunho.
  */
 
 /**
@@ -38,10 +48,9 @@ export function tokenDePreviewValido(
   return Boolean(esperado) && recebido === esperado;
 }
 
-/** As coleções que hoje têm uma rota de preview — só a espinha fixa que já
- *  existe. Uma coleção nova aqui é decisão de outro ticket, não um `default`
- *  silencioso. */
-export type ColecaoComPreview = "representadas";
+/** As coleções que hoje têm uma rota de preview. Uma coleção nova aqui é
+ *  decisão de outro ticket, não um `default` silencioso. */
+export type ColecaoComPreview = "representadas" | "paginas";
 
 /**
  * O endereço da ROTA REAL que o preview abre, a partir da coleção e do
@@ -61,6 +70,15 @@ export function enderecoDePreview(
   switch (colecao as ColecaoComPreview | null) {
     case "representadas":
       return `/representadas/${slug}`;
+    /* ⚠️ **A ÚNICA COLEÇÃO CUJO ENDEREÇO É CONFERIDO CONTRA UMA LISTA.** O slug
+       de uma representada é texto que o operador digitou e a rota
+       `/representadas/[marca]` sabe devolver 404 para um endereço que não
+       existe. Uma página livre não: `/qualquer-coisa` não é rota de página
+       nenhuma, então um slug fora do registro abriria o preview num 404 e diria
+       ao operador que a composição dele sumiu. `undefined` faz a rota de
+       preview responder com a recusa escrita, que explica o que houve. */
+    case "paginas":
+      return ehRotaLivre(slug) ? enderecoDaPaginaLivre(slug) : undefined;
     default:
       return undefined;
   }
