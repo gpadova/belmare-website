@@ -72,4 +72,19 @@ describe("tagsDaMudanca", () => {
 
     expect(primeira).toEqual(segunda);
   });
+
+  test("peça, arquivo 3D e acabamento derivam só a etiqueta da própria marca — PRA-120", () => {
+    // Nenhum dos três aparece em outra superfície além da página da marca a
+    // que pertence: sem galeria, sem ledger, sem /catalogos equivalente. O
+    // fan-out inteiro é a etiqueta que já existe para a representada.
+    expect(tagsDaMudanca({ colecao: "pecas", representadaSlug: "trisol" })).toEqual([
+      tagDaRepresentada("trisol"),
+    ]);
+    expect(
+      tagsDaMudanca({ colecao: "arquivos3d", representadaSlug: "gda-moveis" }),
+    ).toEqual([tagDaRepresentada("gda-moveis")]);
+    expect(
+      tagsDaMudanca({ colecao: "acabamentos", representadaSlug: "bux-garden" }),
+    ).toEqual([tagDaRepresentada("bux-garden")]);
+  });
 });

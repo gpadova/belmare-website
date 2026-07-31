@@ -1,6 +1,4 @@
-import { revalidateTag } from "next/cache";
-
-import { foraDeRequisicao } from "@/lib/fora-de-requisicao";
+import { revalidarTags } from "@/collections/apoio";
 import { urlDoBotaoDePreview } from "@/lib/preview";
 import type { CollectionConfig } from "payload";
 
@@ -54,38 +52,6 @@ function identidadeDoUpload(valor: unknown): string | number | undefined {
 function exigeTexto(recusa: string) {
   return (valor: string | null | undefined) =>
     valor && valor.trim() !== "" ? true : recusa;
-}
-
-/**
- * `revalidateTag`, tolerante a correr fora de uma requisição do Next.
- *
- * ⚠️ Este hook dispara toda vez que a coleção é escrita pela API local — e
- * isso inclui o teste de integração e um eventual script de seed, nenhum dos
- * dois rodando dentro de uma requisição de verdade. Nesse mundo o Next nem
- * chega a montar o armazenamento de geração estática, e `revalidateTag` lança
- * antes de fazer qualquer coisa. Não existe rota renderizada para invalidar
- * ali mesmo — a resposta certa é não fazer nada, e nunca deixar a escrita do
- * documento falhar por causa de uma invalidação sem onde acontecer.
- */
-function revalidarTags(tags: string[]): void {
-  for (const tag of tags) {
-    try {
-      revalidateTag(tag, { expire: 0 });
-    } catch (erro) {
-      // Fora de uma requisição do Next — ver a nota acima. Silêncio esperado.
-      if (foraDeRequisicao(erro)) continue;
-
-      /* ⚠️ Qualquer outra falha é a edição NÃO propagando. Não derruba o
-         salvamento — o documento já foi gravado e falhar depois disso só
-         confunde quem está no painel —, mas não pode sumir: sem esta linha a
-         falha só aparece como o operador jurando que editou e a página velha
-         no ar. */
-      console.error(
-        `[revalidação] a etiqueta "${tag}" não foi invalidada; a edição pode não aparecer no site`,
-        erro,
-      );
-    }
-  }
 }
 
 export const Representadas: CollectionConfig = {

@@ -1,4 +1,5 @@
 import { descricaoDeImagem, posicaoDoFoco, type Imagem } from "@/lib/acervo";
+import { lista, opcional, presente, texto } from "@/lib/campo-opcional";
 import type {
   Catalogo,
   Declaracao,
@@ -80,39 +81,19 @@ export function representadaDoPainel(doc: RepresentadaGerada): Representada {
 }
 
 /**
- * Uma chave que só existe quando tem valor.
- *
- * ⚠️ Escrever `base: undefined` não é o mesmo que não escrever `base`: a chave
- * presente com valor indefinido sobrevive a `JSON.stringify` como ausente mas
- * aparece em `Object.keys`, e é assim que uma comparação entre o dado do painel
- * e o dado escrito à mão passa a falhar por uma diferença que não existe.
+ * ⚠️ **`opcional`, `texto`, `lista` e `presente` moraram aqui até PRA-120.**
+ * PRA-120 precisou da mesma regra ("ausente é ausente, nunca vazio") em três
+ * mappers novos — Peça, Arquivo3D, Acabamento — e as quatro funções não têm
+ * nada de específico de Representada: mudaram de endereço para
+ * `lib/campo-opcional.ts`, sem mudar de comportamento, para que os quatro
+ * mappers apontem para a MESMA definição em vez de quatro cópias divergindo
+ * uma edição de cada vez. Ver aquele arquivo para a nota completa.
  */
-function opcional<C extends string, V>(
-  chave: C,
-  valor: V | undefined,
-): { [K in C]?: V } {
-  return (valor === undefined ? {} : { [chave]: valor }) as { [K in C]?: V };
-}
-
-/** String em branco é campo não preenchido, não conteúdo. */
-function texto(valor: string | null | undefined): string | undefined {
-  const limpo = valor?.trim();
-  return limpo === undefined || limpo === "" ? undefined : limpo;
-}
-
-/** Lista vazia é lista ausente — ver a nota sobre seção anulável acima. */
-function lista<T>(itens: T[]): T[] | undefined {
-  return itens.length === 0 ? undefined : itens;
-}
 
 function listaDeTextos(
   valores: string[] | null | undefined,
 ): string[] | undefined {
   return lista((valores ?? []).map(texto).filter(presente));
-}
-
-function presente<T>(valor: T | undefined): valor is T {
-  return valor !== undefined;
 }
 
 /**
@@ -124,8 +105,15 @@ function presente<T>(valor: T | undefined): valor is T {
  * de leitura do painel para cumprir uma promessa do `CONTEXT.md`. O ponto focal
  * vira `object-position` pelo mesmo caminho: o operador clica no assunto e
  * ninguém calcula porcentagem.
+ *
+ * ⚠️ **EXPORTADA A PARTIR DE PRA-120.** Peça e Acabamento têm cada um o próprio
+ * campo de imagem (`foto`, `amostra`) e precisam exatamente desta composição —
+ * não uma segunda que descubra de novo como juntar `descricaoDeImagem` e
+ * `posicaoDoFoco`. Continua morando aqui, e não em `lib/acervo.ts`, porque
+ * `ImagemGerada` é tipo do Payload: mover para `acervo.ts` levaria
+ * `payload-types` para um arquivo que hoje nenhum componente enxerga por trás.
  */
-function imagemDoPainel(
+export function imagemDoPainel(
   valor: number | ImagemGerada | null | undefined,
 ): Imagem | undefined {
   if (!valor || typeof valor !== "object") return undefined;
@@ -286,8 +274,15 @@ function enderecoDoArquivo(arquivo: ArquivoGerado): string | undefined {
  * bytes do arquivo que ele mesmo guardou; o número não passa por ninguém e por
  * isso não pode estar errado. Sem tamanho gravado, não há peso — e sem peso não
  * há linha publicada, que é a regra logo acima.
+ *
+ * ⚠️ **EXPORTADA A PARTIR DE PRA-120.** O peso de um arquivo 3D usa EXATAMENTE
+ * esta derivação — mesma unidade, mesma regra de "sem tamanho gravado não há
+ * peso" — porque é a mesma promessa (um link não pode declarar um peso que
+ * ninguém mediu). Uma segunda função fazendo a mesma divisão por
+ * `BYTES_POR_MB` é o tipo de duplicação que diverge sozinha na primeira vez que
+ * alguém mexer numa das duas cópias e esquecer a outra.
  */
-function pesoDoArquivo(arquivo: ArquivoGerado): number | undefined {
+export function pesoDoArquivo(arquivo: ArquivoGerado): number | undefined {
   const bytes = arquivo.filesize;
   if (typeof bytes !== "number" || !Number.isFinite(bytes) || bytes <= 0)
     return undefined;

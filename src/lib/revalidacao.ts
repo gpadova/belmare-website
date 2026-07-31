@@ -68,10 +68,23 @@ export function tagDaRepresentada(slug: string): string {
   return `representada:${slug}`;
 }
 
-/** O que mudou no painel — a entrada da derivação. */
+/**
+ * ⚠️ **PEÇA, ARQUIVO3D E ACABAMENTO — UM SÓ LUGAR, NÃO SEIS.** Diferente de
+ * representada, nenhum dos três aparece em outra rota além da página da PRÓPRIA
+ * marca (PRA-120): não há galeria, não há ledger de `/quem-somos`, não há
+ * `/catalogos` equivalente. O fan-out inteiro é a etiqueta que já existe para a
+ * marca — `tagDaRepresentada` — e é por isso que os três casos abaixo convergem
+ * para a mesma chamada em vez de ganhar etiquetas próprias. Quando a página que
+ * de fato lista peças/arquivos/acabamentos existir (marca ou `/arquivos-3d`,
+ * PRA-127), ela já lê essa etiqueta — nada muda aqui nesse dia.
+ */
 export type MudancaNoPainel =
   | { colecao: "representadas"; slug: string }
-  | { colecao: "empresa" };
+  | { colecao: "empresa" }
+  | {
+      colecao: "pecas" | "arquivos3d" | "acabamentos";
+      representadaSlug: string;
+    };
 
 /**
  * Coleção e documento entram, a lista de etiquetas sai — literalmente a frase
@@ -98,6 +111,10 @@ export function tagsDaMudanca(mudanca: MudancaNoPainel): string[] {
       ];
     case "empresa":
       return [TAG_SITE];
+    case "pecas":
+    case "arquivos3d":
+    case "acabamentos":
+      return [tagDaRepresentada(mudanca.representadaSlug)];
     default:
       return mudanca satisfies never;
   }

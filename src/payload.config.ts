@@ -8,8 +8,11 @@ import { pt } from "@payloadcms/translations/languages/pt";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 
+import { Acabamentos } from "@/collections/acabamentos";
 import { Arquivos } from "@/collections/arquivos";
+import { Arquivos3d } from "@/collections/arquivos3d";
 import { Imagens } from "@/collections/imagens";
+import { Pecas } from "@/collections/pecas";
 import { Representadas } from "@/collections/representadas";
 import { Usuarios } from "@/collections/usuarios";
 
@@ -117,7 +120,15 @@ export default buildConfig({
     },
   },
 
-  collections: [Representadas, Imagens, Arquivos, Usuarios],
+  collections: [
+    Representadas,
+    Pecas,
+    Arquivos3d,
+    Acabamentos,
+    Imagens,
+    Arquivos,
+    Usuarios,
+  ],
 
   /**
    * ⚠️ O painel é para UMA pessoa não técnica na Belmare, que o abre uma vez

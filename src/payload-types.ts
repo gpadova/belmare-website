@@ -68,6 +68,9 @@ export interface Config {
   blocks: {};
   collections: {
     representadas: Representada;
+    pecas: Peca;
+    arquivos3d: Arquivos3D;
+    acabamentos: Acabamento;
     imagens: Imagen;
     arquivos: Arquivo;
     usuarios: Usuario;
@@ -79,6 +82,9 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     representadas: RepresentadasSelect<false> | RepresentadasSelect<true>;
+    pecas: PecasSelect<false> | PecasSelect<true>;
+    arquivos3d: Arquivos3DSelect<false> | Arquivos3DSelect<true>;
+    acabamentos: AcabamentosSelect<false> | AcabamentosSelect<true>;
     imagens: ImagensSelect<false> | ImagensSelect<true>;
     arquivos: ArquivosSelect<false> | ArquivosSelect<true>;
     usuarios: UsuariosSelect<false> | UsuariosSelect<true>;
@@ -327,6 +333,94 @@ export interface Arquivo {
   focalY?: number | null;
 }
 /**
+ * As peças em destaque de cada representada. A categoria só aceita os termos que a própria fábrica já declarou no vocabulário dela — o filtro nunca atravessa para outra marca.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pecas".
+ */
+export interface Peca {
+  id: number;
+  /**
+   * A fábrica a quem esta peça pertence. A categoria abaixo só aceita as palavras que ESTA fábrica já declarou no próprio vocabulário.
+   */
+  representada: number | Representada;
+  /**
+   * Como a peça se chama — "Jubarte", "Vitta", "Bistrô".
+   */
+  nome: string;
+  /**
+   * A categoria desta peça, EXATAMENTE como está escrita no vocabulário desta representada — "Espreguiçadeiras", "Vitta". Uma categoria nova só existe depois de cadastrada no vocabulário da própria fábrica, na página dela.
+   */
+  categoria: string;
+  /**
+   * A fotografia desta peça.
+   */
+  foto: number | Imagen;
+  /**
+   * Só quando a própria fábrica separa o catálogo por ambiente, como a GDA. Deixe em branco se a marca não faz essa distinção.
+   */
+  ambiente?: ('externo' | 'interno') | null;
+  /**
+   * Legenda descritiva e opcional — "Alumínio fundido e corda náutica". Texto livre, não uma lista fechada: não filtra, não navega e nunca vira parâmetro de URL. Se a fábrica não informou, deixe em branco — nada quebra.
+   */
+  materiais?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Os arquivos 3D de cada representada. Formato e peso aparecem sozinhos na página, lidos do próprio arquivo — não há o que preencher.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "arquivos3d".
+ */
+export interface Arquivos3D {
+  id: number;
+  /**
+   * A fábrica a quem este arquivo 3D pertence.
+   */
+  representada: number | Representada;
+  /**
+   * Como este arquivo é chamado na página — "Cadeira Zuri". É o texto que o arquiteto lê antes de decidir baixar.
+   */
+  nome: string;
+  /**
+   * O arquivo em si — SketchUp, DWG, 3ds ou Revit. Formato e peso aparecem na página sozinhos, lidos deste arquivo.
+   */
+  arquivo: number | Arquivo;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Os tecidos e pinturas de cada representada, com amostra.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "acabamentos".
+ */
+export interface Acabamento {
+  id: number;
+  /**
+   * A fábrica a quem este acabamento pertence.
+   */
+  representada: number | Representada;
+  /**
+   * Como a fábrica chama este acabamento — "Olefina Areia", "Grafite Texturizado".
+   */
+  nome: string;
+  /**
+   * Tecido ou pintura — não há um terceiro tipo hoje.
+   */
+  tipo: 'tecido' | 'pintura';
+  /**
+   * A fotografia de perto deste acabamento.
+   */
+  amostra: number | Imagen;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "usuarios".
  */
@@ -382,6 +476,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'representadas';
         value: number | Representada;
+      } | null)
+    | ({
+        relationTo: 'pecas';
+        value: number | Peca;
+      } | null)
+    | ({
+        relationTo: 'arquivos3d';
+        value: number | Arquivos3D;
+      } | null)
+    | ({
+        relationTo: 'acabamentos';
+        value: number | Acabamento;
       } | null)
     | ({
         relationTo: 'imagens';
@@ -494,6 +600,46 @@ export interface RepresentadasSelect<T extends boolean = true> {
         arquivo?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pecas_select".
+ */
+export interface PecasSelect<T extends boolean = true> {
+  representada?: T;
+  nome?: T;
+  categoria?: T;
+  foto?: T;
+  ambiente?: T;
+  materiais?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "arquivos3d_select".
+ */
+export interface Arquivos3DSelect<T extends boolean = true> {
+  representada?: T;
+  nome?: T;
+  arquivo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "acabamentos_select".
+ */
+export interface AcabamentosSelect<T extends boolean = true> {
+  representada?: T;
+  nome?: T;
+  tipo?: T;
+  amostra?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
