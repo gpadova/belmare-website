@@ -3,6 +3,7 @@ import {
   revalidarTags,
   slugDaRepresentadaPai,
 } from "@/collections/apoio";
+import { estaAutenticado } from "@/collections/papeis";
 import { formatoDoArquivo } from "@/lib/arquivos3d";
 import { tagsDaMudanca } from "@/lib/revalidacao";
 import type { CollectionConfig } from "payload";
@@ -38,6 +39,13 @@ export const Arquivos3d: CollectionConfig = {
       if (req.user) return true;
       return { _status: { equals: "published" } };
     },
+
+    // Folha da árvore, não raiz — cadastrar e apagar arquivo 3D é trabalho de
+    // operador (mesma nota de `collections/pecas.ts`); a guarda que faltava
+    // era exigir alguma sessão.
+    create: estaAutenticado,
+    update: estaAutenticado,
+    delete: estaAutenticado,
   },
 
   hooks: {

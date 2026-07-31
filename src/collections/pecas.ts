@@ -3,6 +3,7 @@ import {
   revalidarTags,
   slugDaRepresentadaPai,
 } from "@/collections/apoio";
+import { estaAutenticado } from "@/collections/papeis";
 import { tagsDaMudanca } from "@/lib/revalidacao";
 import type { CollectionConfig } from "payload";
 
@@ -39,6 +40,17 @@ export const Pecas: CollectionConfig = {
       if (req.user) return true;
       return { _status: { equals: "published" } };
     },
+
+    /* ⚠️ **CADASTRAR E APAGAR PEÇA É TRABALHO NORMAL DE OPERADOR — PRA-125
+       NÃO RESTRINGE ISTO A ADMINISTRADOR.** Diferente de representada (raiz
+       da árvore, seis superfícies), uma peça é folha: apagar uma peça
+       descontinuada não derruba nada além dela mesma. A única guarda que
+       falta aqui é exigir sessão — antes deste ticket create/update/delete
+       não tinham `access` nenhum, e o padrão do Payload para isso é liberar
+       geral para quem quer que seja, logado ou não. */
+    create: estaAutenticado,
+    update: estaAutenticado,
+    delete: estaAutenticado,
   },
 
   hooks: {

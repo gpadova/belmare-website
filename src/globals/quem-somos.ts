@@ -1,5 +1,6 @@
 import type { GlobalConfig } from "payload";
 
+import { estaAutenticado } from "@/collections/papeis";
 import { aoPublicarGlobal, VERSOES_DO_GLOBAL } from "@/globals/apoio";
 
 /**
@@ -39,7 +40,11 @@ export const QuemSomos: GlobalConfig = {
       "O texto dentro de cada bloco numerado de /quem-somos. Os números, os títulos e a ordem dos blocos são desenho da página e não se editam aqui. Todo campo em branco faz o parágrafo desaparecer, nunca aparecer vazio.",
   },
 
-  access: { read: ({ req }) => Boolean(req.user) },
+  access: {
+    read: ({ req }) => Boolean(req.user),
+    // Mesma lacuna fechada de `globals/empresa.ts`.
+    update: estaAutenticado,
+  },
 
   versions: VERSOES_DO_GLOBAL,
   hooks: { afterChange: aoPublicarGlobal({ colecao: "quem-somos" }) },

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 
+import { estaAutenticado } from "@/collections/papeis";
 import { descricaoDeImagem } from "@/lib/acervo";
 
 /**
@@ -31,6 +32,17 @@ export const Imagens: CollectionConfig = {
   access: {
     // O site público lê imagens sem sessão. Escrita continua exigindo login.
     read: () => true,
+
+    /* ⚠️ **"CONTINUA EXIGINDO LOGIN" ERA SÓ O COMENTÁRIO ATÉ PRA-125 — NÃO
+       HAVIA `access` NENHUM AQUI PARA `create`/`update`/`delete`.** O padrão
+       do Payload quando o campo fica ausente é liberar geral, então qualquer
+       chamada sem sessão conseguia subir, trocar ou apagar uma fotografia do
+       acervo direto pela API, apesar do que o comentário prometia. Subir
+       fotografia é trabalho comum de operador — a guarda é só autenticação,
+       igual nos dois papéis. */
+    create: estaAutenticado,
+    update: estaAutenticado,
+    delete: estaAutenticado,
   },
 
   /**

@@ -3,6 +3,7 @@ import {
   revalidarTags,
   slugDaRepresentadaPai,
 } from "@/collections/apoio";
+import { estaAutenticado } from "@/collections/papeis";
 import { tagsDaMudanca } from "@/lib/revalidacao";
 import type { CollectionConfig } from "payload";
 
@@ -26,6 +27,11 @@ export const Acabamentos: CollectionConfig = {
       if (req.user) return true;
       return { _status: { equals: "published" } };
     },
+
+    // Folha da árvore, não raiz — mesma nota de `collections/pecas.ts`.
+    create: estaAutenticado,
+    update: estaAutenticado,
+    delete: estaAutenticado,
   },
 
   hooks: {

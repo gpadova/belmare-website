@@ -1,4 +1,5 @@
 import { revalidarTags } from "@/collections/apoio";
+import { apenasAdministrador, estaAutenticado } from "@/collections/papeis";
 import { urlDoBotaoDePreview } from "@/lib/preview";
 import type { CollectionConfig } from "payload";
 
@@ -86,11 +87,38 @@ export const Representadas: CollectionConfig = {
        `lib/representadas-consulta.ts`, que é por onde o SITE de fato lê; esta
        aqui cobre quem tentar ler o painel por fora do site.
        Quem tem sessão (o operador no admin) continua vendo tudo, rascunho
-       incluso — é assim que a tela de edição funciona. */
+       incluso — é assim que a tela de edição funciona.
+
+       ⚠️ **NADA AQUI MUDA COM PRA-125.** Os dois papéis leem exatamente igual
+       — a fronteira entre eles é sobre ESCREVER a estrutura (criar, apagar,
+       endereço), nunca sobre ver o conteúdo publicado ou o próprio rascunho. */
     read: ({ req }) => {
       if (req.user) return true;
       return { _status: { equals: "published" } };
     },
+
+    /* ⚠️ **A RAIZ DA ÁRVORE SÓ NASCE E SÓ MORRE PELA MÃO DE UM ADMINISTRADOR
+       — decisão 14 da spec (PRA-125).** Apagar uma representada tira do ar
+       seis superfícies de conteúdo de uma vez (ela mesma, mais peça, arquivo
+       3D e acabamento que pendem dela — a árvore da decisão 10), e criar uma
+       nova é abrir uma URL nova que passa a existir no mundo. O operador
+       continua com leitura e escrita completas nos campos de conteúdo logo
+       abaixo (`update`); o que ele não tem aqui é o começo e o fim da marca.
+       Antes deste ticket nem `create` nem `delete` tinham `access` próprio —
+       o padrão do Payload para os dois é liberar geral, e qualquer chamada
+       sem sessão nenhuma conseguia criar ou apagar uma representada direto
+       pela API. */
+    create: apenasAdministrador,
+    delete: apenasAdministrador,
+
+    /* Editar continua aberto aos dois papéis autenticados — é o trabalho
+       inteiro do operador: prosa, fotografia, catálogo, vocabulário. A única
+       exceção é o campo `slug`, que tem a própria guarda logo abaixo, porque
+       acesso de campo é independente do acesso de documento e as duas
+       guardas precisam concordar. Sem este `access.update`, a mesma lacuna de
+       `create`/`delete` valia aqui: qualquer chamada sem sessão conseguia
+       editar uma representada publicada. */
+    update: estaAutenticado,
   },
 
   /**
@@ -203,8 +231,24 @@ export const Representadas: CollectionConfig = {
       admin: {
         position: "sidebar",
         description:
-          "O fim do endereço da página: com \"trisol\" aqui, a página fica em belmare.com.br/representadas/trisol. Só letras minúsculas sem acento, números e hífen. Depois que a página estiver no ar, mudar isto quebra todo link que já foi enviado.",
+          "O fim do endereço da página: com \"trisol\" aqui, a página fica em belmare.com.br/representadas/trisol. Só letras minúsculas sem acento, números e hífen. Depois que a página estiver no ar, mudar isto quebra todo link que já foi enviado. ⚠️ Só uma conta administradora grava este campo — o Payload mostra o valor a quem for operador, mas mantém o campo travado para leitura.",
       },
+
+      /* ⚠️ **A GUARDA DE CAMPO, INDEPENDENTE DA GUARDA DE DOCUMENTO ACIMA.**
+         `access.update` da coleção libera edição geral para quem está
+         logado — é o que o operador precisa para trocar prosa e fotografia.
+         Sem esta segunda guarda, um operador autenticado poderia mandar
+         `{ slug: "..." }` dentro de um `PATCH` de qualquer outro campo e
+         mudar a URL de qualquer jeito. O Payload aplica as duas
+         independentemente: só passa quem satisfizer as duas ao mesmo tempo.
+         Quando a guarda recusa, o valor ENVIADO é descartado e o gravado
+         permanece — a escrita do resto do documento não falha por causa
+         disto (comportamento do Payload, não suposição; provado em
+         `collections/papeis.integracao.test.ts`). */
+      access: {
+        update: apenasAdministrador,
+      },
+
       validate: (valor: string | null | undefined) => {
         const texto = valor?.trim() ?? "";
         if (texto === "")

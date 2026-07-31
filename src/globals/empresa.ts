@@ -1,5 +1,6 @@
 import type { GlobalConfig } from "payload";
 
+import { estaAutenticado } from "@/collections/papeis";
 import { aoPublicarGlobal, exigeTexto, VERSOES_DO_GLOBAL } from "@/globals/apoio";
 import { cnpjFormatado, emailComercial, numeroDeWhatsapp } from "@/lib/empresa";
 
@@ -56,6 +57,13 @@ export const Empresa: GlobalConfig = {
        global pela API REST/GraphQL — um telefone novo salvo como rascunho não
        vaza por lá antes de o operador clicar em "Publicar". */
     read: ({ req }) => Boolean(req.user),
+
+    /* ⚠️ Faltava desde sempre: um global só tem `update` (não há como criar
+       nem apagar um), e sem este `access` o padrão do Payload liberava a
+       escrita geral — qualquer chamada sem sessão trocava o WhatsApp ou o
+       e-mail comercial do site inteiro. "Os dados da própria Belmare" é
+       conteúdo do operador (PRA-125); a guarda é só autenticação. */
+    update: estaAutenticado,
   },
 
   versions: VERSOES_DO_GLOBAL,

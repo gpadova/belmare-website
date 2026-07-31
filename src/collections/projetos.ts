@@ -1,4 +1,5 @@
 import { identidadeDoRelacionamento, revalidarTags } from "@/collections/apoio";
+import { estaAutenticado } from "@/collections/papeis";
 import { tagsDaMudanca } from "@/lib/revalidacao";
 import type { CollectionConfig } from "payload";
 
@@ -63,6 +64,13 @@ export const Projetos: CollectionConfig = {
       if (req.user) return true;
       return { _status: { equals: "published" } };
     },
+
+    // Projeto não pende de uma representada — cita várias — mas ainda assim
+    // é conteúdo do operador, não estrutura do site: cadastrar e apagar obra
+    // entregue continua aberto aos dois papéis autenticados.
+    create: estaAutenticado,
+    update: estaAutenticado,
+    delete: estaAutenticado,
   },
 
   /**

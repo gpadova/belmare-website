@@ -1,5 +1,6 @@
 import type { GlobalConfig } from "payload";
 
+import { estaAutenticado } from "@/collections/papeis";
 import { aoPublicarGlobal, VERSOES_DO_GLOBAL } from "@/globals/apoio";
 
 /**
@@ -40,7 +41,12 @@ export const Home: GlobalConfig = {
       "O texto editável da página inicial. O título grande, o nome das duas portas e a lista de marcas não estão aqui: os dois primeiros são decisão de desenho e a lista o site monta sozinho a partir das representadas cadastradas.",
   },
 
-  access: { read: ({ req }) => Boolean(req.user) },
+  access: {
+    read: ({ req }) => Boolean(req.user),
+    // Mesma lacuna fechada de `globals/empresa.ts`: sem isto, escrever este
+    // global não exigia sessão nenhuma.
+    update: estaAutenticado,
+  },
 
   versions: VERSOES_DO_GLOBAL,
   hooks: { afterChange: aoPublicarGlobal({ colecao: "home" }) },

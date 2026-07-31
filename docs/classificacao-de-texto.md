@@ -35,12 +35,19 @@ aqui é o operador olhando para a própria fotografia. O rótulo da chamada, que
 do desenho, **não virou campo de propósito** — ver a linha de `Representada.parte` na tabela de
 gerado.
 
+**PRA-125 não acrescenta campo a esta tabela.** O papel do usuário (`operador`/`administrador`,
+`collections/usuarios.ts`) é campo interno do painel — nunca uma string visível no site — e por
+isso fica fora do escopo desta ficha, que é sobre texto que o visitante lê. O que aquele ticket
+muda é QUEM, dentro do painel, pode gravar um campo já classificado abaixo: a linha de `slug`,
+logo a seguir, foi corrigida para refletir a nova restrição — a camada do campo (Campo) não
+mudou, só quem tem permissão de gravá-lo.
+
 ## Coleção `representadas` (`src/collections/representadas.ts`)
 
 | Campo | Camada | Por quê |
 |---|---|---|
 | `nome` | Campo | Editado pela Belmare quando a fábrica muda de nome comercial. |
-| `slug` | Campo | Decisão de endereço, não de conteúdo — mas é o operador quem a toma (a Belmare decide a URL). |
+| `slug` | Campo | Decisão de endereço, não de conteúdo. **[PRA-125]** Editável só por conta com papel administrador — decisão 14 da spec: uma URL que muda quebra link já enviado, e esse risco não é do operador correr sozinho. A camada continua Campo (dado do painel, não gerado nem fixo); o que mudou foi QUEM pode gravá-lo, não o que ele é. |
 | `ordem` | Campo | Decisão de apresentação da Belmare, explícita no rótulo do campo ("Posição nas listas"). Não é derivada de nenhum outro dado. |
 | `resolve` | Campo | Prosa institucional por marca — o que a spec chama de "editar a prosa institucional de uma representada" (história 5). |
 | `parte` | Campo | O rótulo da chamada na prancha; a fábrica não o publica, é uma escolha editorial da Belmare, mas ainda assim digitada, não calculada. **[PRA-123]** É o ÚNICO lugar onde essa palavra existe: a chamada da prancha não tem campo de texto próprio, e o rótulo do desenho é lido daqui. |

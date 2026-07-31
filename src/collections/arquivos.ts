@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload";
 
+import { estaAutenticado } from "@/collections/papeis";
+
 /**
  * Os binários pesados do site: catálogo em PDF hoje, arquivo 3D depois.
  *
@@ -27,6 +29,12 @@ export const Arquivos: CollectionConfig = {
   access: {
     // O site público lê arquivos sem sessão. Escrita continua exigindo login.
     read: () => true,
+
+    // Mesma lacuna fechada de `collections/imagens.ts`: até PRA-125 nenhuma
+    // das três tinha `access` próprio, e o padrão do Payload liberava geral.
+    create: estaAutenticado,
+    update: estaAutenticado,
+    delete: estaAutenticado,
   },
 
   /* Histórico de versão sem rascunho — mesma nota de escopo de `imagens.ts`:

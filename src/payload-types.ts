@@ -154,7 +154,7 @@ export interface Representada {
    */
   nome: string;
   /**
-   * O fim do endereço da página: com "trisol" aqui, a página fica em belmare.com.br/representadas/trisol. Só letras minúsculas sem acento, números e hífen. Depois que a página estiver no ar, mudar isto quebra todo link que já foi enviado.
+   * O fim do endereço da página: com "trisol" aqui, a página fica em belmare.com.br/representadas/trisol. Só letras minúsculas sem acento, números e hífen. Depois que a página estiver no ar, mudar isto quebra todo link que já foi enviado. ⚠️ Só uma conta administradora grava este campo — o Payload mostra o valor a quem for operador, mas mantém o campo travado para leitura.
    */
   slug: string;
   /**
@@ -613,6 +613,10 @@ export interface Usuario {
    * Como você aparece no histórico de alterações. Nome e sobrenome bastam.
    */
   nome: string;
+  /**
+   * Operador é a Belmare: edita prosa, fotografia, catálogo, peça, projeto e a composição das páginas livres — o painel inteiro foi desenhado para este papel. Administrador é o desenvolvedor: além de tudo isso, é o único que cria e apaga representada e edita o endereço (slug) dela — mudar ou apagar URL é o tipo de engano que o operador não tem como ver vindo. Deixe em branco ao criar uma conta nova e ela nasce operador; escolha "Administrador" de propósito quando for o caso. Contas de antes deste campo existir ficam em branco para sempre (nunca são alteradas por trás) e por isso contam como administrador — ver `collections/papeis.ts`.
+   */
+  papel?: ('operador' | 'administrador') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -963,6 +967,7 @@ export interface ArquivosSelect<T extends boolean = true> {
  */
 export interface UsuariosSelect<T extends boolean = true> {
   nome?: T;
+  papel?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

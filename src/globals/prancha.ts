@@ -2,6 +2,7 @@ import type { GlobalConfig } from "payload";
 
 import { aoPublicarGlobal, VERSOES_DO_GLOBAL } from "@/globals/apoio";
 import { identidadeDoRelacionamento } from "@/collections/apoio";
+import { estaAutenticado } from "@/collections/papeis";
 import { CHAMADA_EM_BRANCO } from "@/lib/prancha-area-externa";
 
 /**
@@ -43,7 +44,11 @@ export const Prancha: GlobalConfig = {
       "A fotografia de /representadas e as chamadas numeradas que apontam para os objetos dela. Suba a fotografia, arraste cada pino até o lugar e publique — nenhum número precisa ser calculado.",
   },
 
-  access: { read: ({ req }) => Boolean(req.user) },
+  access: {
+    read: ({ req }) => Boolean(req.user),
+    // Mesma lacuna fechada de `globals/empresa.ts`.
+    update: estaAutenticado,
+  },
 
   versions: VERSOES_DO_GLOBAL,
   hooks: { afterChange: aoPublicarGlobal({ colecao: "prancha" }) },

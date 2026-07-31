@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { revalidarTags } from "@/collections/apoio";
 import { BLOCOS_DE_PAGINA } from "@/collections/blocos";
+import { estaAutenticado } from "@/collections/papeis";
 import { urlDoBotaoDePreview } from "@/lib/preview";
 import { tagsDaMudanca } from "@/lib/revalidacao";
 import { ROTAS_LIVRES } from "@/lib/site";
@@ -100,6 +101,23 @@ export const Paginas: CollectionConfig = {
       if (req.user) return true;
       return { _status: { equals: "published" } };
     },
+
+    /* ⚠️ **NENHUMA GUARDA A MAIS AQUI ALÉM DE EXIGIR SESSÃO — DE PROPÓSITO
+       (PRA-125).** "A composição das páginas livres" é explicitamente
+       trabalho de operador (decisão 14 da spec), e isso inclui o próprio
+       `slug`/endereço da página: diferente do `slug` de `representadas.ts`,
+       aqui é um `select` fechado sobre `ROTAS_LIVRES` — três opções que já
+       existem em código, nunca texto livre. O risco que faz o slug da
+       representada ser exclusivo de administrador (um endereço arbitrário e
+       digitado, que pode sair com erro de digitação e quebrar um link) não
+       existe neste campo: reatribuir qual das três páginas uma composição
+       ocupa é reorganizar conteúdo dentro de um conjunto fechado, não abrir
+       nem fechar URL nenhuma. Continua sendo o mesmo caso do resto desta
+       coleção — sem sessão, nada se grava; com sessão, os dois papéis
+       trabalham igual. */
+    create: estaAutenticado,
+    update: estaAutenticado,
+    delete: estaAutenticado,
   },
 
   /**
