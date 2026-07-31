@@ -1,6 +1,7 @@
 import { revalidateTag } from "next/cache";
 
 import { foraDeRequisicao } from "@/lib/fora-de-requisicao";
+import { urlDoBotaoDePreview } from "@/lib/preview";
 import type { CollectionConfig } from "payload";
 
 import { tagsDaMudanca } from "@/lib/revalidacao";
@@ -96,10 +97,34 @@ export const Representadas: CollectionConfig = {
     group: "Marcas",
     description:
       "As fábricas que a Belmare representa. Cada uma tem uma página no site, e essa página mostra só o que a fábrica de fato declara — o que não existe fica ausente, sem \"em breve\" e sem espaço em branco.",
+
+    /* ⚠️ O botão "Visualizar" do painel abre a ROTA DE VERDADE sob o modo de
+       rascunho do Next — nunca o iframe de live preview do Payload, que a
+       decisão 8 da spec reserva às páginas livres (PRA-124, que ainda não
+       existem). Espinha fixa é texto e foto dentro de um layout que não se
+       move: abrir a rota real já mostra tudo o que o operador precisa ver. */
+    preview: (doc) =>
+      urlDoBotaoDePreview({
+        colecao: "representadas",
+        slug: typeof doc.slug === "string" ? doc.slug : "",
+        segredo: process.env.PREVIEW_SECRET,
+      }),
   },
   access: {
-    // O site público lê as marcas sem sessão. Escrita continua exigindo login.
-    read: () => true,
+    /* ⚠️ **A LEITURA PÚBLICA NUNCA VÊ RASCUNHO, MESMO QUE PEÇAM `draft=true`
+       DIRETO NA API REST/GraphQL.** Sem sessão de painel (`req.user` ausente),
+       o acesso já sai filtrado por `_status: published` aqui — não é o
+       chamador quem decide se quer rascunho, é o acesso quem recusa mostrar
+       um. Isto é a segunda camada da garantia de PRA-118 ("rascunho nunca
+       vaza"): a primeira é o filtro explícito nas consultas de
+       `lib/representadas-consulta.ts`, que é por onde o SITE de fato lê; esta
+       aqui cobre quem tentar ler o painel por fora do site.
+       Quem tem sessão (o operador no admin) continua vendo tudo, rascunho
+       incluso — é assim que a tela de edição funciona. */
+    read: ({ req }) => {
+      if (req.user) return true;
+      return { _status: { equals: "published" } };
+    },
   },
 
   /**
@@ -113,11 +138,26 @@ export const Representadas: CollectionConfig = {
   hooks: {
     afterChange: [
       ({ doc, operation, previousDoc }) => {
+        /* ⚠️ **A MESMA ESCRITA GRAVA TANTO O RASCUNHO QUANTO A PUBLICAÇÃO, E
+           `_status` É O QUE DIFERENCIA OS DOIS NESTE MESMO HOOK.** Salvar
+           rascunho passa por `afterChange` igual a publicar — é a mesma
+           operação de update, com `draft: true` — e revalidar aqui de
+           qualquer jeito seria etiquetar uma página que o público nem vê
+           ainda: o ponto inteiro de ter rascunho deixaria de existir. Só
+           `_status === "published"` deriva e dispara etiqueta; ver PRA-118. */
+        if (doc._status !== "published") return;
+
         revalidarTags(tagsDaMudanca({ colecao: "representadas", slug: doc.slug }));
 
         /* Endereço mudou: a página do endereço ANTIGO continua no ar até o
            próximo build — a rota é estática e `dynamicParams` é falso — e
-           ficaria servindo o documento velho para sempre sem isto. */
+           ficaria servindo o documento velho para sempre sem isto.
+
+           `operation` continua `"update"` mesmo quando a escrita é uma
+           RESTAURAÇÃO de versão — o Payload chama os hooks de coleção com o
+           mesmo rótulo de update nos dois casos — então este ramo também
+           cobre "restaurar uma versão com slug antigo" sem precisar de um
+           terceiro caso. */
         if (
           operation === "update" &&
           typeof previousDoc?.slug === "string" &&
@@ -134,6 +174,38 @@ export const Representadas: CollectionConfig = {
         revalidarTags(tagsDaMudanca({ colecao: "representadas", slug: doc.slug }));
       },
     ],
+  },
+
+  /**
+   * ⚠️ **DECISÃO 8 DA SPEC — RASCUNHO E VERSÃO, AUTOSAVE DESLIGADO.**
+   * `autosave: false` é explícito e não é o padrão por acaso: rascunho junto
+   * com autosave dá ao operador duas transições de estado invisíveis para
+   * raciocinar sobre — ele não sabe se o painel salvou sozinho, nem se o que
+   * salvou sozinho é o que está no ar. Dois botões nomeados ("Salvar
+   * rascunho", "Publicar") não deixam essa dúvida existir. NÃO ligar isto é
+   * decisão deliberada, não lacuna — não mexer aqui sem reabrir a decisão 8.
+   *
+   * `validate` fica no padrão (`false` para rascunho): o operador precisa
+   * poder salvar um rascunho pela metade entre duas sessões (história 17 da
+   * spec) sem que a validação de campo obrigatório— que é UX de PUBLICAÇÃO —
+   * bloqueie o meio do caminho. Publicar continua exigindo tudo, porque
+   * `beforeChange`/`validate` de cada campo correm do mesmo jeito quando
+   * `_status` vira `published`.
+   *
+   * ⚠️ **ARMADILHA PARA QUEM CHAMAR A API LOCAL FORA DO PAINEL (seed, script,
+   * teste): `draft: false` SOZINHO NÃO PUBLICA.** O campo `_status` que o
+   * Payload gera tem valor padrão `"draft"` — é o formulário do painel que
+   * manda `_status: "published"` explícito no clique de "Publicar", não o
+   * argumento `draft`. Um `payload.create({ collection: "representadas", data
+   * })` sem `_status: "published"` em `data` cria um documento invisível para
+   * o site público, MESMO passando `draft: false`. Confirmado empiricamente
+   * durante PRA-118 — não é suposição. Quem semear as quatro marcas (PRA-119)
+   * precisa desta linha em cada `data`, ou a marca "publicada" some do site.
+   */
+  versions: {
+    drafts: {
+      autosave: false,
+    },
   },
 
   /* A ordem em que a galeria da home e as listas apresentam as marcas. Fica no

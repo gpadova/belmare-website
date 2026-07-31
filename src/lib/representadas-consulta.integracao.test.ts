@@ -7,6 +7,7 @@ import {
   buscarRepresentadaPorSlug,
   buscarRepresentadas,
   representadaDaPagina,
+  representadaEmRascunho,
   slugsDeRepresentadas,
 } from "@/lib/representadas-consulta";
 import {
@@ -92,6 +93,30 @@ function marcaMinima(slug: string, nome: string) {
 }
 
 /**
+ * Cria uma representada JÁ PUBLICADA.
+ *
+ * ⚠️ **`draft: false` SOZINHO NÃO PUBLICA — ARMADILHA CONFIRMADA EMPIRICAMENTE
+ * DURANTE PRA-118.** O campo `_status` que o Payload gera para toda coleção com
+ * `versions.drafts` tem valor padrão `"draft"`; é o FORMULÁRIO do painel que
+ * manda `_status: "published"` explícito ao clicar em "Publicar", não o
+ * argumento `draft` da API local. Sem esta função, cada `payload.create` deste
+ * arquivo criaria uma marca invisível para `buscarRepresentadaPorSlug` — que
+ * agora filtra `_status: "published"` de propósito, ver a nota em
+ * `lib/representadas-consulta.ts`. Os testes de RECUSA (mais abaixo) continuam
+ * chamando `payload.create` direto: a rejeição acontece antes da gravação, e
+ * `_status` não entra na conta.
+ */
+async function criarRepresentadaPublicada(
+  dados: Record<string, unknown>,
+): Promise<{ id: number }> {
+  return payload.create({
+    collection: "representadas",
+    draft: false,
+    data: { ...dados, _status: "published" },
+  } as never) as unknown as Promise<{ id: number }>;
+}
+
+/**
  * A mensagem que o painel devolve quando recusa.
  *
  * O Payload embrulha as recusas de campo num erro de validação: a explicação
@@ -151,17 +176,14 @@ describe("a marca cadastrada no painel", () => {
        consulta devolve. */
     const codigo = representadaPorSlug("trisol")!;
 
-    await payload.create({
-      collection: "representadas",
-      data: {
-        ...marcaMinima("trisol", "Trisol"),
-        resolve: codigo.resolve,
-        parte: codigo.parte,
-        fato: codigo.fato,
-        declaracoes: codigo.declaracoes,
-        vocabulario: codigo.vocabulario,
-        catalogos: codigo.catalogos?.map((c) => ({ titulo: c.titulo, ano: c.ano })),
-      },
+    await criarRepresentadaPublicada({
+      ...marcaMinima("trisol", "Trisol"),
+      resolve: codigo.resolve,
+      parte: codigo.parte,
+      fato: codigo.fato,
+      declaracoes: codigo.declaracoes,
+      vocabulario: codigo.vocabulario,
+      catalogos: codigo.catalogos?.map((c) => ({ titulo: c.titulo, ano: c.ano })),
     });
 
     const doPainel = (await buscarRepresentadaPorSlug("trisol"))!;
@@ -181,10 +203,7 @@ describe("a marca cadastrada no painel", () => {
   });
 
   test("traz as duas fotografias, com a marcação de referência composta", async () => {
-    await payload.create({
-      collection: "representadas",
-      data: marcaMinima("bux-garden-teste", "Bux Garden"),
-    });
+    await criarRepresentadaPublicada(marcaMinima("bux-garden-teste", "Bux Garden"));
 
     const marca = (await buscarRepresentadaPorSlug("bux-garden-teste"))!;
 
@@ -197,10 +216,7 @@ describe("a marca cadastrada no painel", () => {
   test("sem vocabulário, sem designers e sem catálogo, ela atravessa o banco e a página perde as seções", async () => {
     // A Bux: a única sem taxonomia declarada e sem catálogo em fonte nenhuma.
     // O esquema tem que aceitá-la sem um campo preenchido por simetria.
-    await payload.create({
-      collection: "representadas",
-      data: marcaMinima("bux-garden-teste", "Bux Garden"),
-    });
+    await criarRepresentadaPublicada(marcaMinima("bux-garden-teste", "Bux Garden"));
 
     const marca = (await buscarRepresentadaPorSlug("bux-garden-teste"))!;
 
@@ -214,33 +230,27 @@ describe("a marca cadastrada no painel", () => {
   });
 
   test("o eixo declarado é o que autoriza o filtro de categoria", async () => {
-    await payload.create({
-      collection: "representadas",
-      data: {
-        ...marcaMinima("gda-teste", "GDA Móveis"),
-        vocabulario: {
-          eixo: "Ambiente",
-          grupos: [
-            { nome: "Externo", slug: "externo", itens: [{ nome: "Sofás" }] },
-            { nome: "Interno", slug: "interno", itens: [{ nome: "Sofás" }] },
-          ],
-        },
+    await criarRepresentadaPublicada({
+      ...marcaMinima("gda-teste", "GDA Móveis"),
+      vocabulario: {
+        eixo: "Ambiente",
+        grupos: [
+          { nome: "Externo", slug: "externo", itens: [{ nome: "Sofás" }] },
+          { nome: "Interno", slug: "interno", itens: [{ nome: "Sofás" }] },
+        ],
       },
     });
 
-    await payload.create({
-      collection: "representadas",
-      data: {
-        ...marcaMinima("mare-teste", "Marê Mobília"),
-        vocabulario: {
-          grupos: [
-            {
-              nome: "Categorias",
-              slug: "todas",
-              itens: [{ nome: "Sofás" }, { nome: "Chaises" }],
-            },
-          ],
-        },
+    await criarRepresentadaPublicada({
+      ...marcaMinima("mare-teste", "Marê Mobília"),
+      vocabulario: {
+        grupos: [
+          {
+            nome: "Categorias",
+            slug: "todas",
+            itens: [{ nome: "Sofás" }, { nome: "Chaises" }],
+          },
+        ],
       },
     });
 
@@ -257,12 +267,9 @@ describe("o catálogo, do arquivo armazenado até a linha", () => {
   test("com o PDF anexado, o peso vem do arquivo e ninguém o digitou", async () => {
     const pdf = await criarPdf("Catálogo Trisol 2026", "catalogo.pdf");
 
-    await payload.create({
-      collection: "representadas",
-      data: {
-        ...marcaMinima("trisol-teste", "Trisol"),
-        catalogos: [{ titulo: "Catálogo", ano: 2026, arquivo: pdf }],
-      },
+    await criarRepresentadaPublicada({
+      ...marcaMinima("trisol-teste", "Trisol"),
+      catalogos: [{ titulo: "Catálogo", ano: 2026, arquivo: pdf }],
     });
 
     const [catalogo] = (await buscarRepresentadaPorSlug("trisol-teste"))!
@@ -278,12 +285,9 @@ describe("o catálogo, do arquivo armazenado até a linha", () => {
   });
 
   test("sem o PDF, o documento continua declarado e a faixa não anuncia peso", async () => {
-    await payload.create({
-      collection: "representadas",
-      data: {
-        ...marcaMinima("trisol-teste", "Trisol"),
-        catalogos: [{ titulo: "Catálogo", ano: 2026 }],
-      },
+    await criarRepresentadaPublicada({
+      ...marcaMinima("trisol-teste", "Trisol"),
+      catalogos: [{ titulo: "Catálogo", ano: 2026 }],
     });
 
     const marca = (await buscarRepresentadaPorSlug("trisol-teste"))!;
@@ -299,12 +303,9 @@ describe("o catálogo, do arquivo armazenado até a linha", () => {
   });
 
   test("sem edição declarada, a linha não ganha ano nenhum para inventar em cima", async () => {
-    await payload.create({
-      collection: "representadas",
-      data: {
-        ...marcaMinima("mare-teste", "Marê Mobília"),
-        catalogos: [{ titulo: "Catálogo" }],
-      },
+    await criarRepresentadaPublicada({
+      ...marcaMinima("mare-teste", "Marê Mobília"),
+      catalogos: [{ titulo: "Catálogo" }],
     });
 
     const [catalogo] = (await buscarRepresentadaPorSlug("mare-teste"))!
@@ -332,10 +333,9 @@ describe("o painel recusa, e explica em português", () => {
   });
 
   test("trocar a abertura pela foto da galeria depois também é recusado", async () => {
-    const criada = await payload.create({
-      collection: "representadas",
-      data: marcaMinima("trisol-teste", "Trisol"),
-    });
+    const criada = await criarRepresentadaPublicada(
+      marcaMinima("trisol-teste", "Trisol"),
+    );
 
     const recusa = await recusaAoSalvar(
       payload.update({
@@ -385,10 +385,7 @@ describe("o painel recusa, e explica em português", () => {
   });
 
   test("dois cadastros no mesmo endereço são recusados", async () => {
-    await payload.create({
-      collection: "representadas",
-      data: marcaMinima("trisol-teste", "Trisol"),
-    });
+    await criarRepresentadaPublicada(marcaMinima("trisol-teste", "Trisol"));
 
     const recusa = await recusaAoSalvar(
       payload.create({
@@ -405,9 +402,9 @@ describe("a travessia entre o código e o painel", () => {
   test("a rota prefere o painel e não perde quem ainda não migrou", async () => {
     /* Enquanto PRA-119 não passa, as quatro marcas escritas à mão continuam no
        ar. Cadastrar uma no painel não pode derrubar as outras três. */
-    await payload.create({
-      collection: "representadas",
-      data: { ...marcaMinima("trisol", "Trisol"), fato: "Fato vindo do painel" },
+    await criarRepresentadaPublicada({
+      ...marcaMinima("trisol", "Trisol"),
+      fato: "Fato vindo do painel",
     });
 
     expect((await representadaDaPagina("trisol"))?.fato).toBe(
@@ -426,18 +423,146 @@ describe("a travessia entre o código e o painel", () => {
   });
 
   test("a lista do painel sai na ordem que a Belmare escolheu", async () => {
-    await payload.create({
-      collection: "representadas",
-      data: { ...marcaMinima("segunda", "Segunda"), ordem: 2 },
-    });
-    await payload.create({
-      collection: "representadas",
-      data: { ...marcaMinima("primeira", "Primeira"), ordem: 1 },
-    });
+    await criarRepresentadaPublicada({ ...marcaMinima("segunda", "Segunda"), ordem: 2 });
+    await criarRepresentadaPublicada({ ...marcaMinima("primeira", "Primeira"), ordem: 1 });
 
     expect((await buscarRepresentadas()).map((r) => r.slug)).toEqual([
       "primeira",
       "segunda",
     ]);
+  });
+});
+
+describe("rascunho, publicação e restauração — PRA-118", () => {
+  test("uma marca salva só como rascunho é invisível para o site público", async () => {
+    // Nunca publicada: nasce, fica e morre em rascunho neste teste.
+    const criada = await payload.create({
+      collection: "representadas",
+      draft: true,
+      data: marcaMinima("rascunho-teste", "Rascunho Teste"),
+    });
+
+    expect(await buscarRepresentadaPorSlug("rascunho-teste")).toBeUndefined();
+    expect(
+      (await buscarRepresentadas()).map((r) => r.slug),
+    ).not.toContain("rascunho-teste");
+
+    // Mas o preview — que é quem tem permissão de ver rascunho — enxerga.
+    const emPreview = await representadaEmRascunho("rascunho-teste");
+    expect(emPreview?.nome).toBe("Rascunho Teste");
+
+    // Confirma que o documento existe de fato (não é um falso-negativo de id).
+    expect(criada.id).toBeDefined();
+  });
+
+  test("sem sessão, mesmo pedindo draft:true, o acesso nunca devolve rascunho", async () => {
+    /* ⚠️ Este é o segundo teste que prova "rascunho nunca vaza" — não o
+       filtro explícito de `buscarRepresentadaPorSlug` (que já tem o seu
+       próprio teste acima), mas a camada de baixo: o `access.read` da
+       coleção. `overrideAccess: false` simula um pedido de verdade, sem a
+       Local API pular o controle de acesso — é o mesmo caminho que um pedido
+       à API REST/GraphQL percorreria sem sessão de painel. */
+    await payload.create({
+      collection: "representadas",
+      draft: true,
+      data: marcaMinima("rascunho-sem-sessao", "Rascunho Sem Sessão"),
+    });
+
+    const semSessao = await payload.find({
+      collection: "representadas",
+      draft: true,
+      overrideAccess: false,
+      where: { slug: { equals: "rascunho-sem-sessao" } },
+    });
+
+    expect(semSessao.docs).toHaveLength(0);
+  });
+
+  test("editar uma marca publicada e salvar como rascunho não muda o que o site público serve", async () => {
+    const dadosOriginais = marcaMinima("versao-teste", "Versão Teste");
+    const criada = await criarRepresentadaPublicada(dadosOriginais);
+
+    await payload.update({
+      collection: "representadas",
+      id: criada.id,
+      draft: true,
+      data: { fato: "Fato ainda não publicado" },
+    });
+
+    // A leitura pública continua com o fato ORIGINAL — o rascunho não a tocou.
+    const publicado = await buscarRepresentadaPorSlug("versao-teste");
+    expect(publicado?.fato).toBe(dadosOriginais.fato);
+
+    // O preview já mostra a edição.
+    const emPreview = await representadaEmRascunho("versao-teste");
+    expect(emPreview?.fato).toBe("Fato ainda não publicado");
+  });
+
+  test("publicar deriva e dispara etiquetas; salvar rascunho não dispara nenhuma", async () => {
+    /* O hook de `collections/representadas.ts` chama `revalidateTag`, que
+       lança fora de uma requisição do Next — exatamente o mundo deste teste.
+       `foraDeRequisicao` absorve isso e não derruba a escrita (é a mesma
+       garantia que PRA-117 provou); o que este teste confirma é que a
+       ESCRITA em si continua funcionando para os dois casos, e que a
+       diferença de comportamento entre eles está no `_status` do documento
+       resultante — que é exatamente o que o hook usa para decidir revalidar. */
+    const criada = await payload.create({
+      collection: "representadas",
+      draft: true,
+      data: marcaMinima("hook-teste", "Hook Teste"),
+    });
+    const doc1 = criada as unknown as { _status?: string };
+    expect(doc1._status).toBe("draft");
+
+    const publicada = await payload.update({
+      collection: "representadas",
+      id: criada.id,
+      draft: false,
+      data: { _status: "published" },
+    });
+    const doc2 = publicada as unknown as { _status?: string };
+    expect(doc2._status).toBe("published");
+
+    expect(await buscarRepresentadaPorSlug("hook-teste")).toBeDefined();
+  });
+
+  test("restaurar uma versão publicada anterior devolve o conteúdo antigo, e o site público passa a servi-lo", async () => {
+    const criada = await criarRepresentadaPublicada({
+      ...marcaMinima("restaurar-teste", "Restaurar Teste"),
+      fato: "Fato da versão 1",
+    });
+
+    // Uma segunda publicação, por cima da primeira — sem passar por rascunho.
+    await payload.update({
+      collection: "representadas",
+      id: criada.id,
+      draft: false,
+      data: { fato: "Fato da versão 2", _status: "published" },
+    });
+
+    expect((await buscarRepresentadaPorSlug("restaurar-teste"))?.fato).toBe(
+      "Fato da versão 2",
+    );
+
+    const versoes = await payload.findVersions({
+      collection: "representadas",
+      where: { parent: { equals: criada.id } },
+      sort: "createdAt",
+    });
+    const versaoUm = versoes.docs.find(
+      (v) => (v.version as { fato?: string }).fato === "Fato da versão 1",
+    )!;
+    expect(versaoUm).toBeDefined();
+
+    // Restaurar comporta-se como publicar: o site volta a servir a versão 1
+    // sem um clique extra de "Publicar".
+    await payload.restoreVersion({
+      collection: "representadas",
+      id: versaoUm.id,
+    });
+
+    expect((await buscarRepresentadaPorSlug("restaurar-teste"))?.fato).toBe(
+      "Fato da versão 1",
+    );
   });
 });

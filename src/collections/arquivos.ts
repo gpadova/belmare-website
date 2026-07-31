@@ -28,6 +28,11 @@ export const Arquivos: CollectionConfig = {
     // O site público lê arquivos sem sessão. Escrita continua exigindo login.
     read: () => true,
   },
+
+  /* Histórico de versão sem rascunho — mesma nota de escopo de `imagens.ts`:
+     PRA-118 dá rascunho/preview à representada (que tem rota própria); aqui
+     fica só a restauração de um título trocado por engano. */
+  versions: true,
   upload: {
     /* Só vale quando o R2 não está configurado — ver a nota gêmea em
        `imagens.ts`. */

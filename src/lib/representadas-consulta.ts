@@ -35,6 +35,19 @@ import {
  * mesmas etiquetas quando o documento muda ou é apagado. Se um dia esta
  * consulta precisar de uma etiqueta nova, ela nasce em `revalidacao.ts`, não
  * aqui.
+ *
+ * ⚠️ **RASCUNHO NUNCA VAZA — E A GARANTIA MORA AQUI, NÃO NO PAYLOAD.**
+ * Confirmado durante PRA-118, com teste de integração em cima: uma leitura
+ * `find` comum, sem `draft: true`, NÃO filtra `_status` sozinha — o Payload
+ * devolve o documento em rascunho junto com os publicados se ninguém pedir
+ * filtro nenhum. Por isso toda função de leitura PÚBLICA abaixo
+ * (`buscarRepresentadas`, `buscarRepresentadaPorSlug`) inclui
+ * `_status: { equals: "published" }` no próprio `where`, explícito — não é
+ * suposição sobre o framework, é condição escrita na consulta. A única função
+ * que lê rascunho é `representadaEmRascunho`, e só ela recebe `draft: true`;
+ * nenhuma outra função deste arquivo aceita esse parâmetro. A segunda camada
+ * — para quem tentar ler o painel por fora deste arquivo — é o `access.read`
+ * de `collections/representadas.ts`.
  */
 
 async function painel() {
@@ -86,6 +99,8 @@ export async function buscarRepresentadas(): Promise<Representada[]> {
         depth: 1,
         pagination: false,
         sort: "ordem",
+        // Ver a nota sobre "rascunho nunca vaza" no topo do arquivo.
+        where: { _status: { equals: "published" } },
       });
 
       return docs.map(representadaDoPainel);
@@ -112,7 +127,8 @@ export async function buscarRepresentadaPorSlug(
         collection: "representadas",
         depth: 1,
         limit: 1,
-        where: { slug: { equals: slug } },
+        // Ver a nota sobre "rascunho nunca vaza" no topo do arquivo.
+        where: { slug: { equals: slug }, _status: { equals: "published" } },
       });
 
       const doc = docs[0];
@@ -121,6 +137,44 @@ export async function buscarRepresentadaPorSlug(
     ["representada-por-slug", slug],
     [tagDaRepresentada(slug)],
   );
+}
+
+/**
+ * A marca em rascunho — a única leitura deste arquivo que vê conteúdo não
+ * publicado, e por isso a única que recebe `draft: true`.
+ *
+ * ⚠️ **NUNCA EMBRULHADA EM `comCache`.** Rascunho é instável por natureza e
+ * de uma sessão só; guardar esta leitura atrás de cache com etiqueta faria
+ * uma troca de rascunho vazar para uma visita seguinte em preview, ou faria
+ * a página de preview mostrar uma versão presa. O próprio modo de rascunho do
+ * Next já tira a rota do cache estático — esta função só espelha essa
+ * garantia do lado do Payload, lendo direto sempre.
+ *
+ * ⚠️ Só lê o painel. As quatro marcas escritas à mão em `lib/representadas.ts`
+ * não têm rascunho para mostrar: elas não existem no Payload ainda (PRA-119),
+ * então não há o que pré-visualizar além do que já está no ar.
+ *
+ * ⚠️ Chamada apenas pela rota real sob `draftMode()` habilitado — é essa rota
+ * que checa o token de preview antes de chegar aqui. Esta função não checa
+ * token nenhum: quem a chama já decidiu, por fora dela, que o pedido tem
+ * permissão de ver rascunho. Ver `app/(frontend)/representadas/[marca]/page.tsx`
+ * e `lib/preview.ts`.
+ */
+export async function representadaEmRascunho(
+  slug: string,
+): Promise<Representada | undefined> {
+  const payload = await painel();
+
+  const { docs } = await payload.find({
+    collection: "representadas",
+    depth: 1,
+    limit: 1,
+    draft: true,
+    where: { slug: { equals: slug } },
+  });
+
+  const doc = docs[0];
+  return doc === undefined ? undefined : representadaDoPainel(doc);
 }
 
 /**

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 
 import { AcaoDeFecho } from "@/components/acao-de-fecho";
@@ -13,12 +14,33 @@ import { SecaoDaMarca } from "@/components/marca/secao";
 import { VocabularioDaMarca } from "@/components/marca/vocabulario";
 import {
   representadaDaPagina,
+  representadaEmRascunho,
   slugsDeRepresentadas,
 } from "@/lib/representadas-consulta";
-import { secoesDaRepresentada } from "@/lib/representadas";
+import { secoesDaRepresentada, type Representada } from "@/lib/representadas";
 import { EMPRESA } from "@/lib/site";
 
 type Parametros = { marca: string };
+
+/**
+ * A marca que ESTA visita deve ver — decisão 8 da spec, o preview de
+ * espinha fixa.
+ *
+ * ⚠️ **O DESVIO PARA RASCUNHO SÓ ACONTECE SOB `draftMode()` LIGADO, E SÓ
+ * QUEM PASSOU PELO TOKEN DE `/preview` CHEGA COM ELE LIGADO.** Um visitante
+ * comum nunca tem o cookie de rascunho do Next, então nunca cai neste ramo —
+ * `representadaDaPagina` (a leitura publicada) é o único caminho que ele
+ * percorre. Esta função é a ÚNICA ponte entre a rota e as duas leituras de
+ * `lib/representadas-consulta.ts`; nenhum outro lugar nesta página decide
+ * isso, e é por isso que a garantia de "rascunho não vaza" pode ser provada
+ * num teste de `src/lib` sem precisar simular o Next inteiro.
+ */
+async function marcaParaRenderizar(
+  slug: string,
+): Promise<Representada | undefined> {
+  const { isEnabled } = await draftMode();
+  return isEnabled ? representadaEmRascunho(slug) : representadaDaPagina(slug);
+}
 
 /**
  * Uma URL canônica por marca, geradas no build.
@@ -47,7 +69,7 @@ export async function generateMetadata({
   params: Promise<Parametros>;
 }): Promise<Metadata> {
   const { marca } = await params;
-  const representada = await representadaDaPagina(marca);
+  const representada = await marcaParaRenderizar(marca);
   if (!representada) return {};
 
   const origem = representada.base ? `${representada.base}. ` : "";
@@ -101,7 +123,7 @@ export default async function PaginaDaMarca({
   params: Promise<Parametros>;
 }) {
   const { marca } = await params;
-  const representada = await representadaDaPagina(marca);
+  const representada = await marcaParaRenderizar(marca);
   if (!representada) notFound();
 
   const secoes = secoesDaRepresentada(representada);

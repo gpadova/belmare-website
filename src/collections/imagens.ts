@@ -32,6 +32,20 @@ export const Imagens: CollectionConfig = {
     // O site público lê imagens sem sessão. Escrita continua exigindo login.
     read: () => true,
   },
+
+  /**
+   * ⚠️ **HISTÓRICO DE VERSÃO, SEM RASCUNHO — ESCOPO DELIBERADO DE PRA-118.**
+   * A decisão 8 da spec pede rascunho e versão em toda coleção, mas rascunho
+   * aqui abriria um problema que este ticket não precisa resolver: uma
+   * representada lida em `depth: 1` populariza `imagem`/`imagemLarga` por
+   * relacionamento, e uma imagem só-rascunho nesse relacionamento vazaria a
+   * mesma pergunta de visibilidade que `representadas.ts` resolve com
+   * `access.read` — só que agora dentro de uma leitura aninhada, sem rota
+   * própria para testar o preview. `versions: true` (sem `.drafts`) dá
+   * histórico e restauração — o operador desfaz uma descrição ou um ponto
+   * focal errado — sem criar `_status` nenhum para essa relação carregar.
+   */
+  versions: true,
   upload: {
     mimeTypes: ["image/*"],
 

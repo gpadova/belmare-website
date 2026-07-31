@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { draftMode } from "next/headers";
 
 import { Cabecalho } from "@/components/cabecalho";
 import { DefinicaoDeHachura } from "@/components/hachura";
+import { FaixaDeRascunho } from "@/components/faixa-de-rascunho";
 import { Rodape } from "@/components/rodape";
 import { EMPRESA } from "@/lib/site";
 import "./globals.css";
@@ -63,9 +65,14 @@ material foi cancelado por falta de dado (4 de 32 células), e com ele saíram a
 marca-sistema generativa e a anatomia de etiqueta. Ver briefing/estrutura.md §4.
 -->`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  /* ⚠️ Lido uma vez, no layout raiz — que já está em toda rota do site,
+     inclusive a 404 — para a faixa de aviso aparecer em qualquer página que
+     o operador esteja pré-visualizando, e não só na de uma coleção. */
+  const { isEnabled: emModoDeRascunho } = await draftMode();
+
   return (
     <html
       lang="pt-BR"
@@ -80,6 +87,7 @@ export default function RootLayout({
         >
           Ir para o conteúdo
         </a>
+        {emModoDeRascunho && <FaixaDeRascunho />}
         <Cabecalho />
         <main id="conteudo" className="flex-1">
           {children}

@@ -268,6 +268,7 @@ export interface Representada {
     | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * As fotografias do site. Toda imagem precisa de descrição, e toda imagem que ainda não é fotografia real precisa estar marcada como referência.
@@ -495,6 +496,7 @@ export interface RepresentadasSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
