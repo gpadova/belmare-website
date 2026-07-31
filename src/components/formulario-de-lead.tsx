@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useId } from "react";
+import { useActionState, useId, type ReactNode } from "react";
 
 import { enviarLead } from "@/lib/lead-acao";
 import {
@@ -40,15 +40,31 @@ import {
  * Se o spam aparecer, ele aparece na lista do painel, onde dá para contar
  * antes de decidir. Cobrar o pedágio antes disso é pagar por um problema
  * hipotético com a pessoa que veio comprar.
+ *
+ * ⚠️ **PRA-127 ACRESCENTOU UM SLOT DE SUCESSO, E NÃO UM CAMPO.** A lista de
+ * campos continua exatamente a de `lib/lead.ts#DadosDoLead` — a proibição do
+ * ticket anterior vale inteira. O que varia é o que a pessoa recebe DEPOIS de
+ * enviar: em `/contato` a resposta honesta é "a Belmare responde no seu
+ * e-mail", porque o que ela pediu é uma conversa; em `/arquivos-3d` o que ela
+ * pediu é um arquivo, e "aguarde nosso e-mail" ali seria a aprovação manual que
+ * `briefing/audiencias.md` recusa por escrito ("cadastro leve com **download
+ * imediato**"). Um cadastro que atrasa o arquivo perde para a Casoca duas
+ * vezes: cobra e ainda demora.
  */
 export function FormularioDeLead({
   origem,
   rotuloDoEnvio = "Enviar proposta",
+  sucesso,
 }: {
   origem: OrigemDoLead;
   /** Muda entre uma página de revenda e uma de arquiteto — é a única coisa que
    *  varia entre as duas audiências, ver `lib/lead.ts`. */
   rotuloDoEnvio?: string;
+  /** O que aparece no lugar do formulário depois do envio. Ausente, é a
+   *  promessa de resposta por e-mail — a certa quando o que se pediu é uma
+   *  conversa. `/arquivos-3d` passa o link do pacote: ali o que se pediu é um
+   *  arquivo, e ele é entregue na hora. */
+  sucesso?: ReactNode;
 }) {
   const [estado, acao, enviando] = useActionState(
     enviarLead,
@@ -57,10 +73,18 @@ export function FormularioDeLead({
   const base = useId();
 
   if (estado.status === "sucesso") {
+    /* `role="status"` fica no embrulho, e não só no parágrafo padrão: quem
+       navega por leitor de tela precisa ouvir que o envio deu certo nos DOIS
+       casos — inclusive quando o que aparece no lugar do formulário é um link
+       de download que ninguém anunciaria sozinho. */
     return (
-      <p className="text-h3 max-w-[52ch] text-pretty font-normal" role="status">
-        Recebemos seu contato. A Belmare responde no e-mail que você deixou.
-      </p>
+      <div role="status">
+        {sucesso ?? (
+          <p className="text-h3 max-w-[52ch] text-pretty font-normal">
+            Recebemos seu contato. A Belmare responde no e-mail que você deixou.
+          </p>
+        )}
+      </div>
     );
   }
 

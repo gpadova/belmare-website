@@ -158,12 +158,22 @@ describe("os caminhos — a união que o tipo gerado não consegue expressar", (
   });
 
   test("caminho de rota apontando para endereço que não existe é descartado", () => {
-    /* `/arquivos-3d` é o caso real: a rota continua 404 até PRA-127, e a lista
-       de destinos do painel não a oferece. Um documento gravado antes de uma
-       rota sair do código cai aqui. */
+    /* ⚠️ O exemplo deixou de ser `/arquivos-3d` em PRA-127: aquela rota nasceu,
+       entrou em `DESTINOS_DE_CAMINHO` e agora atravessa — o próprio critério de
+       aceite do ticket, provado do outro lado em `lib/paginas.test.ts`.
+       O caso que a guarda protege continua o mesmo e é o que este exemplo passou
+       a nomear: uma rota que SAIU do código com um documento gravado ainda
+       apontando para ela. O certo é o caminho desaparecer, nunca renderizar um
+       link para uma URL que não existe. */
+    expect(comCaminhos([
+      { rotulo: "Lojas", destino: "rota", rota: "/lojas" },
+    ])?.composicao).toEqual([]);
+
+    /* E a contraprova, para o teste não passar por engano no dia em que
+       `ehDestinoInterno` deixar de recusar qualquer coisa. */
     expect(comCaminhos([
       { rotulo: "Arquivos 3D", destino: "rota", rota: "/arquivos-3d" },
-    ])?.composicao).toEqual([]);
+    ])?.composicao).toHaveLength(1);
   });
 
   test("caminho de WhatsApp sem contexto é descartado", () => {

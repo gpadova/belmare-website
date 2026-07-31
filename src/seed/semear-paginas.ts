@@ -132,10 +132,13 @@ function documento(nos: No[]) {
 /**
  * `/arquitetos` — hub de trabalho, não página de venda.
  *
- * ⚠️ O caminho dos arquivos 3D é WhatsApp e não rota: `/arquivos-3d` continua
- * 404 até PRA-127, e a lista de destinos internos do painel não o oferece de
- * propósito (`lib/site.ts#DESTINOS_DE_CAMINHO`). O apoio diz o que existe hoje
- * em vez de escrever "em breve".
+ * ✅ **O CAMINHO DOS ARQUIVOS 3D VIROU ROTA EM PRA-127.** Era WhatsApp com um
+ * apoio dizendo "a biblioteca ainda não está no ar" — a saída honesta enquanto
+ * `/arquivos-3d` era 404 e `DESTINOS_DE_CAMINHO` não o oferecia. Com a rota
+ * viva, manter o WhatsApp ali seria o site escondendo a própria biblioteca da
+ * página que existe justamente para reunir o material do arquiteto. A troca
+ * custou duas linhas porque a união de `lib/paginas.ts` já previa `rota` — o
+ * mesmo seam que "quero revender" usou em PRA-126.
  */
 const ARQUITETOS = {
   slug: "arquitetos",
@@ -173,12 +176,11 @@ const ARQUITETOS = {
           rota: "/representadas",
         },
         {
-          rotulo: "Arquivos 3D e cartas de acabamento",
+          rotulo: "Os arquivos 3D das representadas",
           apoio:
-            "A biblioteca por formato ainda não está no ar. Diga a peça e o formato — SketchUp, DWG, Revit — e a Belmare manda o bloco ou a amostra.",
-          destino: "whatsapp",
-          contexto:
-            "sou arquiteto e preciso de um arquivo 3D ou de uma carta de acabamento",
+            "Cada bloco com formato e peso declarados antes do clique, e sem cadastro para baixar. Só o pacote com as quatro fábricas juntas pede seus dados.",
+          destino: "rota",
+          rota: "/arquivos-3d",
         },
       ],
     },

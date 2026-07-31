@@ -333,6 +333,25 @@ Não existe botão neste sistema. Toda ação é um link — `<a>` ou `<Link>` �
 
 **A Regra do Cabeçalho de Coluna.** Um cabeçalho de coluna assenta sobre a coluna que nomeia — por isso a grade é importada, não redigitada — e nomeia o que a coluna **de fato carrega hoje**: enquanto nenhum documento está publicado ela leva edição e estado de entrega, e se chama `EDIÇÃO`; vira `ARQUIVO` sozinha no dia em que houver arquivo. Na largura em que a coluna não existe, o rótulo dela também não existe: no telefone a linha empilha e só `DOCUMENTO` fica. Cabeçalho que promete coluna inexistente é pior que cabeçalho nenhum.
 
+### Linha de arquivo 3D
+
+`components/arquivos-3d/linha-de-arquivo.tsx` — a terceira da família, e a mais curta: `SKP · 8,4 MB` e acabou. Herda a anatomia da linha de documento (nome em h3 sublinhado no fio, medida em mono versal, seta na ponta, o mesmo `hover` de três sinais), e **não importa a grade dela**: a linha de catálogo tem uma coluna larga porque a edição de um catálogo cabe ali, e um arquivo 3D não tem ano. Acoplar as duas larguras faria uma se mexer quando a outra fosse apertada.
+
+- **Uma escrita só, e sempre a que baixa.** A linha de documento tem duas (publicada e a pedir) porque um catálogo pode existir sem estar em disco. Um `Arquivo3D` **é** o arquivo: sem peso medido e sem extensão legível ele não vira item nenhum (`lib/arquivos3d.ts`), então não existe estado em que esta linha desenhe um download mudo.
+- **Nenhuma delas pede cadastro** — ver a Regra do Portão, abaixo.
+- **Alvo externo**, `target="_blank"` com `download`, pela mesma razão medida na linha de documento: `download` é ignorado em URL de outra origem.
+
+**A Regra do Portão.** `/arquivos-3d` gateia **exatamente uma coisa**: o pacote com as quatro fábricas juntas. Todo arquivo avulso baixa aberto. A regra não é de generosidade — é de economia: a Casoca é gratuita, dominante e já distribui a GDA, então um formulário na frente de um arquivo que ela entrega de graça não captura o lead, **doa** o lead. O portão só se sustenta sobre o que o concorrente estruturalmente não tem. E ele não compra o direito de esconder a medida: `ZIP · 62,4 MB` aparece **acima** dos campos, nunca depois do envio — descobrir o peso já tendo pago é a mesma quebra de promessa na versão pior. Sem pacote publicado, a seção e o formulário somem juntos: o site nunca pede dado pessoal em troca de um arquivo que não existe.
+
+### Índice de biblioteca (`/arquivos-3d`)
+
+A segunda superfície **sem uma única imagem**, e irmã declarada de `/catalogos`: mesmas duas colunas partidas por fio vertical de altura total, mesmo cabeçalho de colunas em mono, mesmas linhas regradas com a medida à direita. Um arquiteto que aprendeu a ler uma não reaprende nada na outra.
+
+- **A diferença é o agrupamento.** `/catalogos` recusa agrupar por marca de propósito — lá a linha é o documento e a fábrica só qualifica o título. Aqui o grupo é necessário: "Cadeira Zuri" não diz de quem é, e cada arquivo pende de uma fábrica só. **Agrupar não é filtrar** — não há filtro por formato e não há consulta que peça duas fábricas ao mesmo tempo.
+- **O nome da fábrica é `h2` em grotesca caixa baixa, `text-h2`** — um degrau acima do `text-h3` das linhas. A primeira escrita foi `mono uppercase` e é a **segunda** violação da Regra da Caixa Alta neste projeto; a correção de `/catalogos` (apagar a linha) não servia aqui, porque o grupo é o desenho. Quando o elemento está certo e a caixa está errada, muda-se a caixa.
+- **Nenhum cabeçalho órfão.** A fábrica sem arquivo não vira título sobre lista vazia — ela some (seção anulável). Hoje isso é o estado das quatro.
+- **Biblioteca vazia escreve o estado**, como `/catalogos`: sem arquivo em disco a página diz que a Belmare manda o bloco, nunca "em breve" e nunca uma tabela vazia.
+
 ### Bloco numerado
 
 A espinha de `/quem-somos`, e o padrão reutilizável para qualquer rota de arquivo.

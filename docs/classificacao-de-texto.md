@@ -1,4 +1,4 @@
-# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento, Empresa, Home, QuemSomos, Prancha, Página, Lead
+# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento, Empresa, Home, QuemSomos, Prancha, Página, Lead, Pacote3D
 
 Registro exaustivo, pedido pela decisão 3 da spec e por PRA-119: toda string tocada pela
 migração do conteúdo de `lib/representadas.ts` e `lib/acervo.ts` para o Payload, classificada
@@ -45,6 +45,15 @@ mudou, só quem tem permissão de gravá-lo.
 **PRA-126 estendeu esta tabela** com a coleção `Lead` — e é o primeiro caso em que a pergunta
 "quem decide este valor?" não responde "o operador, no painel". Ver a seção dedicada abaixo, que
 por isso foge um pouco da forma das anteriores.
+
+**PRA-127 estendeu esta tabela** com o global `Pacote3D` — o último campo do projeto, e o único
+cuja classificação decide **o que o site COBRA** em vez do que ele mostra. Ele reverte uma
+suposição do `PRODUCT.md` (cadastro para baixar qualquer 3D): o arquivo avulso passa a baixar
+aberto, e só o pacote com as quatro fábricas juntas pede os dados do visitante. A razão está na
+seção dedicada, e ela é econômica, não editorial — gatear o que a Casoca já entrega de graça não
+captura o lead, doa o lead. **Nenhuma linha das seções anteriores mudou de camada por causa
+deste ticket**, `arquivos3d` (PRA-120) inclusive: formato e peso continuam gerados, e o que
+mudou foi quem pode baixar o arquivo, não o que ele é.
 
 ## Coleção `representadas` (`src/collections/representadas.ts`)
 
@@ -239,6 +248,38 @@ formulário.
 | O corpo do e-mail de aviso (`corpoDoAvisoPorEmail`) | **Gerado**, em `lib/lead.ts` | Composto a partir do próprio Lead já gravado — nunca um segundo texto que poderia divergir do que está no painel. |
 | Captcha ou honeypot | **Não existe** | Os dois custam acessibilidade real (campo que um leitor de tela anuncia mesmo escondido, ou quebra-cabeça que barra baixa visão) contra spam que ninguém mediu ainda. Se aparecer, aparece na lista do painel, onde dá para contar antes de decidir. |
 
+## Global `pacote-3d` (`src/globals/pacote-3d.ts`) — PRA-127
+
+O último campo do projeto, e o único cuja classificação decide **o que o site COBRA**, não o
+que ele mostra. Um campo só — um upload —, e a lista do que ficou de fora dele é, mais uma vez,
+maior do que a do que entrou.
+
+⚠️ **A DECISÃO QUE ESTE TICKET REVERTE NÃO É SOBRE TEXTO, É SOBRE PORTÃO.** `PRODUCT.md` e
+`briefing/audiencias.md` (P11) recomendam cadastro leve para baixar 3D — qualquer 3D. A
+recomendação não sobrevive ao alerta competitivo escrito no mesmo documento: a **Casoca** é
+gratuita, dominante no Brasil e **já distribui a GDA**. Um formulário na frente de um arquivo
+que a Casoca entrega sem pedir nada não captura o lead — **doa** o lead, porque a aba seguinte
+já tem o arquivo de graça. O portão migra inteiro para a única coisa que a Casoca
+estruturalmente não tem: as quatro fábricas juntas, com acabamentos e tecidos, num download só.
+O arquivo avulso da coleção `arquivos3d` (classificada acima, em PRA-120) **não muda de camada
+nenhuma** — o que mudou foi quem pode baixá-lo, e a resposta passou a ser "qualquer um".
+
+| Campo | Camada | Por quê |
+|---|---|---|
+| `pacote` | Campo (upload) | O arquivo pronto, **montado à mão pelo operador e subido inteiro** — não zipado sob demanda. Três razões, na ordem em que pesam: (1) **peso antes do clique** — um zip montado na hora não tem tamanho até terminar de ser montado, e a página teria que omitir o peso (quebrando a promessa que ela existe para fazer) ou estimá-lo (inventando dado); um arquivo em disco tem `filesize` medido pelo Payload, a MESMA derivação de toda outra linha do site. (2) **A plataforma** — `collections/arquivos.ts` existe porque a função serverless recusa corpo acima de 4,5 MB e o upload precisou ir direto ao bucket; montar dezenas de MB dentro dessa mesma função, a cada pedido, reabre por dentro o limite que aquele ticket rodeou por fora. (3) **Curadoria é o produto** — o que a Casoca não entrega não é "os arquivos concatenados", é o conjunto organizado. Opcional de propósito: em branco, a seção e o formulário somem juntos. |
+
+### Arquivos 3D — o que PRA-127 recusou a transformar em campo
+
+| Texto / decisão | Onde mora | Por que não é campo |
+|---|---|---|
+| **O cadastro na frente de um arquivo 3D avulso** | **Não existe** — `components/arquivos-3d/linha-de-arquivo.tsx` baixa direto | A recusa que define o ticket, e a única deste documento que é sobre economia e não sobre edição. Ver a nota acima. É também o princípio 5 do `PRODUCT.md` aplicado sem desconto: "ficha aberta sem cadastro, arquivo com formato e peso declarados antes do clique, e nada que encante na primeira visita e irrite na décima" — o arquiteto volta muitas vezes, e um formulário por download é o que irrita na décima. |
+| Um campo novo no formulário do pacote (projeto, telefone, CPF) | **Não existe** — a lista continua a de `lib/lead.ts#DadosDoLead` | A proibição de PRA-126 vale inteira, e este ticket era o primeiro teste dela: uma audiência nova ("o arquiteto") é exatamente a justificativa que faria um campo entrar. Entrou um SLOT DE SUCESSO em `components/formulario-de-lead.tsx` — o que a pessoa recebe depois de enviar —, nunca um campo a mais do que ela precisa preencher. |
+| A data de remontagem do pacote | **Não existe**, e não é esquecimento | A data óbvia (`Arquivo.updatedAt`) mexe quando alguém corrige o TÍTULO do upload, não só quando o binário é trocado — ela diria "remontado em julho" sobre um pacote de março. Um carimbo que se atualiza sozinho sem o conteúdo ter mudado é a definição de "o site passa a mentir sozinho" (`CONTEXT.md`), e um campo de data digitado à mão é a mesma mentira com uma tecla a mais. **O custo aceito no lugar dela**: o pacote envelhece, e remontá-lo é obrigação do operador — dita com todas as letras na ajuda do campo, e dita ao visitante na própria página ("quando um arquivo novo entra, ele aparece na lista acima antes de entrar aqui"). |
+| O filtro por formato ("SKETCHUP · DWG · REVIT · 3DS") | **Não existe** (`briefing/prompt-paper.md` o desenha) | É o eixo transversal que a decisão 10 já matou uma vez para material, com o mesmo argumento e o mesmo dado: **nenhuma estrutura do site deve depender de dado que as fábricas não têm**, e não há um único formato confirmado em nenhuma das quatro. E ele exigiria uma consulta de arquivos 3D SEM pai — a porta por onde "o filtro nunca sai da marca" (princípio 2) deixaria de valer. **Agrupar não é filtrar**: `buscarBiblioteca3D` é N leituras escopadas por `representada.slug`, e o que atravessa as marcas é só a ordem na tela. |
+| O rótulo de cada grupo da biblioteca | **Gerado** de `Representada.nome` | Segunda cópia do nome da fábrica seria a que continua dizendo o nome antigo depois de a marca ser renomeada no painel. |
+| O h1 "O bloco entra no projeto hoje." e a prosa das duas colunas | **Fixo** (`app/(frontend)/arquivos-3d/page.tsx`) | Mesma regra do h1 da home e de `/catalogos`, que este ticket não relitiga: a página é **espinha fixa**, e a sequência dela é o argumento — um construtor de blocos aqui desfaria a inversão econômica acima numa tarde de edição. |
+| Um pacote por representada | **Não existe** — o global é um só | Seria quatro pacotes com um dono cada, que é literalmente o oposto do que faz o pacote valer um cadastro. É também por isso que ele é global e não campo de `Representada`: ele não pende de fábrica nenhuma porque pertence às quatro (ver `lib/revalidacao.ts`, onde é o único documento que não deriva `tagDaRepresentada`). |
+
 ## Gerado — derivado em tempo de leitura, nunca um campo
 
 | Valor | Onde nasce | Por que não pode virar campo |
@@ -247,6 +288,8 @@ formulário.
 | `object-position` (`"30% 50%"` etc.) | `lib/acervo.ts#posicaoDoFoco` | Deriva de `focalX`/`focalY`; um campo de texto paralelo poderia divergir do clique. |
 | Peso do arquivo em MB | `lib/representadas-traducao.ts#pesoDoArquivo`, a partir de `Arquivo.filesize` | O Payload já mede o arquivo que armazenou; digitar o peso é como o site passa a prometer um número que pode estar errado. Nenhum dos catálogos seedados tem arquivo anexado, então nenhum peso é computado ainda — mas a regra vale a partir do dia em que um PDF for anexado. |
 | **[PRA-120]** O formato de um arquivo 3D ("SKP", "DWG"...) | `lib/arquivos3d.ts#formatoDoArquivo`, a partir de `Arquivo.filename` | `.skp`/`.3ds`/`.dwg` chegam do navegador como `application/octet-stream` na maioria dos sistemas — `mimeType` não identifica o formato, só a extensão do nome gravado. Digitado à mão, "SKP" vira exatamente o erro de digitação que o critério de aceite deste ticket proíbe. |
+| **[PRA-127]** Formato e peso do PACOTE COMPLETO | `lib/arquivos3d.ts#pacoteDoPainel`, sobre a MESMA `baixavelDoUpload` que o arquivo avulso usa | **O cadastro não compra o direito de esconder o tamanho.** É o único download do site atrás de formulário, e por isso o que menos pode chegar sem medida: `ZIP · 62,4 MB` aparece ACIMA dos campos, não depois do envio. Descobrir o peso depois de entregar nome, e-mail, cidade e escritório é a mesma quebra de promessa na versão pior — aí já se pagou. Sem peso medido ou sem extensão legível o pacote não existe, e a seção inteira (formulário incluído) não é desenhada. |
+| **[PRA-127]** "Três arquivos de duas fábricas" na biblioteca | `lib/arquivos3d.ts#totalDeArquivos3D` + `lib/frase.ts#porExtenso` | A sétima contagem em prosa do site, pela mesma regra das seis de PRA-122: um número escrito à mão continuaria dizendo o do primeiro lote no dia do segundo. |
 | **[PRA-120]** Peso de um arquivo 3D em MB | `lib/representadas-traducao.ts#pesoDoArquivo`, reaproveitada — não uma segunda função | A mesma regra do catálogo: o Payload já mediu o arquivo que armazenou. Diferente do catálogo, não há estado "a pedir" — um Arquivo3D sem tamanho medido nem extensão legível não vira item nenhum (`lib/arquivos3d.ts#arquivo3DDoPainel` devolve `undefined` inteiro, nunca um objeto pela metade). |
 | **[PRA-120]** A decisão de recusar uma `categoria` de Peça | `collections/pecas.ts`, validação assíncrona do campo `categoria` | Não é o valor em si que é gerado (`categoria` é Campo, texto digitado) — é a **decisão de aceitar ou recusar** que é sempre recalculada contra o vocabulário atual da representada escolhida, nunca uma lista de opções congelada no schema. |
 | O eixo que autoriza um filtro (`eixoDeFiltro`) | `lib/representadas.ts` | O CAMPO é `vocabulario.eixo` (texto); o que é gerado é a *decisão* de oferecer filtro, que depende de `eixo` estar presente **e** haver mais de um grupo. Essa decisão não tem campo próprio — é sempre recalculada. |
@@ -290,6 +333,38 @@ ao alcance de um global e ficou no código de propósito.
 | A navegação do site (os quatro itens do menu) | `lib/site.ts#NAVEGACAO` | Não é conteúdo dentro do desenho: é quais rotas existem. Uma rota nova exige uma página nova, que é código — um item de menu editável só serviria para apontar para um 404 que o operador não tem como criar. **[PRA-124]** A mesma regra passou a valer do outro lado: o endereço de uma página livre é escolhido dentro de `ROTAS_LIVRES`, nunca digitado. |
 | A descrição de SEO do layout e o `title` padrão | `app/(frontend)/layout.tsx` | Só `openGraph.siteName` passou a ler o painel, porque é o nome público da empresa. O resto é a mesma prosa fixa da home. |
 | A prancha do território (a malha do IBGE) | `lib/territorio.ts` | Fora de escopo por decisão 4 da spec: é dado regerado da fonte, não desenho a editar. |
+
+## O texto do formulário de lead — PRA-126
+
+A seção anterior sobre `leads` classifica o que o **documento gravado** guarda. Esta classifica
+o que o **formulário mostra**: rótulo, texto de consentimento, mensagem de sucesso, recusa.
+
+⚠️ **É o único lugar do projeto onde "não é campo do painel" significa o oposto do resto deste
+documento.** Em todo o resto, `fixo` protege o argumento do desenho contra edição. Aqui, `fixo`
+protege **quem preenche o formulário**: a lista de campos mora em `lib/lead.ts` e acrescentar um
+é PR, não clique, porque um construtor de formulário é exatamente a ferramenta que deixaria um
+operador bem-intencionado acrescentar CPF porque uma fábrica pediu. Decisão 11 da spec, sobre a
+minimização que `PRODUCT.md` promete: *"nome, e-mail, cidade e escritório bastam — CPF não"*.
+
+| Texto | Camada | Por quê |
+|---|---|---|
+| A lista de campos do formulário | **Fixo** | Ver acima. É violação de minimização de dado criada por acidente, num site cuja política de privacidade ainda espera advogado. |
+| Os rótulos dos campos ("Nome", "Cidade", "Empresa ou escritório") | **Fixo** | Nomeiam os campos fixos; um rótulo editável sobre um campo fixo só serve para a etiqueta discordar do que é gravado. |
+| O texto da caixa de consentimento | **Fixo** | É a promessa de que contatar a empresa não inscreve ninguém em lista — e a redação de um consentimento não é assunto de edição casual. |
+| A mensagem de sucesso e as recusas por campo | **Fixo** | Mesma família das recusas de coleção: explicam um estado do sistema, não conteúdo da Belmare. |
+| O rótulo do caminho que abre o formulário ("Quero revender") e o apoio dele | **Campo** | Isto sim é da Belmare: como ela convida, e em qual página o formulário aparece. O bloco de caminhos escolhe **onde** o formulário está e **como se chama** — nunca o que ele pergunta. |
+| A origem do lead (página e marca) | **Gerado** | Preenchida pela própria página no envio. O visitante nunca vê nem digita; um campo aqui seria pedir que alguém declarasse de onde veio. |
+| O corpo do aviso por e-mail | **Gerado** | Montado do próprio lead em `lib/lead.ts#corpoDoAvisoPorEmail`. |
+
+### O que PRA-126 recusou construir
+
+| Recusado | Por quê |
+|---|---|
+| Construtor de formulário / campos configuráveis | O ponto inteiro do ticket. Ver acima. |
+| Campo de telefone | `briefing/restricoes.md` o permite como opcional, mas "pedir só o necessário" corta na direção de menos campo. Reabrir é decisão de produto, não esquecimento. |
+| Captcha e honeypot | Os dois custam acessibilidade real — um campo escondido que o leitor de tela anuncia mesmo assim, ou um quebra-cabeça que barra quem tem baixa visão — contra spam que ninguém mediu. Se aparecer, aparece na lista do painel, onde dá para contar antes de decidir. |
+| Consentimento obrigatório | Exigir a marcação trocaria o atendimento por um endereço de mala direta. Recusar a lista não pode impedir o contato. |
+| Etiqueta de revalidação para `leads` | Um lead não aparece em página pública nenhuma. Uma etiqueta acrescentada por reflexo seria etiqueta morta, nunca invalidada por leitura nenhuma. |
 
 ## Referência
 

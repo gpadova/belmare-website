@@ -2,7 +2,11 @@ import config from "@payload-config";
 import { getPayload, type Payload } from "payload";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 
-import { buscarArquivos3DDaRepresentada } from "@/lib/arquivos3d-consulta";
+import {
+  buscarArquivos3DDaRepresentada,
+  buscarBiblioteca3D,
+  buscarPacote3D,
+} from "@/lib/arquivos3d-consulta";
 import { pesoEmMB } from "@/lib/representadas";
 import {
   criarArquivo,
@@ -134,6 +138,165 @@ describe("o arquivo 3D, do arquivo armazenado até a consulta", () => {
     });
 
     expect(await buscarArquivos3DDaRepresentada("trisol-teste")).toEqual([]);
+  });
+});
+
+/**
+ * A biblioteca de `/arquivos-3d` contra um Payload de verdade — PRA-127.
+ *
+ * ⚠️ **O QUE ESTE BLOCO PROVA E O PURO NÃO PODE: QUE AGRUPAR NÃO VIROU
+ * FILTRAR.** A página é agrupada por representada, e a tentação óbvia de
+ * implementá-la é um `find` sem escopo de marca, ordenado por fábrica — o que
+ * daria o mesmo pixel e abriria por dentro o eixo transversal que o princípio 2
+ * do `PRODUCT.md` fecha. `buscarBiblioteca3D` é N leituras escopadas, e o teste
+ * abaixo confere o resultado ARRUMADO sem que exista, em lugar nenhum do
+ * caminho, uma consulta que peça duas fábricas ao mesmo tempo.
+ */
+describe("a biblioteca inteira, agrupada por representada", () => {
+  test("cada fábrica traz os próprios arquivos, e a ordem de apresentação é preservada", async () => {
+    /* ⚠️ `ordem` explícita, e as duas ao contrário da ordem de criação: o que
+       este teste afirma é que a biblioteca respeita a ORDEM DE APRESENTAÇÃO da
+       Belmare (`Representada.ordem`, campo do painel), não a ordem em que os
+       documentos entraram no banco nem a ordem alfabética. Sem os dois números
+       o `sort: "ordem"` compara dois nulos e o resultado é arbitrário — a
+       asserção passaria ou falharia por sorte. */
+    const primeira = await criarRepresentadaPublicada(payload, {
+      ...representadaMinima("marca-a", "Marca A", fotoDaGaleria, fotoDeAbertura),
+      ordem: 2,
+    });
+    const segunda = await criarRepresentadaPublicada(payload, {
+      ...representadaMinima("marca-b", "Marca B", fotoDaGaleria, fotoDeAbertura),
+      ordem: 1,
+    });
+
+    const arquivoA = await criarArquivo(payload, "A", "modelo-a.dwg", 2 * 1024 * 1024);
+    const arquivoB = await criarArquivo(payload, "B", "modelo-b.skp", 1024);
+
+    await criarArquivo3DPublicado({
+      representada: primeira.id,
+      nome: "Modelo A",
+      arquivo: arquivoA,
+    });
+    await criarArquivo3DPublicado({
+      representada: segunda.id,
+      nome: "Modelo B",
+      arquivo: arquivoB,
+    });
+
+    const biblioteca = await buscarBiblioteca3D();
+
+    // "marca-b" tem `ordem: 1` e vem primeiro, apesar de ter sido criada
+    // depois e de vir depois no alfabeto.
+    expect(biblioteca.map((grupo) => grupo.marca.slug)).toEqual([
+      "marca-b",
+      "marca-a",
+    ]);
+    expect(biblioteca[0].arquivos.map((a) => a.nome)).toEqual(["Modelo B"]);
+    expect(biblioteca[1].arquivos.map((a) => a.nome)).toEqual(["Modelo A"]);
+
+    // Formato e peso chegam junto do nome — é o tipo que garante, e aqui o
+    // valor vem do arquivo ARMAZENADO, não do que o teste declarou.
+    expect(biblioteca[1].arquivos[0].formato).toBe("DWG");
+    expect(pesoEmMB(biblioteca[1].arquivos[0].mb)).toBe("2,0");
+  });
+
+  test("a fábrica sem arquivo nenhum não vira grupo — seção anulável", async () => {
+    const comArquivo = await criarRepresentadaPublicada(
+      payload,
+      representadaMinima("marca-a", "Marca A", fotoDaGaleria, fotoDeAbertura),
+    );
+    await criarRepresentadaPublicada(
+      payload,
+      representadaMinima("marca-b", "Marca B", fotoDaGaleria, fotoDeAbertura),
+    );
+
+    const arquivo = await criarArquivo(payload, "A", "modelo-a.dwg", 1024);
+    await criarArquivo3DPublicado({
+      representada: comArquivo.id,
+      nome: "Modelo A",
+      arquivo,
+    });
+
+    // A "Marca B" está publicada e é vizinha da "Marca A" em toda outra lista
+    // do site — aqui ela some, porque um cabeçalho sobre nenhuma linha é
+    // exatamente o que a regra proíbe.
+    expect((await buscarBiblioteca3D()).map((g) => g.marca.slug)).toEqual([
+      "marca-a",
+    ]);
+  });
+
+  test("sem nenhum arquivo cadastrado, a biblioteca é uma lista vazia — não quatro cabeçalhos", async () => {
+    await criarRepresentadaPublicada(
+      payload,
+      representadaMinima("marca-a", "Marca A", fotoDaGaleria, fotoDeAbertura),
+    );
+
+    // O estado REAL do acervo em 31/07/2026: nenhuma das quatro fábricas
+    // entregou arquivo. A página escreve o estado; ela não desenha a tabela.
+    expect(await buscarBiblioteca3D()).toEqual([]);
+  });
+});
+
+/**
+ * O pacote completo — o único download atrás de cadastro.
+ *
+ * ⚠️ O que se prova aqui é a garantia que protege o VISITANTE, não o layout:
+ * enquanto não houver pacote publicado, a consulta devolve `undefined`, e é
+ * esse `undefined` que apaga o formulário junto com a seção. Sem ele, o site
+ * teria um estado em que pede nome, e-mail, cidade e escritório em troca de um
+ * arquivo que não existe.
+ */
+describe("o pacote completo, do global até a consulta", () => {
+  test("global em rascunho não vira download — e o formulário some com ele", async () => {
+    const arquivo = await criarArquivo(
+      payload,
+      "Pacote Belmare",
+      "pacote-belmare.zip",
+      1024,
+    );
+
+    await payload.updateGlobal({
+      slug: "pacote-3d",
+      draft: true,
+      data: { pacote: arquivo },
+    });
+
+    expect(await buscarPacote3D()).toBeUndefined();
+  });
+
+  test("publicado, formato e peso vêm do arquivo armazenado", async () => {
+    const bytes = 62.4 * 1024 * 1024;
+    const arquivo = await criarArquivo(
+      payload,
+      "Pacote Belmare",
+      "pacote-belmare-2026.zip",
+      bytes,
+    );
+
+    await payload.updateGlobal({
+      slug: "pacote-3d",
+      draft: false,
+      data: { pacote: arquivo, _status: "published" },
+    } as never);
+
+    const pacote = await buscarPacote3D();
+
+    expect(pacote?.formato).toBe("ZIP");
+    expect(pesoEmMB(pacote?.mb ?? 0)).toBe("62,4");
+    expect(pacote?.url).toContain("pacote-belmare-2026");
+  });
+
+  test("pacote sem extensão legível é recusado no painel — formato nunca vira chute", async () => {
+    const arquivo = await criarArquivo(payload, "Pacote", "pacote-sem-extensao", 1024);
+
+    const recusa = await recusaAoSalvar(
+      payload.updateGlobal({
+        slug: "pacote-3d",
+        data: { pacote: arquivo, _status: "published" },
+      } as never),
+    );
+
+    expect(recusa).toContain("extensão");
   });
 });
 

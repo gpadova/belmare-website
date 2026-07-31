@@ -108,12 +108,14 @@ export interface Config {
     home: Home;
     'quem-somos': QuemSomos;
     prancha: Prancha;
+    'pacote-3d': Pacote3D;
   };
   globalsSelect: {
     empresa: EmpresaSelect<false> | EmpresaSelect<true>;
     home: HomeSelect<false> | HomeSelect<true>;
     'quem-somos': QuemSomosSelect<false> | QuemSomosSelect<true>;
     prancha: PranchaSelect<false> | PranchaSelect<true>;
+    'pacote-3d': Pacote3DSelect<false> | Pacote3DSelect<true>;
   };
   locale: null;
   widgets: {
@@ -562,7 +564,15 @@ export interface BlocoDeCaminhos {
          * Só as páginas que já existem aparecem aqui. Uma rota que ainda não foi construída não é oferecida: um caminho para um 404 é pior do que caminho nenhum.
          */
         rota?:
-          | ('/representadas' | '/catalogos' | '/quem-somos' | '/arquitetos' | '/contato' | '/politica-de-privacidade')
+          | (
+              | '/representadas'
+              | '/catalogos'
+              | '/arquivos-3d'
+              | '/quem-somos'
+              | '/arquitetos'
+              | '/contato'
+              | '/politica-de-privacidade'
+            )
           | null;
         /**
          * A mensagem chega no WhatsApp já escrita — "Oi! Vim pelo site: …". Escreva a continuação na primeira pessoa: "queria propor uma revenda", "queria os catálogos das representadas". É a única qualificação de lead que o site tem, e ela custa zero.
@@ -1259,6 +1269,22 @@ export interface Prancha {
   createdAt?: string | null;
 }
 /**
+ * O download único de /arquivos-3d: as quatro fábricas, com acabamentos e tecidos, num arquivo só. É o ÚNICO arquivo do site que pede cadastro — os arquivos 3D avulsos baixam direto, sem formulário, porque a Casoca já os entrega de graça e cobrar cadastro por eles só afasta o arquiteto.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pacote-3d".
+ */
+export interface Pacote3D {
+  id: number;
+  /**
+   * O pacote pronto, montado por você: os arquivos 3D das quatro fábricas mais as cartas de acabamento e tecido, num arquivo compactado. ⚠️ Ele NÃO se atualiza sozinho — um arquivo 3D novo entra na lista da página na hora, mas só entra no pacote quando você remontar e subir de novo. Em branco, a seção do pacote inteira desaparece da página, com o formulário junto: o site nunca pede cadastro em troca de um arquivo que não existe.
+   */
+  pacote?: (number | null) | Arquivo;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "empresa_select".
  */
@@ -1333,6 +1359,17 @@ export interface PranchaSelect<T extends boolean = true> {
         alvoY?: T;
         id?: T;
       };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pacote-3d_select".
+ */
+export interface Pacote3DSelect<T extends boolean = true> {
+  pacote?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;

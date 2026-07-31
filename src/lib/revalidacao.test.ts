@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import {
+  TAG_ARQUIVOS_3D,
   TAG_CATALOGOS,
   TAG_HOME,
   TAG_QUEM_SOMOS,
@@ -150,5 +151,39 @@ describe("tagsDaMudanca", () => {
     // qualquer projeto invalida a página inteira, porque o portão de três
     // depende do conjunto publicado, não de um documento isolado.
     expect(tagsDaMudanca({ colecao: "projetos" })).toEqual([TAG_QUEM_SOMOS]);
+  });
+
+  test("o pacote 3D deriva só /arquivos-3d — PRA-127, o documento sem fábrica dona", () => {
+    /* ⚠️ O pacote é o único documento do projeto que pertence às QUATRO marcas
+       ao mesmo tempo, e é justamente por isso que ele NÃO deriva
+       `tagDaRepresentada`. A simetria tentadora — "é um arquivo 3D, então cai
+       na etiqueta da marca" — invalidaria quatro páginas estáticas que não
+       mudaram, porque remontar o pacote não muda uma linha de nenhuma delas. */
+    expect(tagsDaMudanca({ colecao: "pacote-3d" })).toEqual([TAG_ARQUIVOS_3D]);
+
+    for (const slug of ["trisol", "gda-moveis", "bux-garden", "mare-mobilia"]) {
+      expect(tagsDaMudanca({ colecao: "pacote-3d" })).not.toContain(
+        tagDaRepresentada(slug),
+      );
+    }
+
+    expect(tagsDaMudanca({ colecao: "pacote-3d" })).not.toContain(TAG_SITE);
+  });
+
+  test("um arquivo 3D continua derivando só a marca — /arquivos-3d não mudou isso", () => {
+    /* A previsão escrita em `MudancaNoPainel` antes de a rota existir: "quando a
+       página que de fato lista arquivos existir, ela já lê essa etiqueta — nada
+       muda aqui nesse dia". Este teste é o dia. A rota lê a biblioteca por N
+       leituras escopadas por marca (`lib/arquivos3d-consulta.ts`), cada uma
+       carimbada com a etiqueta da própria fábrica — então publicar um arquivo já
+       invalida a rota nova, e uma `TAG_ARQUIVOS_3D` aqui seria etiqueta a mais
+       derrubando o cache das outras três fábricas sem motivo. */
+    expect(
+      tagsDaMudanca({ colecao: "arquivos3d", representadaSlug: "trisol" }),
+    ).toEqual([tagDaRepresentada("trisol")]);
+
+    expect(
+      tagsDaMudanca({ colecao: "arquivos3d", representadaSlug: "trisol" }),
+    ).not.toContain(TAG_ARQUIVOS_3D);
   });
 });

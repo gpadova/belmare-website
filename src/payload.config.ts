@@ -20,6 +20,7 @@ import { Representadas } from "@/collections/representadas";
 import { Usuarios } from "@/collections/usuarios";
 import { Empresa } from "@/globals/empresa";
 import { Home } from "@/globals/home";
+import { Pacote3D } from "@/globals/pacote-3d";
 import { Prancha } from "@/globals/prancha";
 import { QuemSomos } from "@/globals/quem-somos";
 
@@ -168,8 +169,16 @@ export default buildConfig({
    * página (`/representadas`) e não pende de fábrica nenhuma. A prancha do
    * TERRITÓRIO, de `/quem-somos`, continua fora do painel: é malha do IBGE,
    * regerada da fonte.
+   *
+   * ⚠️ `Pacote3D` (PRA-127) é o quinto, e é global pela razão mais literal da
+   * decisão 10: ele não pende de nenhuma representada porque pertence às QUATRO
+   * ao mesmo tempo — é justamente o conjunto que a Casoca não tem. Coleção
+   * seria errado (existe um só) e campo de representada seria pior (o pacote
+   * viraria quatro pacotes, um por dona). É também o único arquivo do site
+   * atrás de cadastro; os arquivos 3D avulsos, que pendem de uma fábrica cada,
+   * continuam na coleção `Arquivos3d` e baixam sem formulário nenhum.
    */
-  globals: [Empresa, Home, QuemSomos, Prancha],
+  globals: [Empresa, Home, QuemSomos, Prancha, Pacote3D],
 
   /**
    * ⚠️ O painel é para UMA pessoa não técnica na Belmare, que o abre uma vez

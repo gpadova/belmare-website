@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
 import { describe, expect, test } from "vitest";
 
 import {
@@ -9,7 +12,14 @@ import {
   type Bloco,
   type ConteudoRico,
 } from "@/lib/paginas";
-import { DESTINOS_DE_CAMINHO, ROTAS_LIVRES } from "@/lib/site";
+import { DESTINOS_DE_CAMINHO, NAVEGACAO, ROTAS_LIVRES } from "@/lib/site";
+
+/** O arquivo de rota que faria um endereço resolver, se ele existir. */
+function arquivoDaRota(href: string): string {
+  return fileURLToPath(
+    new URL(`../app/(frontend)${href}/page.tsx`, import.meta.url),
+  );
+}
 
 /**
  * O domínio da página livre, sozinho — sem Payload, sem Next, sem banco.
@@ -82,13 +92,46 @@ describe("o registro de rotas livres", () => {
 });
 
 describe("os destinos internos de um caminho", () => {
-  test("/arquivos-3d fica FORA da lista enquanto a rota não existe", () => {
-    /* É o quarto link interno morto do site e continua 404 até PRA-127. Está na
-       NAVEGACAO porque o menu é decisão de estrutura; num campo do painel ele
-       seria a Belmare montando com as próprias mãos um caminho para lugar
-       nenhum, sem ter como saber disso. */
-    expect(ehDestinoInterno("/arquivos-3d")).toBe(false);
-    expect(DESTINOS_DE_CAMINHO.map((d) => d.href)).not.toContain("/arquivos-3d");
+  test("/arquivos-3d entrou na lista no commit em que a rota nasceu — PRA-127", () => {
+    /* A asserção INVERTEU, e a inversão é o critério de aceite do último ticket
+       do projeto. Até PRA-126 este teste exigia a ausência: `/arquivos-3d` era o
+       quarto link interno morto do site, e oferecê-lo no painel seria a Belmare
+       montando com as próprias mãos um caminho para lugar nenhum. Com
+       `app/(frontend)/arquivos-3d/page.tsx` no ar, manter a ausência passaria a
+       esconder do painel a única rota que o menu sempre prometeu. A regra nunca
+       foi "não oferecer /arquivos-3d" — é "só oferecer endereço que resolve". */
+    expect(ehDestinoInterno("/arquivos-3d")).toBe(true);
+    expect(DESTINOS_DE_CAMINHO.map((d) => d.href)).toContain("/arquivos-3d");
+  });
+
+  test("todo item do menu é também um destino oferecido no painel", () => {
+    /* ⚠️ A guarda que fecha o projeto. O menu é fixo em código e não editável,
+       então um item apontando para 404 é defeito de commit, nunca de operador —
+       e por três tickets houve exatamente um. Este teste é o que impede o
+       próximo item de menu de entrar antes da rota dele: `NAVEGACAO` e
+       `DESTINOS_DE_CAMINHO` crescem juntas, ou o menu volta a prometer o que o
+       site não tem. */
+    for (const item of NAVEGACAO) {
+      expect(ehDestinoInterno(item.href)).toBe(true);
+    }
+  });
+
+  test("nenhum endereço prometido pelo site é 404 — o arquivo de rota existe", () => {
+    /* ⚠️ **ESTE É O ÚNICO TESTE DO PROJETO QUE OLHA PARA O DISCO, E É POR ISSO
+       QUE ELE VALE.** Os dois de cima provam que as duas listas de `lib/site.ts`
+       concordam UMA COM A OUTRA — e duas listas erradas do mesmo jeito
+       concordam perfeitamente. Foi exatamente esse o estado do site até
+       PRA-127: `DESTINOS_DE_CAMINHO` sabia que `/arquivos-3d` não resolvia e o
+       menu prometia mesmo assim, e nenhum teste podia ver a diferença porque
+       nenhum teste sabia o que é uma rota. Aqui a asserção é contra o
+       filesystem: existe `app/(frontend)/<href>/page.tsx`, ou o endereço é
+       mentira. */
+    for (const href of [
+      ...NAVEGACAO.map((item) => item.href),
+      ...DESTINOS_DE_CAMINHO.map((destino) => destino.href),
+    ]) {
+      expect(existsSync(arquivoDaRota(href)), `${href} não tem rota`).toBe(true);
+    }
   });
 
   test("um endereço inventado não vira link", () => {

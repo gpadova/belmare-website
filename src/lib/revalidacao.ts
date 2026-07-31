@@ -63,6 +63,23 @@ export const TAG_CATALOGOS = "catalogos";
  *  site, inclusive `not-found`. */
 export const TAG_RODAPE = "rodape";
 
+/**
+ * A biblioteca 3D (`app/(frontend)/arquivos-3d/page.tsx`) — **e só o PACOTE
+ * dela**, PRA-127.
+ *
+ * ⚠️ **NÃO É A ETIQUETA DOS ARQUIVOS 3D.** Um arquivo da biblioteca continua
+ * derivando `tagDaRepresentada`, como `tagsDaMudanca` já fazia antes desta rota
+ * existir — a página lê a biblioteca por N leituras escopadas por marca
+ * (`lib/arquivos3d-consulta.ts`), cada uma já carimbada com a etiqueta da
+ * própria fábrica, e é isso que a nota de `MudancaNoPainel` previu com "nada
+ * muda aqui nesse dia". O que É novo é o pacote completo: ele não pertence a
+ * fábrica nenhuma — pertence às quatro ao mesmo tempo —, então não existe
+ * `tagDaRepresentada` que o descreva, e uma etiqueta própria é a única forma
+ * de publicá-lo invalidar esta rota sem invalidar quatro páginas de marca que
+ * não mudaram.
+ */
+export const TAG_ARQUIVOS_3D = "arquivos-3d";
+
 /** A identidade da empresa — WhatsApp, e-mail, endereço, território. Está no
  *  rodapé e potencialmente em qualquer página, então a mudança é sempre o
  *  site inteiro, nunca uma lista de rotas para enumerar. */
@@ -105,6 +122,13 @@ export function tagDaPaginaLivre(slug: string): string {
  * de fato lista peças/arquivos/acabamentos existir (marca ou `/arquivos-3d`,
  * PRA-127), ela já lê essa etiqueta — nada muda aqui nesse dia.
  *
+ * ✅ **CONFIRMADO EM PRA-127, E A PREVISÃO SE PAGOU.** `/arquivos-3d` nasceu e
+ * estes três casos não mudaram uma letra: a rota lê a biblioteca por N leituras
+ * escopadas por marca, cada uma carimbada com `tagDaRepresentada`, então
+ * publicar um arquivo 3D já invalida a rota nova sem ninguém acrescentar
+ * etiqueta. O que o ticket acrescentou foi `pacote-3d`, logo abaixo — e ele é
+ * outra coisa: não pende de fábrica nenhuma.
+ *
  * ⚠️ **PROJETO (PRA-121) É O CASO OPOSTO — UM SÓ LUGAR, MAS NÃO É O DA
  * MARCA.** Um projeto cita representadas em vez de pender de uma só (decisão
  * 10 da spec: nada aqui atravessa "cada coisa tem um pai", porque um projeto
@@ -126,7 +150,8 @@ export type MudancaNoPainel =
       colecao: "pecas" | "arquivos3d" | "acabamentos";
       representadaSlug: string;
     }
-  | { colecao: "projetos" };
+  | { colecao: "projetos" }
+  | { colecao: "pacote-3d" };
 
 /**
  * Coleção e documento entram, a lista de etiquetas sai — literalmente a frase
@@ -178,6 +203,15 @@ export function tagsDaMudanca(mudanca: MudancaNoPainel): string[] {
       return [tagDaRepresentada(mudanca.representadaSlug)];
     case "projetos":
       return [TAG_QUEM_SOMOS];
+    /* ⚠️ **O PACOTE 3D É O ÚNICO DOCUMENTO DO PROJETO QUE PERTENCE ÀS QUATRO
+       MARCAS AO MESMO TEMPO, E POR ISSO NÃO USA `tagDaRepresentada`.** Um
+       arquivo 3D pende de uma fábrica só e cai na etiqueta dela (o caso logo
+       acima, inalterado por PRA-127); o pacote É o conjunto — remontá-lo não
+       muda uma linha de nenhuma página de marca, e derivar as quatro etiquetas
+       "por simetria" invalidaria quatro páginas estáticas que não mudaram. Uma
+       rota, uma etiqueta: o caso mais estreito que existe, como a prancha. */
+    case "pacote-3d":
+      return [TAG_ARQUIVOS_3D];
     default:
       return mudanca satisfies never;
   }
