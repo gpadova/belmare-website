@@ -4,7 +4,10 @@ import { Seta } from "@/components/icones";
 import { Bloco } from "@/components/quem-somos/bloco";
 import { Ficha, FichaLinha } from "@/components/ficha";
 import { FECHO } from "@/lib/acervo";
-import { EMPRESA, whatsapp } from "@/lib/site";
+import { linkDeTelefone, linkDeWhatsapp, TERRITORIO } from "@/lib/empresa";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
+import { buscarQuemSomos } from "@/lib/espinha-consulta";
+import { emLista } from "@/lib/frase";
 
 /**
  * 06 — O interlocutor. O fecho e a ação.
@@ -24,14 +27,22 @@ import { EMPRESA, whatsapp } from "@/lib/site";
  * canal de venda — que é a informação que protege o lojista e explica por que o
  * site não dá preço.
  *
- * ⚠️ O número do WhatsApp não é escrito em texto porque ainda está mockado
- * (P6b). O link vai por `whatsapp()`, que é a fonte única; os dois telefones
- * fixos, esses sim, são reais e verificados.
+ * ⚠️ O número do WhatsApp não é escrito em texto: o link vai por
+ * `linkDeWhatsapp`, e o número em si é campo do painel (global `Empresa`) desde
+ * PRA-122 — não existe mais um valor mockado em código para vazar para a tela.
+ * Sem número cadastrado, a ação inteira não é desenhada, e a ficha continua de
+ * pé com os telefones. Link morto é pior do que link nenhum.
  *
  * ⚠️ O sócio não é nomeado enquanto ele não confirmar. "Quem representa"
  * sustenta o argumento sem colocar o nome de uma pessoa no ar sem autorização.
  */
-export function Interlocutor({ numero }: { numero: string }) {
+export async function Interlocutor({ numero }: { numero: string }) {
+  const empresa = await buscarEmpresa();
+  const { interlocutor } = await buscarQuemSomos();
+
+  const whatsapp = linkDeWhatsapp(empresa.whatsapp, "estava em quem somos");
+  const telefones = empresa.telefones ?? [];
+
   return (
     <>
       <figure className="border-t border-line">
@@ -57,22 +68,23 @@ export function Interlocutor({ numero }: { numero: string }) {
         <h2 className="text-h1 max-w-[18ch] font-normal text-balance">
           Fale com quem representa.
         </h2>
-        <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-          Todo contato passa pela Belmare. O e-mail comercial das fábricas não
-          está neste site: quem responde é quem representa, e é quem aciona a
-          fábrica depois. Quatro marcas, um interlocutor — vale para a primeira
-          pergunta e para a assistência três anos depois.
-        </p>
+        {interlocutor !== undefined && (
+          <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
+            {interlocutor}
+          </p>
+        )}
 
-        <a
-          href={whatsapp("estava em quem somos")}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group mt-10 flex items-center justify-between gap-6 border-y border-ink py-7 transition-colors hover:bg-surface md:mt-14"
-        >
-          <span className="text-h2 font-normal">Falar pelo WhatsApp</span>
-          <Seta className="h-3 w-8 shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1.5 motion-reduce:transition-none" />
-        </a>
+        {whatsapp !== undefined && (
+          <a
+            href={whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group mt-10 flex items-center justify-between gap-6 border-y border-ink py-7 transition-colors hover:bg-surface md:mt-14"
+          >
+            <span className="text-h2 font-normal">Falar pelo WhatsApp</span>
+            <Seta className="h-3 w-8 shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1.5 motion-reduce:transition-none" />
+          </a>
+        )}
 
         {/* Duas linhas, não quatro. Sede e território saíram: um está no rodapé
             150px abaixo, com CEP e tudo, e o outro é o assunto inteiro do bloco
@@ -84,23 +96,25 @@ export function Interlocutor({ numero }: { numero: string }) {
             site; esta ficha é a face do atendimento. Repetir dois números nesse
             par de papéis é o que rodapé serve para fazer. */}
         <Ficha className="mt-12 md:mt-16">
-          <FichaLinha rotulo="Telefone">
-            <span className="flex flex-wrap gap-x-4 gap-y-1">
-              {EMPRESA.telefones.map((tel) => (
-                <a
-                  key={tel}
-                  href={`tel:+55${tel.replace(/\D/g, "")}`}
-                  className="mono text-ink transition-colors hover:text-graphite"
-                >
-                  {tel}
-                </a>
-              ))}
-            </span>
-          </FichaLinha>
+          {telefones.length > 0 && (
+            <FichaLinha rotulo="Telefone">
+              <span className="flex flex-wrap gap-x-4 gap-y-1">
+                {telefones.map((tel) => (
+                  <a
+                    key={tel}
+                    href={linkDeTelefone(tel)}
+                    className="mono text-ink transition-colors hover:text-graphite"
+                  >
+                    {tel}
+                  </a>
+                ))}
+              </span>
+            </FichaLinha>
+          )}
           <FichaLinha rotulo="Canal de venda">
             Sempre através de loja. A Belmare não vende direto ao consumidor
             final — recebe o contato e indica a loja mais próxima, em{" "}
-            {EMPRESA.territorio.join(", ").replace(/, ([^,]*)$/, " e $1")}.
+            {emLista(TERRITORIO)}.
           </FichaLinha>
         </Ficha>
       </Bloco>

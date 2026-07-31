@@ -1,7 +1,8 @@
 import { MarcaVertical } from "@/components/marca-belmare";
 import { Bloco } from "@/components/quem-somos/bloco";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
+import { buscarQuemSomos } from "@/lib/espinha-consulta";
 import { NOME_PUBLICO_ANTERIOR } from "@/lib/registro";
-import { EMPRESA } from "@/lib/site";
 
 /**
  * 03 — O nome anterior.
@@ -26,8 +27,22 @@ import { EMPRESA } from "@/lib/site";
  * contagem de mudanças, nem o histórico do cadastro. Numa página que só publica
  * o que é conferível, "uma vez" e "nunca" são as duas únicas palavras que ela
  * não pode conferir.
+ *
+ * ⚠️ **O NOME PÚBLICO ANTERIOR FICA EM `lib/registro.ts`, NO CÓDIGO.** É uma
+ * citação com fonte declarada — o perfil que ainda está no ar —, e citação não
+ * é conteúdo a editar: reescrevê-la em palavras melhores quebraria exatamente o
+ * que ela prova. O que é campo aqui é a leitura que a Belmare faz do contraste
+ * entre os dois nomes, e ela começa depois da primeira frase.
+ *
+ * ⚠️ **A PRIMEIRA FRASE DO PARÁGRAFO É MONTADA COM A RAZÃO SOCIAL DO PAINEL, e
+ * não digitada dentro do campo.** Se ela fosse parte do texto livre, trocar a
+ * razão social no cadastro deixaria esta linha nomeando a antiga — numa página
+ * cujo argumento inteiro é que cada linha pode ser conferida na fonte.
  */
-export function Nome() {
+export async function Nome() {
+  const { razaoSocial } = await buscarEmpresa();
+  const { nome } = await buscarQuemSomos();
+
   return (
     <Bloco numero="03">
       <h2 className="text-h1 max-w-[22ch] font-normal text-balance">
@@ -51,11 +66,14 @@ export function Nome() {
         </div>
       </div>
 
-      <p className="text-body mt-10 max-w-[64ch] text-pretty text-graphite md:mt-12">
-        No registro, a razão social continua {EMPRESA.razaoSocial}. A descrição
-        antiga lista produtos, um a um. A nova diz o que a empresa é — e o que
-        ela faz está no registro acima.
-      </p>
+      {(razaoSocial !== undefined || nome !== undefined) && (
+        <p className="text-body mt-10 max-w-[64ch] text-pretty text-graphite md:mt-12">
+          {razaoSocial !== undefined && (
+            <>No registro, a razão social continua {razaoSocial}. </>
+          )}
+          {nome}
+        </p>
+      )}
     </Bloco>
   );
 }

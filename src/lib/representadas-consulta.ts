@@ -163,6 +163,26 @@ export async function representadaDaPagina(
 }
 
 /**
+ * As marcas que as LISTAS do site renderizam — galeria da home, ledger de
+ * `/quem-somos`, rodapé.
+ *
+ * ⚠️ **MESMO `??` DE `representadaDaPagina`, E PELO MESMO MOTIVO.** As quatro
+ * marcas continuam escritas à mão em `lib/representadas.ts` e já foram semeadas
+ * no painel (PRA-119); enquanto as duas fontes coexistem, um banco vazio — uma
+ * máquina recém-clonada, um build antes do seed — não pode devolver uma home
+ * sem nenhuma fábrica. Painel primeiro; o array só quando o painel não tem
+ * nada. Quando o array sair, esta função vira `buscarRepresentadas`.
+ *
+ * ⚠️ Lista VAZIA, e não lista curta, é o gatilho. Uma marca despublicada de
+ * propósito tem que sumir do site — se o critério fosse "menos que quatro", o
+ * painel perderia o poder de tirar uma marca do ar.
+ */
+export async function representadasDaPagina(): Promise<Representada[]> {
+  const doPainel = await buscarRepresentadas();
+  return doPainel.length > 0 ? doPainel : REPRESENTADAS;
+}
+
+/**
  * Os endereços que a rota gera no build — a união das duas fontes, sem repetir
  * quem já está no painel.
  */

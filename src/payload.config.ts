@@ -16,6 +16,9 @@ import { Pecas } from "@/collections/pecas";
 import { Projetos } from "@/collections/projetos";
 import { Representadas } from "@/collections/representadas";
 import { Usuarios } from "@/collections/usuarios";
+import { Empresa } from "@/globals/empresa";
+import { Home } from "@/globals/home";
+import { QuemSomos } from "@/globals/quem-somos";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -131,6 +134,15 @@ export default buildConfig({
     Arquivos,
     Usuarios,
   ],
+
+  /**
+   * ⚠️ Os três globais são o conteúdo que não pende de nenhuma coleção — a
+   * decisão 10 da spec. `Empresa` é o que destrava o lançamento: o WhatsApp e o
+   * e-mail comercial estavam mockados em `lib/site.ts` e saíram do código
+   * inteiramente em PRA-122. `Home` e `QuemSomos` guardam a prosa DENTRO da
+   * espinha fixa — nunca a ordem das seções, nunca os títulos.
+   */
+  globals: [Empresa, Home, QuemSomos],
 
   /**
    * ⚠️ O painel é para UMA pessoa não técnica na Belmare, que o abre uma vez

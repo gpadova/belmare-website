@@ -6,7 +6,7 @@ import { Cabecalho } from "@/components/cabecalho";
 import { DefinicaoDeHachura } from "@/components/hachura";
 import { FaixaDeRascunho } from "@/components/faixa-de-rascunho";
 import { Rodape } from "@/components/rodape";
-import { EMPRESA } from "@/lib/site";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
 import "./globals.css";
 
 /* Geist é o fallback declarado na pilha de globals.css, não a fonte do projeto.
@@ -30,20 +30,31 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
  */
 export const revalidate = 86400;
 
-export const metadata: Metadata = {
-  title: {
-    default:
-      "Belmare Representações — móveis, estrutura, conforto e sombra para a área externa",
-    template: "%s — Belmare Representações",
-  },
-  description:
-    "Sofá, mesa, espreguiçadeira e ombrelone para área externa de alto padrão. A Belmare representa Marê Mobília, GDA Móveis, Bux Garden e Trisol no Paraná, Santa Catarina e Rio Grande do Sul, desde 1999.",
-  openGraph: {
-    type: "website",
-    locale: "pt_BR",
-    siteName: EMPRESA.nomeCompleto,
-  },
-};
+/**
+ * ⚠️ Gerada, e não constante, por causa de uma linha só: `siteName` é o nome
+ * público da empresa, e ele é campo do painel desde PRA-122. Uma constante aqui
+ * voltaria a ser um nome escrito à mão que ninguém lembra de trocar no dia em
+ * que a empresa mudar de nome — que é literalmente o assunto do bloco 03 de
+ * `/quem-somos`.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const { nomeCompleto } = await buscarEmpresa();
+
+  return {
+    title: {
+      default:
+        "Belmare Representações — móveis, estrutura, conforto e sombra para a área externa",
+      template: "%s — Belmare Representações",
+    },
+    description:
+      "Sofá, mesa, espreguiçadeira e ombrelone para área externa de alto padrão. A Belmare representa Marê Mobília, GDA Móveis, Bux Garden e Trisol no Paraná, Santa Catarina e Rio Grande do Sul, desde 1999.",
+    openGraph: {
+      type: "website",
+      locale: "pt_BR",
+      ...(nomeCompleto === undefined ? {} : { siteName: nomeCompleto }),
+    },
+  };
+}
 
 const CONTRATO_DE_DIRECAO = `<!--
 THESIS: A primeira linha nomeia OBJETOS, não o organograma. Recusa o herói de

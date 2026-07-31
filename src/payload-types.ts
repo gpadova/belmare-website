@@ -99,8 +99,16 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    empresa: Empresa;
+    home: Home;
+    'quem-somos': QuemSomos;
+  };
+  globalsSelect: {
+    empresa: EmpresaSelect<false> | EmpresaSelect<true>;
+    home: HomeSelect<false> | HomeSelect<true>;
+    'quem-somos': QuemSomosSelect<false> | QuemSomosSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -806,6 +814,185 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Os dados da própria Belmare: como falar com ela, quem ela é no registro e onde fica. Tudo aqui aparece no rodapé, e o rodapé está em todas as páginas do site — inclusive na de erro.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "empresa".
+ */
+export interface Empresa {
+  id: number;
+  /**
+   * O número com DDD, como você o escreveria para alguém — (48) 99137-5030. Pode digitar com parênteses, espaço e traço. ⚠️ Enquanto este campo estiver vazio, o site não mostra botão de WhatsApp em página nenhuma: é melhor não oferecer o canal do que oferecer um link que abre e diz que o número não existe.
+   */
+  whatsapp?: string | null;
+  /**
+   * O endereço que recebe contato comercial, escrito por extenso. Ele aparece no rodapé de todas as páginas. Vazio, a linha do e-mail simplesmente não aparece.
+   */
+  email?: string | null;
+  /**
+   * Os telefones que aparecem no rodapé e na ficha de atendimento de /quem-somos, na ordem em que você quer que sejam vistos. Cada um vira um link que disca no celular do visitante.
+   */
+  telefones?:
+    | {
+        /**
+         * Com DDD, escrito como você escreveria — (48) 3234-6004. O site mostra exatamente o que estiver aqui.
+         */
+        numero: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * O endereço completo do perfil — https://www.instagram.com/belmarerepresentacoes. Vazio, o link some do rodapé.
+   */
+  instagram?: string | null;
+  /**
+   * Como a empresa se apresenta hoje — "Belmare Representações". É o nome que acompanha o site quando alguém o compartilha.
+   */
+  nomeCompleto: string;
+  /**
+   * Como consta no registro — "Bello Mare Mercantil Ltda". Transcreva; não traduza para o cliente.
+   */
+  razaoSocial: string;
+  /**
+   * Os catorze dígitos. Pode digitar com ou sem pontuação — o site escreve no formato do cadastro.
+   */
+  cnpj: string;
+  /**
+   * O dia em que a empresa foi aberta, como consta no registro. ⚠️ Não existe campo de "anos de mercado" em lugar nenhum deste painel, e não deve passar a existir: o site conta os anos a partir desta data, sozinho, e vira a contagem no aniversário. Um número digitado ficaria errado a partir do aniversário seguinte sem ninguém perceber.
+   */
+  abertura: string;
+  /**
+   * Como o cadastro classifica a empresa, por extenso — "Empresa de pequeno porte". Deixe em branco e a linha some da ficha.
+   */
+  porte?: string | null;
+  endereco?: {
+    /**
+     * "Rua Zanzibar do Nascimento Lins, 81".
+     */
+    logradouro?: string | null;
+    bairro?: string | null;
+    cidade?: string | null;
+    /**
+     * Duas letras — SC.
+     */
+    uf?: string | null;
+    /**
+     * "88.036-225" ou 88036225.
+     */
+    cep?: string | null;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * O texto editável da página inicial. O título grande, o nome das duas portas e a lista de marcas não estão aqui: os dois primeiros são decisão de desenho e a lista o site monta sozinho a partir das representadas cadastradas.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home".
+ */
+export interface Home {
+  id: number;
+  /**
+   * O parágrafo logo abaixo de "As quatro fábricas que a Belmare representa." — o título conta as marcas sozinho, então não repita o número nele. Em branco, o parágrafo desaparece e a seção abre direto nas fotografias. ⚠️ Se uma quinta fábrica entrar, esta frase é sua para reescrever: o título vira sozinho, este texto não.
+   */
+  galeria?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * O texto dentro de cada bloco numerado de /quem-somos. Os números, os títulos e a ordem dos blocos são desenho da página e não se editam aqui. Todo campo em branco faz o parágrafo desaparecer, nunca aparecer vazio.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quem-somos".
+ */
+export interface QuemSomos {
+  id: number;
+  /**
+   * Sob o título "A empresa, por extenso." A ficha com razão social, CNPJ, abertura e porte fica logo acima e sai do cadastro — não a repita aqui em prosa.
+   */
+  registro?: string | null;
+  /**
+   * Sob o título "Cinco atividades registradas." Explica o que a tabela de CNAEs abaixo dele é. ⚠️ Não interprete os códigos: publicar o código é abrir o registro, publicar a conclusão é escrever um "sobre nós".
+   */
+  atividades?: string | null;
+  /**
+   * ⚠️ A primeira frase deste parágrafo é montada pelo site — "No registro, a razão social continua …" — com a razão social do cadastro, para que ela nunca discorde do painel. Escreva aqui o que vem DEPOIS dela.
+   */
+  nome?: string | null;
+  /**
+   * ⚠️ A primeira frase é montada pelo site contando as fábricas cadastradas — "Quatro fábricas, quatro papéis." — e vira sozinha quando uma marca entra ou sai. Escreva aqui o que vem DEPOIS dela.
+   */
+  acervo?: string | null;
+  /**
+   * Sob o título "Fale com quem representa." ⚠️ Nenhum e-mail de fábrica entra neste site, em lugar nenhum: um representante que se desintermedia do próprio funil está construindo o site do concorrente.
+   */
+  interlocutor?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "empresa_select".
+ */
+export interface EmpresaSelect<T extends boolean = true> {
+  whatsapp?: T;
+  email?: T;
+  telefones?:
+    | T
+    | {
+        numero?: T;
+        id?: T;
+      };
+  instagram?: T;
+  nomeCompleto?: T;
+  razaoSocial?: T;
+  cnpj?: T;
+  abertura?: T;
+  porte?: T;
+  endereco?:
+    | T
+    | {
+        logradouro?: T;
+        bairro?: T;
+        cidade?: T;
+        uf?: T;
+        cep?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home_select".
+ */
+export interface HomeSelect<T extends boolean = true> {
+  galeria?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quem-somos_select".
+ */
+export interface QuemSomosSelect<T extends boolean = true> {
+  registro?: T;
+  atividades?: T;
+  nome?: T;
+  acervo?: T;
+  interlocutor?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

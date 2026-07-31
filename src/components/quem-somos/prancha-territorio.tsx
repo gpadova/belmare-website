@@ -6,7 +6,10 @@ import {
   projetar,
   SEDE,
 } from "@/lib/territorio";
-import { EMPRESA } from "@/lib/site";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
+import { comInicialMaiuscula, emLista, porExtenso } from "@/lib/frase";
+import { TERRITORIO } from "@/lib/empresa";
+import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
  * 04 — PRANCHA 01. O território.
@@ -89,7 +92,18 @@ function MarcaDeSede({ className }: { className?: string }) {
   );
 }
 
-export function PranchaTerritorio() {
+/**
+ * ⚠️ **O PARÁGRAFO DESTE BLOCO NÃO TEM CAMPO NO PAINEL, E É O ÚNICO DOS SEIS
+ * ASSIM.** Ele nomeia os três estados, conta as representadas e nomeia a cidade
+ * da sede — e as três coisas saem do mesmo dado que DESENHA a prancha ao lado
+ * ou do cadastro da empresa. Um campo de texto aqui é como a prosa passa a
+ * dizer "quatro estados" ao lado de um desenho com três, e a página passaria a
+ * contradizer o único gráfico que ela tem.
+ */
+export async function PranchaTerritorio() {
+  const representadas = await representadasDaPagina();
+  const { endereco } = await buscarEmpresa();
+
   return (
     <Bloco numero="04">
       {/* No telefone a ordem é título → argumento → prancha → legenda: a
@@ -99,13 +113,16 @@ export function PranchaTerritorio() {
       <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_30rem] md:grid-rows-[auto_auto] md:gap-x-12 lg:gap-x-16">
         <div className="order-1 md:col-start-1 md:row-start-1">
           <h2 className="text-h1 max-w-[18ch] font-normal text-balance">
-            Três estados. Um interlocutor.
+            {comInicialMaiuscula(porExtenso(TERRITORIO.length, "m"))} estados.
+            Um interlocutor.
           </h2>
           <p className="text-body mt-6 max-w-[52ch] text-pretty text-graphite">
-            {EMPRESA.territorio[0]}, {EMPRESA.territorio[1]} e{" "}
-            {EMPRESA.territorio[2]} — o mesmo território para as quatro
-            representadas, sem recorte por marca. A sede fica em{" "}
-            {EMPRESA.endereco.cidade}.
+            {emLista(TERRITORIO)} — o mesmo território para as{" "}
+            {porExtenso(representadas.length)} representadas, sem recorte por
+            marca.
+            {endereco?.cidade !== undefined
+              ? ` A sede fica em ${endereco.cidade}.`
+              : ""}
           </p>
         </div>
 

@@ -1,7 +1,9 @@
 import Link from "next/link";
 
 import { Seta } from "@/components/icones";
-import { NAVEGACAO, whatsapp } from "@/lib/site";
+import { linkDeWhatsapp } from "@/lib/empresa";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
+import { NAVEGACAO } from "@/lib/site";
 
 export const metadata = { title: "Página não encontrada" };
 
@@ -10,8 +12,18 @@ export const metadata = { title: "Página não encontrada" };
  * é o que segura tudo que ainda vai ser feito, e ele é desenhado: quem clica no
  * catálogo hoje chega numa página do sistema, com a saída à mão, e não na tela
  * padrão do framework.
+ *
+ * ⚠️ **ESTA ROTA É A PROVA DE QUE `TAG_SITE` É "O SITE INTEIRO" E NÃO "UMA
+ * LISTA DE ROTAS".** Ela não aparece em nenhum menu, não tem
+ * `generateStaticParams` e ninguém se lembra dela ao enumerar superfícies — e
+ * ainda assim mostra o rodapé (que vem do layout) e o WhatsApp da empresa.
+ * Trocar o número no painel tem que chegar aqui também, e chega porque a
+ * etiqueta é uma só em vez de uma lista escrita à mão.
  */
-export default function NaoEncontrada() {
+export default async function NaoEncontrada() {
+  const { whatsapp } = await buscarEmpresa();
+  const link = linkDeWhatsapp(whatsapp, "cheguei numa página que ainda não existe");
+
   return (
     <div className="flex min-h-[60svh] flex-col justify-center px-5 py-16 md:px-8 md:py-24">
       <p className="mono uppercase text-graphite">Erro 404</p>
@@ -35,17 +47,19 @@ export default function NaoEncontrada() {
             </Link>
           </li>
         ))}
-        <li>
-          <a
-            href={whatsapp("cheguei numa página que ainda não existe")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mono uppercase group inline-flex items-center gap-3 text-ink"
-          >
-            Falar pelo WhatsApp
-            <Seta className="h-3 w-8 transition-transform duration-200 ease-out group-hover:translate-x-1 motion-reduce:transition-none" />
-          </a>
-        </li>
+        {link !== undefined && (
+          <li>
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mono uppercase group inline-flex items-center gap-3 text-ink"
+            >
+              Falar pelo WhatsApp
+              <Seta className="h-3 w-8 transition-transform duration-200 ease-out group-hover:translate-x-1 motion-reduce:transition-none" />
+            </a>
+          </li>
+        )}
       </ul>
     </div>
   );

@@ -13,7 +13,7 @@
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "db:local": "dropdb --if-exists belmare_dev && createdb belmare_dev",
-    "db:seed": "payload run src/seed/semear-representadas.ts"
+    "db:seed": "payload run src/seed/semear-representadas.ts && payload run src/seed/semear-globais.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.86.0",

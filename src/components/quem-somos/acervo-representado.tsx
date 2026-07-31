@@ -2,7 +2,10 @@ import Link from "next/link";
 
 import { Seta } from "@/components/icones";
 import { Bloco } from "@/components/quem-somos/bloco";
-import { REPRESENTADAS, paginaDaRepresentada } from "@/lib/representadas";
+import { buscarQuemSomos } from "@/lib/espinha-consulta";
+import { comInicialMaiuscula, porExtenso } from "@/lib/frase";
+import { paginaDaRepresentada } from "@/lib/representadas";
+import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
  * 05 — O acervo representado.
@@ -24,20 +27,30 @@ import { REPRESENTADAS, paginaDaRepresentada } from "@/lib/representadas";
  * o segundo leitor silencioso desta página é o diretor comercial de uma quinta
  * fábrica. Numa página que passou cinco blocos publicando só o que é
  * conferível, uma linha sem lastro derruba as outras cinco.
+ *
+ * ⚠️ **"QUATRO FÁBRICAS, QUATRO PAPÉIS" É CONTADO, NÃO DIGITADO.** A frase abre
+ * um ledger que lista as marcas logo abaixo dela; se ela fosse texto livre, a
+ * quinta representada entraria na lista e a frase três centímetros acima
+ * continuaria dizendo quatro. O campo do painel é o que vem DEPOIS dessa
+ * primeira frase.
  */
-export function AcervoRepresentado() {
+export async function AcervoRepresentado() {
+  const representadas = await representadasDaPagina();
+  const { acervo } = await buscarQuemSomos();
+
+  const quantas = porExtenso(representadas.length);
+
   return (
     <Bloco numero="05">
       <h2 className="text-h1 max-w-[20ch] font-normal text-balance">
         O que está sob esta representação.
       </h2>
       <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-        Quatro fábricas, quatro papéis. Nenhuma delas resolve a área externa
-        sozinha — juntas, resolvem.
+        {comInicialMaiuscula(quantas)} fábricas, {quantas} papéis. {acervo}
       </p>
 
       <ul className="mt-10 border-t border-line md:mt-14">
-        {REPRESENTADAS.map((r) => (
+        {representadas.map((r) => (
           <li key={r.slug} className="border-b border-line">
             <Link
               href={paginaDaRepresentada(r)}
@@ -62,7 +75,7 @@ export function AcervoRepresentado() {
         href="/representadas"
         className="mono uppercase group mt-10 inline-flex items-center gap-3 text-ink md:mt-12"
       >
-        Ver as quatro representadas
+        Ver as {quantas} representadas
         <Seta className="h-3 w-8 transition-transform duration-300 ease-out group-hover:translate-x-1.5 motion-reduce:transition-none" />
       </Link>
     </Bloco>

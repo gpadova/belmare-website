@@ -1,8 +1,10 @@
 import Image from "next/image";
 
 import { ABERTURA } from "@/lib/acervo";
-import { REPRESENTADAS } from "@/lib/representadas";
-import { anosDeMercado, EMPRESA } from "@/lib/site";
+import { anosDeMercado, TERRITORIO } from "@/lib/empresa";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
+import { emLista, porExtenso } from "@/lib/frase";
+import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
  * A abertura.
@@ -31,16 +33,28 @@ import { anosDeMercado, EMPRESA } from "@/lib/site";
  *    isso descreve uma fábrica, e a Belmare é representação. Quem faz esse
  *    trabalho é a linha de apoio, nomeando as marcas, o território e o tempo
  *    de casa — onde o fato cabe sem virar slogan.
+ *
+ * ⚠️ **O H1 NÃO TEM CAMPO NO PAINEL, E NÃO PODE PASSAR A TER.** Ele é o
+ * argumento do desenho, não conteúdo dentro dele: um campo de texto aqui é o
+ * caminho de volta para uma das duas versões rejeitadas, numa tarde em que
+ * ninguém se lembra por que elas caíram. Trocá-lo é reposicionar a empresa, e
+ * reposicionamento é conversa, não edição (decisão 3 da spec).
+ *
+ * ⚠️ **A LINHA DE APOIO É INTEIRAMENTE GERADA — nenhuma palavra dela é digitada
+ * em lugar nenhum.** A lista das marcas e a contagem saem das representadas
+ * PUBLICADAS no painel, o território sai da malha que desenha a prancha de
+ * `/quem-somos`, e o tempo de casa sai da data de abertura. Cadastrar a quinta
+ * fábrica muda esta frase sozinho, em duas partes: ela entra na lista E o
+ * número vira cinco.
  */
-export function Abertura() {
-  /** "A, B, C e D" — a conjunção antes do último item, como se escreve. */
-  const lista = (itens: readonly string[]) =>
-    itens.length < 2
-      ? (itens[0] ?? "")
-      : `${itens.slice(0, -1).join(", ")} e ${itens[itens.length - 1]}`;
+export async function Abertura() {
+  const representadas = await representadasDaPagina();
+  const { abertura } = await buscarEmpresa();
 
-  const nomeadas = lista(REPRESENTADAS.map((r) => r.nome));
-  const territorio = lista(EMPRESA.territorio);
+  const nomeadas = emLista(representadas.map((r) => r.nome));
+  const quantas = porExtenso(representadas.length);
+  const territorio = emLista(TERRITORIO);
+  const anos = anosDeMercado(abertura);
 
   return (
     <section
@@ -71,9 +85,9 @@ export function Abertura() {
           Sofá, mesa, espreguiçadeira e ombrelone.
         </h1>
         <p className="text-body mt-5 max-w-[62ch] text-pretty text-white/85">
-          A área externa inteira, de quatro fábricas brasileiras de alto padrão.
-          A Belmare representa {nomeadas} no {territorio}, há {anosDeMercado()}{" "}
-          anos.
+          A área externa inteira, de {quantas} fábricas brasileiras de alto
+          padrão. A Belmare representa {nomeadas} no {territorio}
+          {anos !== undefined ? `, há ${anos} anos` : ""}.
         </p>
       </div>
     </section>

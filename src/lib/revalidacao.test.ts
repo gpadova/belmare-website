@@ -56,6 +56,19 @@ describe("tagsDaMudanca", () => {
     expect(tagsDaMudanca({ colecao: "empresa" })).toEqual([TAG_SITE]);
   });
 
+  test("os outros dois globais derivam UMA página cada, e não o site inteiro — PRA-122", () => {
+    /* O contraste que dá sentido a `TAG_SITE`. Ser global não é o que põe a
+       `Empresa` em toda rota — é o RODAPÉ, que mora no layout. A prosa da home
+       não aparece em `/quem-somos` e vice-versa, e dar a etiqueta do site aos
+       três invalidaria a página estática de quatro marcas que não mudaram toda
+       vez que alguém corrigisse uma vírgula. */
+    expect(tagsDaMudanca({ colecao: "home" })).toEqual([TAG_HOME]);
+    expect(tagsDaMudanca({ colecao: "quem-somos" })).toEqual([TAG_QUEM_SOMOS]);
+
+    expect(tagsDaMudanca({ colecao: "home" })).not.toContain(TAG_SITE);
+    expect(tagsDaMudanca({ colecao: "quem-somos" })).not.toContain(TAG_SITE);
+  });
+
   test("apagar deriva as mesmas etiquetas que mudar — a função nem recebe o tipo de operação", () => {
     // A assinatura de `MudancaNoPainel` não tem "operação": mudar e apagar
     // chamam a função com o mesmo evento, e por isso derivam a mesma lista

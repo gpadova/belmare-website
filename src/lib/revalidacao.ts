@@ -35,6 +35,15 @@
  * A identidade da empresa é o segundo caso da decisão 7: ela mora no rodapé e,
  * por natureza, em qualquer canto do site — não há "seis rotas" quando a
  * mudança já É o site inteiro, então ela deriva uma etiqueta só.
+ *
+ * ⚠️ **OS TRÊS GLOBAIS DE PRA-122 SÃO O CONTRASTE QUE DEIXA `TAG_SITE` FAZER
+ * SENTIDO.** `Empresa` deriva o site inteiro porque está no layout; `Home` e
+ * `QuemSomos` derivam UMA etiqueta de página cada, porque a prosa da home não
+ * aparece em `/quem-somos` e vice-versa. Publicar uma vírgula corrigida na home
+ * não pode invalidar a página estática de quatro marcas que não mudaram — e o
+ * caminho de errar isso é justamente dar `TAG_SITE` a tudo que vem de global,
+ * como se "global" fosse sinônimo de "toda rota". Não é: o que põe `Empresa` em
+ * toda rota é o RODAPÉ, não o fato de ela ser um global.
  */
 
 /** A galeria da home (`components/representadas-galeria.tsx`). */
@@ -91,6 +100,8 @@ export function tagDaRepresentada(slug: string): string {
 export type MudancaNoPainel =
   | { colecao: "representadas"; slug: string }
   | { colecao: "empresa" }
+  | { colecao: "home" }
+  | { colecao: "quem-somos" }
   | {
       colecao: "pecas" | "arquivos3d" | "acabamentos";
       representadaSlug: string;
@@ -122,6 +133,10 @@ export function tagsDaMudanca(mudanca: MudancaNoPainel): string[] {
       ];
     case "empresa":
       return [TAG_SITE];
+    case "home":
+      return [TAG_HOME];
+    case "quem-somos":
+      return [TAG_QUEM_SOMOS];
     case "pecas":
     case "arquivos3d":
     case "acabamentos":

@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import {
-  REPRESENTADAS,
-  imagemDaRepresentada,
-  paginaDaRepresentada,
-} from "@/lib/representadas";
+import { buscarHome } from "@/lib/espinha-consulta";
+import { porExtenso } from "@/lib/frase";
+import { imagemDaRepresentada, paginaDaRepresentada } from "@/lib/representadas";
+import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
  * As quatro representadas.
@@ -17,22 +16,34 @@ import {
  * ⚠️ As imagens ilustram o que cada marca RESOLVE; não são peças do catálogo
  * dela. Isso está dito em texto visível no pé da seção, não só no alt: um mock
  * que se passa por acervo real é o tipo de mentira que este projeto não comete.
+ *
+ * ⚠️ **O TÍTULO CONTA AS MARCAS, O PARÁGRAFO É CAMPO.** A frase do título é
+ * fixa e o número dentro dela é gerado das representadas publicadas: cadastrar
+ * a quinta fábrica muda "As quatro" para "As cinco" sem ninguém editar nada. O
+ * parágrafo abaixo dele é o ÚNICO campo de texto da home inteira (global
+ * `Home`) — e some quando está em branco, em vez de abrir um vão.
+ *
+ * ⚠️ O aviso do pé da seção continua fixo: ele é a marcação de imagem de
+ * referência exigida por desenho, não prosa de marketing sobre as fábricas.
  */
-export function RepresentadasGaleria() {
+export async function RepresentadasGaleria() {
+  const representadas = await representadasDaPagina();
+  const { galeria } = await buscarHome();
+
   return (
     <section aria-labelledby="representadas" className="px-5 py-16 md:px-8 md:py-24">
       <div className="max-w-[46ch]">
         <h2 id="representadas" className="text-h1 font-normal">
-          As quatro fábricas que a Belmare representa.
+          As {porExtenso(representadas.length)} fábricas que a Belmare
+          representa.
         </h2>
-        <p className="text-body mt-4 text-graphite">
-          Móvel de autor, estrutura, conforto e sombra. Juntas, resolvem uma área
-          externa inteira — e há um único interlocutor para as quatro.
-        </p>
+        {galeria !== undefined && (
+          <p className="text-body mt-4 text-graphite">{galeria}</p>
+        )}
       </div>
 
       <ul className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8">
-        {REPRESENTADAS.map((r) => {
+        {representadas.map((r) => {
           const imagem = imagemDaRepresentada(r);
 
           return (

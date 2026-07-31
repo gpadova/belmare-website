@@ -3,13 +3,18 @@ import type { Metadata } from "next";
 import { AcaoDeFecho } from "@/components/acao-de-fecho";
 import { PranchaAreaExterna } from "@/components/representadas/prancha-area-externa";
 import { RegistrosDasRepresentadas } from "@/components/representadas/registros";
-import { REPRESENTADAS } from "@/lib/representadas";
-import { EMPRESA } from "@/lib/site";
+import { TERRITORIO } from "@/lib/empresa";
+import { emLista } from "@/lib/frase";
+import { representadasDaPagina } from "@/lib/representadas-consulta";
 
-export const metadata: Metadata = {
-  title: "Representadas",
-  description: `As ${REPRESENTADAS.length} fábricas de mobiliário de área externa representadas pela Belmare no Paraná, em Santa Catarina e no Rio Grande do Sul: ${REPRESENTADAS.map((r) => r.nome).join(", ")}.`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const representadas = await representadasDaPagina();
+
+  return {
+    title: "Representadas",
+    description: `As ${representadas.length} fábricas de mobiliário de área externa representadas pela Belmare no Paraná, em Santa Catarina e no Rio Grande do Sul: ${representadas.map((r) => r.nome).join(", ")}.`,
+  };
+}
 
 /**
  * `/representadas` — a área externa desmontada.
@@ -55,7 +60,7 @@ FORM: "a área externa desmontada", candidata 5 da lista ordenada, chave 77738b1
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->`;
 
-export default function Representadas() {
+export default async function Representadas() {
   return (
     <>
       <div hidden dangerouslySetInnerHTML={{ __html: CONTRATO_DE_DIRECAO }} />
@@ -76,8 +81,8 @@ export default function Representadas() {
         <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
           Todo contato passa pela Belmare, e é ela quem aciona a fábrica depois.
           O atendimento cobre{" "}
-          {EMPRESA.territorio.join(", ").replace(/, ([^,]*)$/, " e $1")} — o
-          mesmo território para todas, sem recorte por marca.
+          {emLista(TERRITORIO)} — o mesmo território para todas, sem recorte
+          por marca.
         </p>
 
         <AcaoDeFecho

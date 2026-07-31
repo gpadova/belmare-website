@@ -1,7 +1,9 @@
 import Link from "next/link";
 
 import { MarcaCompacta } from "@/components/marca-belmare";
-import { NAVEGACAO, whatsapp } from "@/lib/site";
+import { linkDeWhatsapp } from "@/lib/empresa";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
+import { NAVEGACAO } from "@/lib/site";
 
 /**
  * Quatro itens e o WhatsApp. `/arquitetos` fica fora — é destino da porta da
@@ -9,8 +11,15 @@ import { NAVEGACAO, whatsapp } from "@/lib/site";
  *
  * No mobile a navegação desce para uma segunda linha em vez de virar menu:
  * quatro itens não justificam esconder nada, e o arquiteto volta muitas vezes.
+ *
+ * ⚠️ Sem número cadastrado no painel, o WhatsApp do topo simplesmente não é
+ * desenhado — o cabeçalho fica com marca e navegação. Ver a nota em
+ * `lib/empresa.ts`: link morto é pior do que link nenhum.
  */
-export function Cabecalho() {
+export async function Cabecalho() {
+  const { whatsapp } = await buscarEmpresa();
+  const link = linkDeWhatsapp(whatsapp);
+
   return (
     <header className="sticky top-0 z-20 bg-paper">
       <div className="flex h-14 items-center justify-between border-b border-line px-5 md:h-18 md:px-8">
@@ -38,14 +47,16 @@ export function Cabecalho() {
             menos uma. Marcação de origem só vale se estiver certa — a
             qualificação por página fica com os links dentro do conteúdo, que
             sabem onde estão. */}
-        <a
-          href={whatsapp()}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mono uppercase shrink-0 text-ink md:border-l md:border-line md:pl-8"
-        >
-          WhatsApp
-        </a>
+        {link !== undefined && (
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mono uppercase shrink-0 text-ink md:border-l md:border-line md:pl-8"
+          >
+            WhatsApp
+          </a>
+        )}
       </div>
 
       <nav aria-label="Principal" className="border-b border-line md:hidden">

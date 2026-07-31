@@ -1,5 +1,6 @@
 import { Seta } from "@/components/icones";
-import { whatsapp } from "@/lib/site";
+import { linkDeWhatsapp } from "@/lib/empresa";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
 
 /**
  * A ação de fecho — o mais próximo de um botão primário que este sistema tem, e
@@ -13,8 +14,13 @@ import { whatsapp } from "@/lib/site";
  * qualificação de lead que o site tem enquanto não há formulário.
  *
  * ⚠️ Todo lead passa pela Belmare. Nenhum e-mail de fábrica em lugar nenhum.
+ *
+ * ⚠️ **SEM NÚMERO NO PAINEL, A AÇÃO INTEIRA NÃO É DESENHADA.** Um botão que é o
+ * elemento mais pesado da página e leva a um `wa.me` inválido é a pior versão
+ * possível deste componente: ele promete a ação principal e entrega um erro do
+ * aplicativo. Menos página, nunca página quebrada.
  */
-export function AcaoDeFecho({
+export async function AcaoDeFecho({
   rotulo = "Falar pelo WhatsApp",
   contexto,
   className,
@@ -23,9 +29,13 @@ export function AcaoDeFecho({
   contexto: string;
   className?: string;
 }) {
+  const { whatsapp } = await buscarEmpresa();
+  const link = linkDeWhatsapp(whatsapp, contexto);
+  if (link === undefined) return null;
+
   return (
     <a
-      href={whatsapp(contexto)}
+      href={link}
       target="_blank"
       rel="noopener noreferrer"
       className={`group flex items-center justify-between gap-6 border-y border-ink py-7 transition-colors hover:bg-surface ${className ?? ""}`}

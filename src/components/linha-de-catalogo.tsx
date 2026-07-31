@@ -5,7 +5,8 @@ import {
   type Catalogo,
   type Representada,
 } from "@/lib/representadas";
-import { whatsapp } from "@/lib/site";
+import { linkDeWhatsapp } from "@/lib/empresa";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
 
 /**
  * Uma linha de documento — em `/catalogos` e na seção "Para levar" da página de
@@ -66,7 +67,7 @@ export const GRADE_DA_LINHA =
  */
 export const TETO_DA_LISTA = "max-w-[52rem]";
 
-export function LinhaDeCatalogo({
+export async function LinhaDeCatalogo({
   catalogo,
   representada,
   mostrarMarca = false,
@@ -77,6 +78,7 @@ export function LinhaDeCatalogo({
   mostrarMarca?: boolean;
 }) {
   const publicado = catalogoPublicado(catalogo);
+  const { whatsapp } = await buscarEmpresa();
 
   const titulo = mostrarMarca
     ? `${catalogo.titulo} ${representada.nome}`
@@ -96,9 +98,16 @@ export function LinhaDeCatalogo({
      qual arquivo anexar sem precisar perguntar. */
   const destino = publicado
     ? catalogo.arquivo
-    : whatsapp(
+    : linkDeWhatsapp(
+        whatsapp,
         `queria o catálogo da ${representada.nome}${catalogo.ano ? `, edição ${catalogo.ano}` : ""}`,
       );
+
+  /* ⚠️ Um catálogo a pedir SEM número de WhatsApp cadastrado vira linha sem
+     link, não linha com link quebrado: o documento e a edição continuam
+     declarados — que é a informação —, e o gesto de clicar some junto com o
+     destino que não existe. Prometer um canal que não abre é pior do que
+     declarar o documento e parar aí. */
 
   /* ⚠️ AS DUAS ESCRITAS SAEM DO SITE, e por isso as duas abrem em aba nova.
      `download` sozinho não basta no caso publicado: o atributo é **ignorado em
@@ -108,44 +117,60 @@ export function LinhaDeCatalogo({
      do navegador e leva o visitante para fora da página, sem sintoma nenhum em
      revisão porque hoje não há arquivo publicado para testar. O `download` fica
      porque volta a valer no dia em que o arquivo for servido da mesma origem. */
-  return (
-    <li className="border-b border-line">
-      <a
-        href={destino}
-        target="_blank"
-        rel="noopener noreferrer"
-        {...(publicado ? { download: true } : {})}
-        className={`group ${GRADE_DA_LINHA} items-baseline gap-y-2 py-5 transition-colors hover:bg-surface`}
-      >
-        <span className="text-h3 col-start-1 font-normal underline decoration-line decoration-1 underline-offset-[6px] transition-colors group-hover:decoration-ink">
-          {titulo}
-        </span>
+  const conteudo = (
+    <>
+      <span className="text-h3 col-start-1 font-normal underline decoration-line decoration-1 underline-offset-[6px] transition-colors group-hover:decoration-ink">
+        {titulo}
+      </span>
 
-        {/* No telefone a linha empilha e a medida cai colada no título. O
-            respiro extra só existe abaixo de `md`, onde a coluna some. */}
-        <span className="col-start-1 mt-1 md:col-start-2 md:mt-0">
-          <span className="mono block uppercase text-graphite">{medida}</span>
-          {/* Só o estado que exige explicação escreve uma. A linha publicada
-              fica com a medida sozinha, e é assim que ela lê como resolvida. */}
-          {!publicado && (
-            <span className="text-support mt-1 block text-graphite">
-              Envio pela Belmare
-            </span>
-          )}
-        </span>
+      {/* No telefone a linha empilha e a medida cai colada no título. O
+          respiro extra só existe abaixo de `md`, onde a coluna some. */}
+      <span className="col-start-1 mt-1 md:col-start-2 md:mt-0">
+        <span className="mono block uppercase text-graphite">{medida}</span>
+        {/* Só o estado que exige explicação escreve uma. A linha publicada
+            fica com a medida sozinha, e é assim que ela lê como resolvida. */}
+        {!publicado && (
+          <span className="text-support mt-1 block text-graphite">
+            Envio pela Belmare
+          </span>
+        )}
+      </span>
 
+      {destino !== undefined && (
         <Seta
           className={`col-start-2 row-start-1 h-3 w-8 self-center transition-transform duration-300 ease-out group-hover:translate-x-1.5 motion-reduce:transition-none md:col-start-3 ${
             publicado ? "text-ink" : "text-graphite group-hover:text-ink"
           }`}
         />
+      )}
 
-        {/* Quem não enxerga a diferença entre uma linha que baixa e uma que
-            pede precisa ouvi-la: as duas são o mesmo markup e o mesmo gesto. */}
+      {/* Quem não enxerga a diferença entre uma linha que baixa e uma que
+          pede precisa ouvi-la: as duas são o mesmo markup e o mesmo gesto. */}
+      {destino !== undefined && (
         <span className="sr-only">
           {publicado ? "(abre o PDF)" : "(abre o WhatsApp)"}
         </span>
-      </a>
+      )}
+    </>
+  );
+
+  return (
+    <li className="border-b border-line">
+      {destino === undefined ? (
+        <div className={`${GRADE_DA_LINHA} items-baseline gap-y-2 py-5`}>
+          {conteudo}
+        </div>
+      ) : (
+        <a
+          href={destino}
+          target="_blank"
+          rel="noopener noreferrer"
+          {...(publicado ? { download: true } : {})}
+          className={`group ${GRADE_DA_LINHA} items-baseline gap-y-2 py-5 transition-colors hover:bg-surface`}
+        >
+          {conteudo}
+        </a>
+      )}
     </li>
   );
 }

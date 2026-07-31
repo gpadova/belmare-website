@@ -1,4 +1,4 @@
-# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento
+# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento, Empresa, Home, QuemSomos
 
 Registro exaustivo, pedido pela decisão 3 da spec e por PRA-119: toda string tocada pela
 migração do conteúdo de `lib/representadas.ts` e `lib/acervo.ts` para o Payload, classificada
@@ -12,6 +12,12 @@ Cada linha aponta para onde a regra está de fato aplicada (a coleção, o mappe
 **PRA-120 estendeu esta tabela** com as três coleções filhas — Peça, Arquivo3D, Acabamento —,
 sem relitigar a classificação de Representada ou Imagem acima. Projeto continua fora: é
 PRA-121.
+
+**PRA-122 estendeu esta tabela** com os três globais — `Empresa`, `Home`, `QuemSomos` — e é o
+ticket onde a classificação teve mais consequência, porque um global é exatamente onde uma
+pessoa bem-intencionada põe tudo. **A lista do que NÃO virou campo vale mais do que a do que
+virou**, e está registrada abaixo justamente para o próximo ticket não precisar reabrir cada
+string.
 
 ## Coleção `representadas` (`src/collections/representadas.ts`)
 
@@ -69,6 +75,40 @@ PRA-121.
 | `tipo` | Campo | Tecido ou pintura — dois valores fixos, porque é assim que `briefing/estrutura.md` §5 declara o campo ("tipo (tecido/pintura)"); não é vocabulário da fábrica. |
 | `amostra` | Campo (upload) | A fotografia de perto do acabamento. |
 
+## Global `empresa` (`src/globals/empresa.ts`) — PRA-122
+
+O global que destrava o lançamento: o WhatsApp e o e-mail comercial estavam MOCKADOS em
+`lib/site.ts` com um aviso de "trocar antes do lançamento", o que significava um commit e um
+deploy para corrigir um telefone.
+
+| Campo | Camada | Por quê |
+|---|---|---|
+| `whatsapp` | Campo | **O motivo do ticket.** Normalizado para E.164 num `beforeValidate` e recusado em pt-BR quando não é telefone brasileiro (`lib/empresa.ts#numeroDeWhatsapp`). Não é `required`: exigi-lo obrigaria o seed a inventar um número, que é o mock voltando. Vazio, o site não desenha botão de WhatsApp em página nenhuma. |
+| `email` | Campo | Idem — era `EMAIL_COMERCIAL` em código. Normalizado e validado; vazio, a linha some do rodapé. |
+| `telefones[].numero` | Campo | Vira `tel:` no rodapé e na ficha. Validado pela MESMA regra do WhatsApp: um telefone que não disca é a mesma falha silenciosa. |
+| `instagram` | Campo | Endereço do perfil. Vazio, o link some. |
+| `nomeCompleto`, `razaoSocial`, `cnpj`, `porte` | Campo | Transcrição do registro, corrigível sem deploy. `cnpj` confere os dígitos verificadores (`lib/empresa.ts#cnpjFormatado`): é o único número que o leitor de `/quem-somos` vai de fato digitar na consulta oficial. |
+| `abertura` | Campo (data) | **O único campo de data da empresa, e a fonte de três valores gerados** — ver abaixo. Recusa data no futuro. |
+| `endereco.*` | Campo | Sede. Uma linha em branco desaparece do endereço em vez de deixar um vão. |
+
+## Global `home` (`src/globals/home.ts`) — PRA-122
+
+| Campo | Camada | Por quê |
+|---|---|---|
+| `galeria` | Campo | O parágrafo sob o título da seção das marcas — a única prosa institucional da home inteira. Em branco, o parágrafo desaparece (seção anulável). |
+
+## Global `quem-somos` (`src/globals/quem-somos.ts`) — PRA-122
+
+| Campo | Camada | Por quê |
+|---|---|---|
+| `registro` (bloco 01) | Campo | Parágrafo sob "A empresa, por extenso." |
+| `atividades` (bloco 02) | Campo | Parágrafo que explica a tabela de CNAEs. |
+| `nome` (bloco 03) | Campo **a partir da segunda frase** | A primeira frase é montada com `Empresa.razaoSocial`. Se ela fosse texto livre, trocar a razão social no painel deixaria a prosa nomeando a antiga — numa página cujo argumento é que cada linha pode ser conferida na fonte. |
+| `acervo` (bloco 05) | Campo **a partir da segunda frase** | A primeira frase conta as fábricas ("Quatro fábricas, quatro papéis.") e abre um ledger que lista as marcas logo abaixo. Texto livre ali congelaria em "quatro" no dia da quinta marca. |
+| `interlocutor` (bloco 06) | Campo | Parágrafo do fecho. |
+
+O bloco 04 (a prancha do território) **não tem campo nenhum** — ver a tabela de gerado abaixo.
+
 ## Gerado — derivado em tempo de leitura, nunca um campo
 
 | Valor | Onde nasce | Por que não pode virar campo |
@@ -84,7 +124,12 @@ PRA-121.
 | A numeração das seções (`01`, `02`, ...) | `lib/representadas.ts#secoesDaRepresentada` | Recalculada a cada leitura, a partir de quais seções sobreviveram — nunca um número fixo por seção. |
 | A lista "Marê Mobília, GDA Móveis, Bux Garden e Trisol" | `components/abertura.tsx` (`nomeadas`), `app/representadas/page.tsx` (metadata) | Junção de `REPRESENTADAS.map(r => r.nome)` (ou, depois de PRA-119 completo em todas as superfícies, de `buscarRepresentadas()`) — nunca digitada como frase própria. |
 | A contagem "N representadas" | `components/representadas/prancha-area-externa.tsx`, `app/representadas/page.tsx` | `REPRESENTADAS.length` — muda sozinha se uma quinta marca entrar. |
-| O tempo de casa ("27 anos") | `lib/site.ts#anosDeMercado` | Fora do escopo direto deste ticket (não é campo de Representada), mas citado aqui porque é o exemplo canônico da spec para "gerado": contagem por dia e mês, nunca um número escrito. |
+| O tempo de casa ("27 anos") | `lib/empresa.ts#anosDeMercado` (era `lib/site.ts`) | O exemplo canônico da spec para "gerado": contagem por dia e mês a partir de `Empresa.abertura`, nunca um número escrito. **[PRA-122]** Não existe campo de "anos de mercado" em lugar nenhum do painel, e o aviso está escrito na ajuda do campo de data. Um "26" digitado congela e passa a errar em silêncio a partir do aniversário seguinte, uma vez por ano, no primeiro número da primeira tela. |
+| **[PRA-122]** O ano de fundação ("Desde 1999") | `lib/empresa.ts#anoDeFundacao` | Era `fundacao: 1999` ao lado de `abertura: "22.04.1999"` em `lib/site.ts` — dois campos para um fato só. Agora sai da data. |
+| **[PRA-122]** A data de abertura por extenso ("22.04.1999") | `lib/empresa.ts#aberturaPorExtenso` | Mesma razão: a ficha do bloco 01 imprime a transcrição do registro, e ela sai da data que o operador escolheu no calendário — não de um segundo campo de texto que poderia discordar. |
+| **[PRA-122]** O território ("Paraná, Santa Catarina e Rio Grande do Sul") | `lib/empresa.ts#TERRITORIO`, a partir de `lib/territorio.ts#ESTADOS` | **A única decisão do ticket que não segue a lista de campos do próprio ticket.** A prosa de `/quem-somos` nomeia os estados três centímetros acima do desenho que os traça — malha oficial do IBGE, fora do escopo de edição por decisão 4 da spec. Um campo de texto deixaria o operador escrever um quarto estado que a prancha não sabe desenhar, e a página passaria a contradizer o único gráfico que ela tem. Expandir território é regerar a malha, que é o mesmo deploy que o desenho novo já exigiria. |
+| **[PRA-122]** Toda contagem em prosa: "As **quatro** fábricas que a Belmare representa", "de **quatro** fábricas brasileiras", "**Quatro** fábricas, **quatro** papéis", "**Três** estados", "Ver as **quatro** representadas", "**Cinco** atividades registradas" | `lib/frase.ts#porExtenso`, sobre `representadasDaPagina()`, `TERRITORIO` e `CNAES` | Eram a palavra `quatro` digitada dentro de uma frase, em cinco arquivos. No dia da quinta marca as cinco continuariam dizendo quatro, sem calendário nenhum para denunciar — a mesma falha do tempo de casa, e mais silenciosa. |
+| **[PRA-122]** A junção "A, B, C **e** D" | `lib/frase.ts#emLista` | Existia inline em `abertura.tsx` e numa segunda escrita (`join(", ").replace(...)`) em mais três lugares. Quatro cópias da mesma pontuação é como a lista de marcas da home e a de estados do rodapé passam a ser escritas de dois jeitos na mesma tela. |
 
 ## Fixo — no código, por ser o argumento do desenho
 
@@ -96,6 +141,25 @@ coleções existe para tornar o próprio dado editável. Os dois exemplos fixos 
 |---|---|---|
 | "Imagem de referência — ilustra o que a fábrica resolve, não uma peça do catálogo dela." | `components/marca/abertura.tsx` (figcaption) | Legenda visível obrigatória por decisão de desenho — não muda por marca, não é campo de nenhuma representada. |
 | Os rótulos das seções ("O que declara", "Quem assina", "Vocabulário", "Para levar", "Falar") | `lib/representadas.ts#secoesDaRepresentada` | São o argumento da página, não conteúdo de uma marca — mudam por reposicionamento de desenho, não por edição de operador. |
+
+### Fixo — o que PRA-122 recusou a transformar em campo
+
+Esta é a lista que o próximo ticket **não precisa relitigar**. Cada linha é uma string que estava
+ao alcance de um global e ficou no código de propósito.
+
+| Texto | Onde mora | Por que não é campo |
+|---|---|---|
+| O h1 da home — "Sofá, mesa, espreguiçadeira e ombrelone." | `components/abertura.tsx` | O argumento do desenho, não conteúdo dentro dele. Já foi "Quatro fábricas. Um interlocutor." (jargão de organograma) e "Móveis para área externa" (descreve uma fábrica, e a Belmare é representação); as duas caíram em 30/07/2026. Um campo de texto é o caminho de volta para uma delas numa tarde em que ninguém lembra por que caíram. Trocá-lo é reposicionar a empresa, e reposicionamento é conversa, não edição. |
+| Os rótulos numerados de `/quem-somos` (`01`…`06`) e os títulos de cada bloco | `components/quem-somos/bloco.tsx` e cada bloco | A sequência É o argumento da página: ler fora de ordem é ler outra coisa. Não há array de blocos, não há campo de título, não há campo de número. |
+| O nome e o texto de apoio das duas portas | `components/portas.tsx` | Decisão 3 da spec. As duas têm que ter peso igual, e a simetria "eu especifico / eu compro" é o argumento — um campo por porta é como uma delas fica maior que a outra. |
+| A linha de apoio da abertura da home, fora das partes contadas | `components/abertura.tsx` | Ela existe para carregar dado (marcas, território, tempo de casa) sem virar slogan; o que não é dado nela é a moldura desse dado. |
+| O aviso "Imagens de referência, para representar o que cada fábrica resolve…" | `components/representadas-galeria.tsx` | Marcação de mock exigida por desenho, não prosa de marketing sobre as fábricas. Mesma razão do figcaption de `components/marca/abertura.tsx`, já listado acima. |
+| O parágrafo do bloco 04 de `/quem-somos` (a prancha do território) | `components/quem-somos/prancha-territorio.tsx` | O único dos seis blocos sem campo. Ele nomeia os três estados, conta as representadas e nomeia a cidade da sede — e as três coisas saem do dado que desenha a prancha ao lado ou do cadastro. Texto livre ali é como a prosa passa a dizer "quatro estados" ao lado de um desenho com três. |
+| Os cinco CNAEs (código e descrição) | `lib/registro.ts#CNAES` | Transcrição do cadastro nacional. Um campo de texto é precisamente a ferramenta que convida alguém a reescrever uma descrição oficial "com palavras melhores" — a única coisa que essa página não pode fazer sem perder a autoridade inteira. E o P1 continua aberto: os códigos de atacado ao lado do de representação sugerem uma conclusão que o cliente não confirmou, e um campo editável é por onde essa conclusão entraria em texto visível. |
+| O nome público anterior e a fonte dele | `lib/registro.ts#NOME_PUBLICO_ANTERIOR` | Citação com fonte declarada. Reescrevê-la em melhores palavras quebraria exatamente o que ela prova. |
+| A navegação do site (os quatro itens do menu) | `lib/site.ts#NAVEGACAO` | Não é conteúdo dentro do desenho: é quais rotas existem. Uma rota nova exige uma página nova, que é código — um item de menu editável só serviria para apontar para um 404 que o operador não tem como criar. |
+| A descrição de SEO do layout e o `title` padrão | `app/(frontend)/layout.tsx` | Só `openGraph.siteName` passou a ler o painel, porque é o nome público da empresa. O resto é a mesma prosa fixa da home. |
+| A prancha do território (a malha do IBGE) | `lib/territorio.ts` | Fora de escopo por decisão 4 da spec: é dado regerado da fonte, não desenho a editar. |
 
 ## Referência
 

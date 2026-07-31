@@ -18,7 +18,8 @@ import {
   slugsDeRepresentadas,
 } from "@/lib/representadas-consulta";
 import { secoesDaRepresentada, type Representada } from "@/lib/representadas";
-import { EMPRESA } from "@/lib/site";
+import { TERRITORIO } from "@/lib/empresa";
+import { emLista } from "@/lib/frase";
 
 type Parametros = { marca: string };
 
@@ -166,7 +167,7 @@ export default async function PaginaDaMarca({
         <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
           Quem responde é quem representa, e é quem aciona a fábrica depois. O
           atendimento cobre{" "}
-          {EMPRESA.territorio.join(", ").replace(/, ([^,]*)$/, " e $1")} — o
+          {emLista(TERRITORIO)} — o
           mesmo território para todas as representadas.
         </p>
 

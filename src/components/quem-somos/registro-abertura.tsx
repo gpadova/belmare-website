@@ -1,5 +1,7 @@
 import { Bloco } from "@/components/quem-somos/bloco";
-import { anosDeMercado, EMPRESA } from "@/lib/site";
+import { aberturaPorExtenso, anoDeFundacao, anosDeMercado } from "@/lib/empresa";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
+import { buscarQuemSomos } from "@/lib/espinha-consulta";
 
 /**
  * 01 — A abertura. O registro.
@@ -16,22 +18,32 @@ import { anosDeMercado, EMPRESA } from "@/lib/site";
  *
  * ⚠️ O LCP desta página é tipográfico. Nada aqui deve virar imagem.
  *
- * ⚠️ O contador de anos NUNCA é escrito à mão. `anosDeMercado()` conta a partir
- * de 22/04/1999 com dia e mês; a diferença simples de anos erra por um durante
+ * ⚠️ O contador de anos NUNCA é escrito à mão, e **não existe campo para ele em
+ * lugar nenhum do painel**. `anosDeMercado` conta a partir da data de abertura
+ * cadastrada, com dia e mês; a diferença simples de anos erra por um durante
  * quatro meses todo ano, e um site que abre o próprio registro não pode errar
- * o primeiro número dele.
+ * o primeiro número dele. O ano em display e a data por extenso saem da MESMA
+ * data — nenhum dos três é um segundo campo que possa discordar dos outros.
+ *
+ * ⚠️ A faixa de identificação é transcrição do cadastro: os quatro valores saem
+ * do painel exatamente como foram gravados, sem nenhuma redação por cima. Uma
+ * linha sem valor desaparece da faixa em vez de imprimir um rótulo sobre nada.
  */
+export async function RegistroAbertura() {
+  const empresa = await buscarEmpresa();
+  const { registro } = await buscarQuemSomos();
 
-/** O cabeçalho de ficha: quatro campos do registro, em faixa, no topo da folha. */
-const CABECALHO = [
-  { rotulo: "Razão social", valor: EMPRESA.razaoSocial, mono: false },
-  { rotulo: "CNPJ", valor: EMPRESA.cnpj, mono: true },
-  { rotulo: "Abertura", valor: EMPRESA.abertura, mono: true },
-  { rotulo: "Porte", valor: EMPRESA.porte.extenso, mono: false },
-] as const;
+  const anos = anosDeMercado(empresa.abertura);
+  const fundacao = anoDeFundacao(empresa.abertura);
+  const abertura = aberturaPorExtenso(empresa.abertura);
 
-export function RegistroAbertura() {
-  const anos = anosDeMercado();
+  /** O cabeçalho de ficha: os campos do registro, em faixa, no topo da folha. */
+  const CABECALHO = [
+    { rotulo: "Razão social", valor: empresa.razaoSocial, mono: false },
+    { rotulo: "CNPJ", valor: empresa.cnpj, mono: true },
+    { rotulo: "Abertura", valor: abertura, mono: true },
+    { rotulo: "Porte", valor: empresa.porte, mono: false },
+  ].filter((campo) => campo.valor !== undefined);
 
   return (
     <Bloco numero="01">
@@ -66,27 +78,30 @@ export function RegistroAbertura() {
         ))}
       </dl>
 
-      <p className="text-display mt-12 font-normal tabular-nums md:mt-16">
-        {EMPRESA.fundacao}
-      </p>
+      {fundacao !== undefined && (
+        <p className="text-display mt-12 font-normal tabular-nums md:mt-16">
+          {fundacao}
+        </p>
+      )}
       {/* "…de registro ativo" saiu por dois motivos: afirmava continuidade de
           situação cadastral que os fatos em mão não cobrem, e a linha inteira
           media 348px numa coluna de 350px — órfã em qualquer telefone abaixo
           de 390. */}
-      <p className="mono mt-3 text-graphite">
-        Aberta em {EMPRESA.abertura} · {anos} anos
-      </p>
+      {abertura !== undefined && anos !== undefined && (
+        <p className="mono mt-3 text-graphite">
+          Aberta em {abertura} · {anos} anos
+        </p>
+      )}
 
       <div className="mt-10 border-t border-line pt-10 md:mt-14 md:pt-14">
         <h1 className="text-h1 max-w-[18ch] font-normal text-balance">
           A empresa, por extenso.
         </h1>
-        <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-          Representação comercial de mobiliário de alto padrão para área externa,
-          aberta em 22 de abril de 1999, em Florianópolis. Esta página não narra
-          a empresa — mostra o registro dela. Cada linha daqui em diante é
-          pública e pode ser conferida.
-        </p>
+        {registro !== undefined && (
+          <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
+            {registro}
+          </p>
+        )}
       </div>
     </Bloco>
   );

@@ -7,8 +7,9 @@ import { Nome } from "@/components/quem-somos/nome";
 import { PranchaTerritorio } from "@/components/quem-somos/prancha-territorio";
 import { ProjetosRealizados } from "@/components/quem-somos/projetos-realizados";
 import { RegistroAbertura } from "@/components/quem-somos/registro-abertura";
+import { aberturaPorExtenso } from "@/lib/empresa";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
 import { buscarProjetosPublicaveis } from "@/lib/projetos-consulta";
-import { EMPRESA } from "@/lib/site";
 
 /**
  * ⚠️ A página é estática, e `anosDeMercado()` é avaliado no build. Sem
@@ -19,10 +20,31 @@ import { EMPRESA } from "@/lib/site";
  */
 export const revalidate = 86400;
 
-export const metadata: Metadata = {
-  title: "Quem somos",
-  description: `${EMPRESA.razaoSocial}, aberta em 22 de abril de 1999 em Florianópolis. Representação comercial de mobiliário de alto padrão para área externa no Paraná, em Santa Catarina e no Rio Grande do Sul.`,
-};
+/**
+ * ⚠️ Gerada, porque a razão social, a data de abertura e a cidade da sede são
+ * campo do painel desde PRA-122 — e esta descrição é justamente a transcrição
+ * deles. Uma constante aqui seria uma quarta cópia dos mesmos fatos, a única
+ * que ninguém vê ao revisar a página.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const { razaoSocial, endereco, abertura } = await buscarEmpresa();
+
+  const cidade = endereco?.cidade;
+  const registro = [
+    razaoSocial,
+    aberturaPorExtenso(abertura) === undefined
+      ? undefined
+      : `aberta em ${aberturaPorExtenso(abertura)}`,
+    cidade === undefined ? undefined : `em ${cidade}`,
+  ]
+    .filter((parte) => parte !== undefined)
+    .join(", ");
+
+  return {
+    title: "Quem somos",
+    description: `${registro === "" ? "" : `${registro}. `}Representação comercial de mobiliário de alto padrão para área externa no Paraná, em Santa Catarina e no Rio Grande do Sul.`,
+  };
+}
 
 /**
  * `/quem-somos` — o arquivo.
