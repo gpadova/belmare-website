@@ -29,6 +29,11 @@ Texto que o cliente edita no painel, com rótulo e ajuda em pt-BR. Prosa
 institucional de uma marca, legenda de materiais de uma peça, dados de contato.
 _Avoid_: editável, conteúdo
 
+A classificação campo a campo de Representada e Imagem — feita uma vez em PRA-119 — está
+registrada em `docs/classificacao-de-texto.md`. Consulte-a antes de reabrir a discussão para um
+campo já classificado; estenda-a, em vez de recomeçar, quando uma coleção nova (Peça, Arquivo3D,
+Acabamento, Projeto) entrar.
+
 ### Composição de página
 
 **Espinha fixa**:
