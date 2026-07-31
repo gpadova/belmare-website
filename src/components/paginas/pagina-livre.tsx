@@ -51,19 +51,38 @@ export function PaginaLivreDesenhada({
         /* O índice entra na chave porque a mesma página pode ter dois blocos de
            texto sem título — dois blocos idênticos em conteúdo são um arranjo
            legítimo, e nada mais neles distingue um do outro. */
-        <BlocoDesenhado key={`${bloco.tipo}-${i}`} bloco={bloco} empresa={empresa} />
+        <BlocoDesenhado
+          key={`${bloco.tipo}-${i}`}
+          bloco={bloco}
+          empresa={empresa}
+          pagina={pagina.slug}
+        />
       ))}
     </>
   );
 }
 
-function BlocoDesenhado({ bloco, empresa }: { bloco: Bloco; empresa: Empresa }) {
+function BlocoDesenhado({
+  bloco,
+  empresa,
+  pagina,
+}: {
+  bloco: Bloco;
+  empresa: Empresa;
+  /** O endereço da rota, para o bloco de caminhos gravar a origem do lead. */
+  pagina: string;
+}) {
   switch (bloco.tipo) {
     case "prosa":
       return <BlocoProsa titulo={bloco.titulo} corpo={bloco.corpo} />;
     case "caminhos":
       return (
-        <BlocoCaminhos titulo={bloco.titulo} itens={bloco.itens} empresa={empresa} />
+        <BlocoCaminhos
+          titulo={bloco.titulo}
+          itens={bloco.itens}
+          empresa={empresa}
+          pagina={pagina}
+        />
       );
     case "ficha":
       return <BlocoFicha titulo={bloco.titulo} empresa={empresa} />;

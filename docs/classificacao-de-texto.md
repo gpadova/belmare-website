@@ -1,4 +1,4 @@
-# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento, Empresa, Home, QuemSomos, Prancha, Página
+# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento, Empresa, Home, QuemSomos, Prancha, Página, Lead
 
 Registro exaustivo, pedido pela decisão 3 da spec e por PRA-119: toda string tocada pela
 migração do conteúdo de `lib/representadas.ts` e `lib/acervo.ts` para o Payload, classificada
@@ -41,6 +41,10 @@ isso fica fora do escopo desta ficha, que é sobre texto que o visitante lê. O 
 muda é QUEM, dentro do painel, pode gravar um campo já classificado abaixo: a linha de `slug`,
 logo a seguir, foi corrigida para refletir a nova restrição — a camada do campo (Campo) não
 mudou, só quem tem permissão de gravá-lo.
+
+**PRA-126 estendeu esta tabela** com a coleção `Lead` — e é o primeiro caso em que a pergunta
+"quem decide este valor?" não responde "o operador, no painel". Ver a seção dedicada abaixo, que
+por isso foge um pouco da forma das anteriores.
 
 ## Coleção `representadas` (`src/collections/representadas.ts`)
 
@@ -194,6 +198,46 @@ ser defendido — ao contrário da prancha e das representadas, que eram código
 | O h1 "O móvel, a estrutura, o estofado e a sombra." | **Fixo** (`components/representadas/prancha-area-externa.tsx`) | Mesma regra do h1 da home, e a mesma decisão de PRA-122 que este ticket não relitiga: h1 é o argumento do desenho. **Consequência aceita e registrada:** ele nomeia quatro objetos, e uma prancha de três ou cinco chamadas não o atualiza. É deliberado — uma quinta função na cena é reposicionamento, e reposicionamento é conversa, não edição. É a mesma nota que a ajuda do campo `Home.galeria` já dá ao operador. |
 | O carimbo "N representadas · Sul do Brasil" | **Gerado** das representadas cadastradas, e **não** das chamadas | Os dois números podem divergir a partir deste ticket. A linha está emparelhada com o território, que é fato da empresa e não do desenho, e o índice de registros logo abaixo lista todas as marcas. Quem conta o desenho é a legenda. |
 | A prancha do TERRITÓRIO de `/quem-somos` | **Fixo** (`lib/territorio.ts`) | Fora de escopo por decisão 4 da spec e pelo próprio ticket: malha oficial do IBGE, reprojetada e simplificada. Regerada da fonte quando muda, nunca editada à mão, nunca no CMS. As duas pranchas compartilham a gramática de desenho e nada mais. |
+
+## Coleção `leads` (`src/collections/leads.ts`) — PRA-126
+
+Toda tabela acima responde "quem decide este valor, e a partir de quê?" com "o operador, no
+painel" — é o operador que escreve a prosa de uma representada, escolhe a data de abertura da
+Belmare, arrasta um bloco de página livre. Aqui a resposta é outra: quem decide `nome`, `email`,
+`cidade` e `escritorio` é o **visitante do site**, uma vez, ao enviar `/contato` — o operador só
+LÊ o que chegou, no painel. Por isso a tabela abaixo marca essas quatro linhas como **Campo
+(visitante)**, para não confundir com a prosa institucional que o resto deste documento chama de
+Campo sem qualificação.
+
+⚠️ **O QUE DE FATO SE FIXA AQUI NÃO É O VALOR DE UM CAMPO — É A LISTA DE CAMPOS.** Diferente de
+toda outra coleção do painel, `leads` não tem construtor de formulário: os cinco campos vêm de
+`lib/lead.ts#DadosDoLead`, em código, por decisão 11 da spec (`PRODUCT.md`): "nome, e-mail,
+cidade e escritório bastam — CPF não". Um formulário configurável é exatamente a ferramenta que
+deixaria um operador bem-intencionado acrescentar um campo de CPF porque uma fábrica pediu — a
+violação de minimização de dado que este ticket existe para impedir, num site cuja política de
+privacidade ainda aguarda revisão jurídica. Acrescentar um campo aqui é PR, nunca clique no
+painel — a mesma proteção que `/quem-somos` aplica à própria sequência de seções, aplicada ao
+formulário.
+
+| Campo | Camada | Por quê |
+|---|---|---|
+| `nome` | Campo (visitante) | Como a pessoa se identificou no formulário — nunca reescrito pelo operador. |
+| `email` | Campo (visitante) | Para onde a Belmare responde. Validado por `lib/lead.ts#emailValido` — a mesma regra de `lib/empresa.ts#emailComercial`, copiada e não importada: são dois domínios que só coincidem em formato por acaso. |
+| `cidade` | Campo (visitante) | De onde a pessoa fala. |
+| `escritorio` | Campo (visitante) | A loja, o escritório ou a operação que a pessoa representa. O mesmo campo nomeia dois papéis — revendedor hoje, e arquiteto qualificando o próprio escritório a partir de PRA-127 — e só o RÓTULO do formulário muda entre os dois, nunca o campo em si. |
+| `consentimentoMarketing` | Campo (visitante) | Separado do envio da mensagem, de propósito — decisão de LGPD do brief: contatar a empresa nunca pode inscrever ninguém em lista nenhuma sem essa caixa marcada à parte. Nunca vem pré-marcada. |
+| `origem.pagina` | **Gerado** | De qual página o envio partiu — preenchido pela própria página no momento do envio (`components/formulario-de-lead.tsx`, campo oculto), nunca digitado por ninguém. |
+| `origem.marca` | **Gerado** | Qual representada, quando o formulário abre a partir de uma página de marca — o seam que PRA-127 usa para o pacote completo de `/arquivos-3d`. Ausente em `/contato`, que não pertence a fábrica nenhuma. |
+
+## Lead — o que PRA-126 recusou a transformar em campo
+
+| Texto / decisão | Onde mora | Por que não é campo |
+|---|---|---|
+| A lista de campos do formulário (nome, e-mail, cidade, escritório, consentimento) | **Fixo**, em `lib/lead.ts#DadosDoLead` | Decisão 11 da spec: minimização de dado. Ver a nota grande no topo da seção acima. |
+| Telefone | **Não existe** — decisão de produto em aberto, não esquecimento deste ticket | `briefing/restricoes.md` permite telefone como campo opcional, mas a lista fechada deste ticket não o inclui. Reabri-la é decisão de produto, não bug. |
+| A etiqueta de revalidação de um lead | **Não existe** | Um lead não aparece em nenhuma página pública do site — só no painel e no e-mail de aviso. `lib/revalidacao.ts#tagsDaMudanca` não ganha um caso `"leads"` porque não há superfície nenhuma para invalidar; acrescentar uma reflexivamente seria etiqueta morta, nunca invalidada por leitura nenhuma. |
+| O corpo do e-mail de aviso (`corpoDoAvisoPorEmail`) | **Gerado**, em `lib/lead.ts` | Composto a partir do próprio Lead já gravado — nunca um segundo texto que poderia divergir do que está no painel. |
+| Captcha ou honeypot | **Não existe** | Os dois custam acessibilidade real (campo que um leitor de tela anuncia mesmo escondido, ou quebra-cabeça que barra baixa visão) contra spam que ninguém mediu ainda. Se aparecer, aparece na lista do painel, onde dá para contar antes de decidir. |
 
 ## Gerado — derivado em tempo de leitura, nunca um campo
 

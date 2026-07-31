@@ -1,9 +1,10 @@
 import Link from "next/link";
 
+import { FormularioDeLead } from "@/components/formulario-de-lead";
 import { Seta } from "@/components/icones";
 import { SecaoLivre } from "@/components/paginas/secao";
 import { linkDeWhatsapp, type Empresa } from "@/lib/empresa";
-import type { Caminho } from "@/lib/paginas";
+import { ANCORA_DO_FORMULARIO, type Caminho } from "@/lib/paginas";
 
 /**
  * O bloco de caminhos — a bifurcação de uma página livre.
@@ -40,10 +41,14 @@ export function BlocoCaminhos({
   titulo,
   itens,
   empresa,
+  pagina,
 }: {
   titulo?: string;
   itens: Caminho[];
   empresa: Empresa;
+  /** O endereço desta página, gravado como origem do lead. Vem de cima porque
+   *  quem sabe em que rota está é a rota, não o bloco. */
+  pagina: string;
 }) {
   const { whatsapp } = empresa;
 
@@ -53,10 +58,7 @@ export function BlocoCaminhos({
   const desenhaveis = itens
     .map((caminho) => ({
       caminho,
-      href:
-        caminho.destino === "rota"
-          ? caminho.href
-          : linkDeWhatsapp(whatsapp, caminho.contexto),
+      href: enderecoDoCaminho(caminho, whatsapp),
     }))
     .filter((linha): linha is { caminho: Caminho; href: string } =>
       linha.href !== undefined,
@@ -64,11 +66,19 @@ export function BlocoCaminhos({
 
   if (desenhaveis.length === 0) return null;
 
+  /* O formulário é desenhado UMA vez, depois da lista, mesmo que dois caminhos
+     apontem para ele. Um formulário por linha daria dois campos com o mesmo
+     `name` na mesma página e duas âncoras com o mesmo `id`. */
+  const pedeFormulario = desenhaveis.some(
+    ({ caminho }) => caminho.destino === "formulario",
+  );
+
   return (
     <SecaoLivre titulo={titulo}>
       <ul className={`max-w-[52rem] border-t border-line ${titulo === undefined ? "" : "mt-8"}`}>
         {desenhaveis.map(({ caminho, href }) => {
           const externo = caminho.destino === "whatsapp";
+          const ancora = caminho.destino === "formulario";
 
           const conteudo = (
             <>
@@ -85,6 +95,12 @@ export function BlocoCaminhos({
                     sair do site para o aplicativo é uma mudança de contexto que
                     o rótulo sozinho não anuncia. */}
                 {externo && <span className="sr-only"> (abre o WhatsApp)</span>}
+              {/* A mesma cortesia do aviso de WhatsApp, pelo motivo inverso:
+                  aqui o link NÃO muda de página, e uma seta que não navega
+                  confunde quem não vê a rolagem acontecer. */}
+              {ancora && (
+                <span className="sr-only"> (desce até o formulário nesta página)</span>
+              )}
               </span>
               <Seta className="mt-1 h-3 w-8 shrink-0 self-start transition-transform duration-300 ease-out group-hover:translate-x-1.5 motion-reduce:transition-none" />
             </>
@@ -104,6 +120,13 @@ export function BlocoCaminhos({
                 >
                   {conteudo}
                 </a>
+              ) : ancora ? (
+                /* Âncora na mesma página: `<a>` cru, não `<Link>`. O `Link` do
+                   Next trata "#id" como navegação de rota e rola para o topo
+                   antes de achar o alvo. */
+                <a href={href} className={classe}>
+                  {conteudo}
+                </a>
               ) : (
                 <Link href={href} className={classe}>
                   {conteudo}
@@ -113,6 +136,38 @@ export function BlocoCaminhos({
           );
         })}
       </ul>
+
+      {pedeFormulario && (
+        <div id={ANCORA_DO_FORMULARIO} className="mt-16 scroll-mt-24">
+          <FormularioDeLead origem={{ pagina }} />
+        </div>
+      )}
     </SecaoLivre>
   );
+}
+
+/**
+ * Para onde um caminho leva, ou `undefined` quando ele não tem para onde levar.
+ *
+ * ⚠️ O `switch` é exaustivo de propósito, e o `satisfies never` no fim é o que
+ * faz um quarto membro de `Caminho` virar erro de build em vez de um item que
+ * some da página sem ninguém notar. Foi essa guarda que avisou onde mexer
+ * quando o membro `formulario` entrou (PRA-126).
+ */
+function enderecoDoCaminho(
+  caminho: Caminho,
+  whatsapp: string | undefined,
+): string | undefined {
+  switch (caminho.destino) {
+    case "rota":
+      return caminho.href;
+    case "whatsapp":
+      return linkDeWhatsapp(whatsapp, caminho.contexto);
+    case "formulario":
+      /* Nunca some por dado ausente: o formulário mora na própria página e não
+         depende de número, de rota nem de nada que possa não estar cadastrado. */
+      return `#${ANCORA_DO_FORMULARIO}`;
+    default:
+      return caminho satisfies never;
+  }
 }

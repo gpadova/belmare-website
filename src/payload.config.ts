@@ -12,6 +12,7 @@ import { Acabamentos } from "@/collections/acabamentos";
 import { Arquivos } from "@/collections/arquivos";
 import { Arquivos3d } from "@/collections/arquivos3d";
 import { Imagens } from "@/collections/imagens";
+import { Leads } from "@/collections/leads";
 import { Paginas } from "@/collections/paginas";
 import { Pecas } from "@/collections/pecas";
 import { Projetos } from "@/collections/projetos";
@@ -144,6 +145,13 @@ export default buildConfig({
     Paginas,
     Imagens,
     Arquivos,
+
+    /* ⚠️ Leads não é conteúdo — é o que o site RECEBE, não o que ele publica.
+       É a única coleção com criação aberta a quem não tem sessão, e a única
+       cuja lista de campos é fixa em código de propósito. Ver a nota de
+       minimização de dado em `collections/leads.ts`. */
+    Leads,
+
     Usuarios,
   ],
 

@@ -75,6 +75,7 @@ export interface Config {
     paginas: Pagina;
     imagens: Imagen;
     arquivos: Arquivo;
+    leads: Lead;
     usuarios: Usuario;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -91,6 +92,7 @@ export interface Config {
     paginas: PaginasSelect<false> | PaginasSelect<true>;
     imagens: ImagensSelect<false> | ImagensSelect<true>;
     arquivos: ArquivosSelect<false> | ArquivosSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
     usuarios: UsuariosSelect<false> | UsuariosSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -555,7 +557,7 @@ export interface BlocoDeCaminhos {
          * Uma linha dizendo o que acontece ao clicar. Em branco, o caminho fica só com o rótulo.
          */
         apoio?: string | null;
-        destino: 'rota' | 'whatsapp';
+        destino: 'rota' | 'whatsapp' | 'formulario';
         /**
          * Só as páginas que já existem aparecem aqui. Uma rota que ainda não foi construída não é oferecida: um caminho para um 404 é pior do que caminho nenhum.
          */
@@ -602,6 +604,50 @@ export interface BlocoDeFecho {
   id?: string | null;
   blockName?: string | null;
   blockType: 'fecho';
+}
+/**
+ * Os contatos recebidos pelo formulário do site — hoje só "Quero revender", em /contato. Todo lead chega aqui e, quando o e-mail comercial está cadastrado e o Resend está configurado, também por e-mail — mas esta lista é a cópia que sobrevive mesmo quando o e-mail falha ou nunca foi configurado.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  /**
+   * Como a pessoa se identificou no formulário.
+   */
+  nome: string;
+  /**
+   * Para onde a Belmare responde.
+   */
+  email: string;
+  /**
+   * De onde a pessoa fala.
+   */
+  cidade: string;
+  /**
+   * A loja, o escritório de arquitetura ou a operação que a pessoa representa — o mínimo para a Belmare qualificar o contato (decisão 11 da spec). O mesmo campo serve os dois papéis: só o rótulo do formulário muda entre uma página de revenda e uma de arquiteto.
+   */
+  escritorio: string;
+  /**
+   * ⚠️ Separado do envio da mensagem, de propósito: marcar ou não isto nunca muda se o contato é recebido. O formulário do site nunca vem com esta caixa pré-marcada — ver `components/formulario-de-lead.tsx`. Contatar a empresa não é, e não pode virar, inscrição automática em lista nenhuma.
+   */
+  consentimentoMarketing?: boolean | null;
+  /**
+   * De onde este contato veio. O visitante não vê nem edita estes dois campos — eles chegam ocultos no envio, preenchidos pela própria página.
+   */
+  origem: {
+    /**
+     * O endereço de onde o formulário foi enviado — "contato", por exemplo.
+     */
+    pagina: string;
+    /**
+     * Qual representada, quando o formulário abrir a partir da página de uma marca (o seam que PRA-127 usa). Em branco nas páginas que não são de marca nenhuma, como /contato.
+     */
+    marca?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -691,6 +737,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'arquivos';
         value: number | Arquivo;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: number | Lead;
       } | null)
     | ({
         relationTo: 'usuarios';
@@ -960,6 +1010,25 @@ export interface ArquivosSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  nome?: T;
+  email?: T;
+  cidade?: T;
+  escritorio?: T;
+  consentimentoMarketing?: T;
+  origem?:
+    | T
+    | {
+        pagina?: T;
+        marca?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

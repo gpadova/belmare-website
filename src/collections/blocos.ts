@@ -226,6 +226,13 @@ export const BlocoDeCaminhos: Block = {
           options: [
             { value: "rota", label: "Uma página deste site" },
             { value: "whatsapp", label: "Conversa no WhatsApp" },
+
+            /* ⚠️ O seam previsto acima, agora construído (PRA-126). O
+               formulário NÃO é configurável: a lista de campos mora em
+               `lib/lead.ts` e acrescentar um é PR, não clique. Ver a nota de
+               minimização de dado em `collections/leads.ts`. O que o painel
+               escolhe é só ONDE o formulário aparece e como ele se chama. */
+            { value: "formulario", label: "Formulário de proposta comercial" },
           ],
         },
         {

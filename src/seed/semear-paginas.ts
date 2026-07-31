@@ -193,10 +193,11 @@ const ARQUITETOS = {
 /**
  * `/contato` — a porta B, onde ela bifurca.
  *
- * ⚠️ **"QUERO REVENDER" É O SEAM DE PRA-126.** Hoje é um caminho de WhatsApp com
- * contexto próprio; quando o formulário de proposta existir, ele vira um destino
- * de tipo `formulario` sem que este arquivo mude de forma. Ver
- * `collections/blocos.ts`.
+ * ⚠️ **"QUERO REVENDER" É O FORMULÁRIO DE PROPOSTA (PRA-126).** Era um caminho
+ * de WhatsApp até o formulário existir; hoje é `destino: "formulario"`, e a
+ * troca custou uma linha porque a união de `lib/paginas.ts` já previa o membro.
+ * "Quero comprar" continua no WhatsApp de propósito — ver a nota no próprio
+ * caminho.
  */
 const CONTATO = {
   slug: "contato",
@@ -229,9 +230,21 @@ const CONTATO = {
         {
           rotulo: "Quero revender",
           apoio:
-            "Loja de mobiliário, escritório ou operação de área externa: mande a cidade e o perfil da operação, e a Belmare responde com as condições da fábrica.",
-          destino: "whatsapp",
-          contexto: "quero propor uma revenda",
+            "Loja de mobiliário, escritório ou operação de área externa: deixe a cidade e o perfil da operação, e a Belmare responde com as condições da fábrica.",
+
+          /* ⚠️ O seam de PRA-126, agora fechado. Era um caminho de WhatsApp
+             com contexto próprio; virou o formulário de proposta desenhado na
+             própria página. A troca é de UMA linha aqui porque a união de
+             `lib/paginas.ts` já previa o membro — era esse o ponto de deixar o
+             seam declarado em vez de meio construído.
+
+             Por que revenda é formulário e compra continua WhatsApp: uma
+             proposta comercial precisa ficar registrada e exportável no painel
+             (decisão 11 — lead que só existe em caixa de entrada já está
+             perdido), enquanto "qual loja tem esta peça" é pergunta de
+             resposta imediata, e transformá-la em formulário seria pedir
+             cadastro para dar uma informação. */
+          destino: "formulario",
         },
         {
           rotulo: "Sou arquiteto ou designer",
@@ -255,7 +268,11 @@ const CONTATO = {
  * ⚠️ Cada afirmação factual abaixo foi conferida contra o código deste
  * repositório em 31/07/2026, e nenhuma delas é conclusão jurídica:
  *
- *   · não há formulário em nenhuma rota do site (PRA-126 ainda não existe);
+ *   · há UM formulário no site, o de proposta comercial em `/contato`
+ *     (PRA-126). Ele pede nome, e-mail, cidade e empresa — nada além disso — e
+ *     grava um documento em `leads`, que só é legível com sessão de painel;
+ *   · o consentimento de marketing é caixa separada, nunca pré-marcada, e
+ *     recusá-lo não impede o contato;
  *   · o único dado que chega da parte do visitante é o que ele escreve numa
  *     conversa de WhatsApp, num e-mail ou num telefonema iniciados por ele;
  *   · não há Google Analytics, tag manager, pixel de rede social nem qualquer
@@ -288,7 +305,7 @@ const PRIVACIDADE = {
 
         titulo("O que este site coleta"),
         paragrafo(
-          "Nenhuma página deste site tem formulário. Não há cadastro, não há login de visitante e não há campo em que alguém deixe nome, e-mail ou telefone. O único dado pessoal que chega até a Belmare é o que a própria pessoa escreve numa conversa iniciada por ela — WhatsApp, e-mail ou telefone —, e ele chega pelo aplicativo ou pelo provedor correspondente, não por este site.",
+          "Este site tem um único formulário, o de proposta comercial em /contato. Ele pede nome, e-mail, cidade e a empresa ou escritório que a pessoa representa — e nada além disso. Não há cadastro, não há login de visitante, não se pede CPF e não se pede telefone. O aceite de novidades por e-mail é uma caixa separada, que nunca vem marcada: deixá-la em branco não muda em nada o atendimento do contato. Fora esse formulário, o único dado pessoal que chega à Belmare é o que a própria pessoa escreve numa conversa iniciada por ela — WhatsApp, e-mail ou telefone —, e ele chega pelo aplicativo ou provedor correspondente, não por este site.",
         ),
 
         titulo("Rastreamento e cookies"),

@@ -116,6 +116,31 @@ describe("os caminhos — a união que o tipo gerado não consegue expressar", (
     ]);
   });
 
+  test("um caminho de formulário atravessa sem precisar de campo nenhum (PRA-126)", () => {
+    // Diferente de rota e whatsapp, o formulário não tem dado próprio para
+    // faltar — os campos dele são fixos em `lib/lead.ts`, não neste bloco.
+    const pagina = comCaminhos([
+      {
+        rotulo: "Quero revender",
+        apoio: "Mande a cidade e o perfil da operação.",
+        destino: "formulario",
+      },
+    ]);
+
+    expect(pagina?.composicao).toEqual([
+      {
+        tipo: "caminhos",
+        itens: [
+          {
+            destino: "formulario",
+            rotulo: "Quero revender",
+            apoio: "Mande a cidade e o perfil da operação.",
+          },
+        ],
+      },
+    ]);
+  });
+
   test("caminho de rota sem rota escolhida é DESCARTADO, nunca apontado para a home", () => {
     // Um rascunho salvo no meio da montagem chega exatamente assim. Completar
     // com um destino plausível seria o site inventando navegação.

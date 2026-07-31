@@ -116,20 +116,38 @@ function caminhoDoPainel(
 
   const apoio = opcional("apoio", texto(linha.apoio));
 
-  if (linha.destino === "whatsapp") {
-    const contexto = texto(linha.contexto);
-    return contexto === undefined
-      ? undefined
-      : { destino: "whatsapp", rotulo, ...apoio, contexto };
+  /* ⚠️ `switch` exaustivo, como `enderecoDoCaminho` em
+     `components/paginas/caminhos.tsx` — o `satisfies never` do `default` é o
+     que faz um quarto destino virar erro de build aqui também, e não só do
+     lado do desenho. Antes de PRA-126 isto era um `if`/`else` que tratava
+     "não é whatsapp" como sinônimo de "é rota"; o terceiro destino expôs que
+     essa suposição não escala, e o `switch` é o que a substitui. */
+  switch (linha.destino) {
+    case "whatsapp": {
+      const contexto = texto(linha.contexto);
+      return contexto === undefined
+        ? undefined
+        : { destino: "whatsapp", rotulo, ...apoio, contexto };
+    }
+    /* O formulário não tem campo nenhum para completar: os campos dele são
+       fixos em `lib/lead.ts` e o rótulo já foi lido acima. Por isso este
+       caminho nunca é descartado por dado ausente — diferente dos outros
+       dois, não há dado que possa faltar. */
+    case "formulario":
+      return { destino: "formulario", rotulo, ...apoio };
+    case "rota": {
+      /* ⚠️ `ehDestinoInterno` e não um `as`: o valor gravado é uma string do
+         banco, e uma rota retirada do código deixa documentos gravados
+         apontando para ela. Nesse dia o caminho some da página — nunca vira
+         link para 404. */
+      const href = linha.rota;
+      return ehDestinoInterno(href)
+        ? { destino: "rota", rotulo, ...apoio, href }
+        : undefined;
+    }
+    default:
+      return linha.destino satisfies never;
   }
-
-  /* ⚠️ `ehDestinoInterno` e não um `as`: o valor gravado é uma string do banco,
-     e uma rota retirada do código deixa documentos gravados apontando para ela.
-     Nesse dia o caminho some da página — nunca vira link para 404. */
-  const href = linha.rota;
-  return ehDestinoInterno(href)
-    ? { destino: "rota", rotulo, ...apoio, href }
-    : undefined;
 }
 
 /**

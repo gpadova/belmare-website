@@ -84,7 +84,27 @@ export type Caminho =
       apoio?: string;
       /** O que a mensagem do WhatsApp já vem dizendo — ver `linkDeWhatsapp`. */
       contexto: string;
+    }
+  | {
+      /** O terceiro membro que o seam previa. O caminho não leva a lugar
+       *  nenhum: ele desce até o formulário de proposta desenhado na mesma
+       *  página, logo abaixo da lista — ver `components/paginas/caminhos.tsx`.
+       *
+       *  ⚠️ Não tem `href` nem `contexto` de propósito. Um formulário não é um
+       *  destino externo, e dar a ele um endereço próprio abriria uma rota que
+       *  ninguém pediu para uma página que já existe. */
+      destino: "formulario";
+      rotulo: string;
+      apoio?: string;
     };
+
+/** A âncora do formulário de proposta dentro de uma página livre.
+ *
+ *  ⚠️ Mora aqui, e não no componente, porque duas coisas precisam concordar
+ *  sobre ela: o `href` do caminho e o `id` da seção que ele desce até. Duas
+ *  cópias da mesma string é como uma âncora passa a apontar para lugar nenhum
+ *  sem nada quebrar. */
+export const ANCORA_DO_FORMULARIO = "proposta-comercial";
 
 export type Bloco =
   | { tipo: "prosa"; titulo?: string; corpo: ConteudoRico }
