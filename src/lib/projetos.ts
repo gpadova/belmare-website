@@ -42,6 +42,14 @@ export const PROJETOS: Projeto[] = [];
 /** Abaixo disto a seção não vai ao ar. */
 export const MINIMO_PARA_PUBLICAR = 3;
 
-export function projetosPublicaveis(): Projeto[] {
-  return PROJETOS.length >= MINIMO_PARA_PUBLICAR ? PROJETOS : [];
+/**
+ * As publicáveis a partir da lista informada — por padrão, `PROJETOS`.
+ *
+ * ⚠️ O parâmetro existe só para o teste exercitar o portão de
+ * `MINIMO_PARA_PUBLICAR` sem depender de `PROJETOS` deixar de estar vazio.
+ * Todo call site do site continua chamando sem argumento e lendo o array
+ * real — a assinatura aceita uma lista opcional, não muda o que o site faz.
+ */
+export function projetosPublicaveis(projetos: Projeto[] = PROJETOS): Projeto[] {
+  return projetos.length >= MINIMO_PARA_PUBLICAR ? projetos : [];
 }
