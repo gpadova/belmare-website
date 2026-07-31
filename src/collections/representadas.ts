@@ -1,4 +1,9 @@
+import { revalidateTag } from "next/cache";
+
+import { foraDeRequisicao } from "@/lib/fora-de-requisicao";
 import type { CollectionConfig } from "payload";
+
+import { tagsDaMudanca } from "@/lib/revalidacao";
 
 /**
  * As representadas, dentro do painel.
@@ -50,6 +55,38 @@ function exigeTexto(recusa: string) {
     valor && valor.trim() !== "" ? true : recusa;
 }
 
+/**
+ * `revalidateTag`, tolerante a correr fora de uma requisição do Next.
+ *
+ * ⚠️ Este hook dispara toda vez que a coleção é escrita pela API local — e
+ * isso inclui o teste de integração e um eventual script de seed, nenhum dos
+ * dois rodando dentro de uma requisição de verdade. Nesse mundo o Next nem
+ * chega a montar o armazenamento de geração estática, e `revalidateTag` lança
+ * antes de fazer qualquer coisa. Não existe rota renderizada para invalidar
+ * ali mesmo — a resposta certa é não fazer nada, e nunca deixar a escrita do
+ * documento falhar por causa de uma invalidação sem onde acontecer.
+ */
+function revalidarTags(tags: string[]): void {
+  for (const tag of tags) {
+    try {
+      revalidateTag(tag, { expire: 0 });
+    } catch (erro) {
+      // Fora de uma requisição do Next — ver a nota acima. Silêncio esperado.
+      if (foraDeRequisicao(erro)) continue;
+
+      /* ⚠️ Qualquer outra falha é a edição NÃO propagando. Não derruba o
+         salvamento — o documento já foi gravado e falhar depois disso só
+         confunde quem está no painel —, mas não pode sumir: sem esta linha a
+         falha só aparece como o operador jurando que editou e a página velha
+         no ar. */
+      console.error(
+        `[revalidação] a etiqueta "${tag}" não foi invalidada; a edição pode não aparecer no site`,
+        erro,
+      );
+    }
+  }
+}
+
 export const Representadas: CollectionConfig = {
   slug: "representadas",
   labels: { singular: "Representada", plural: "Representadas" },
@@ -63,6 +100,40 @@ export const Representadas: CollectionConfig = {
   access: {
     // O site público lê as marcas sem sessão. Escrita continua exigindo login.
     read: () => true,
+  },
+
+  /**
+   * ⚠️ **OS HOOKS SÃO CHAMADORES FINOS DE `tagsDaMudanca`, NUNCA A LISTA DE
+   * ROTAS.** Publicar ou editar e apagar chamam a MESMA função pura de
+   * `lib/revalidacao.ts` — é ela que sabe que uma representada aparece em seis
+   * lugares, não este hook. Isso é literalmente o critério "apagar invalida as
+   * mesmas etiquetas que mudar": os dois hooks abaixo derivam a partir do
+   * mesmo `slug`, e nenhum dos dois lista uma rota sequer.
+   */
+  hooks: {
+    afterChange: [
+      ({ doc, operation, previousDoc }) => {
+        revalidarTags(tagsDaMudanca({ colecao: "representadas", slug: doc.slug }));
+
+        /* Endereço mudou: a página do endereço ANTIGO continua no ar até o
+           próximo build — a rota é estática e `dynamicParams` é falso — e
+           ficaria servindo o documento velho para sempre sem isto. */
+        if (
+          operation === "update" &&
+          typeof previousDoc?.slug === "string" &&
+          previousDoc.slug !== doc.slug
+        ) {
+          revalidarTags(
+            tagsDaMudanca({ colecao: "representadas", slug: previousDoc.slug }),
+          );
+        }
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        revalidarTags(tagsDaMudanca({ colecao: "representadas", slug: doc.slug }));
+      },
+    ],
   },
 
   /* A ordem em que a galeria da home e as listas apresentam as marcas. Fica no

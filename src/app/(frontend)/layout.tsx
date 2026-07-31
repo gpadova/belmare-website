@@ -12,6 +12,22 @@ import "./globals.css";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
+/**
+ * ⚠️ O RODAPÉ MOSTRA `anosDeMercado()`, E ELE MORA AQUI — em toda rota do
+ * site, inclusive a 404. `/` e `/quem-somos` já declaravam este mesmo piso
+ * diário porque também mostram o tempo de casa no corpo da página; sem esta
+ * linha, `/representadas`, a página de marca e `/catalogos` não declaram
+ * nada, e o Next as trata como estáticas para sempre — o número do rodapé
+ * congela no aniversário e só volta a virar no próximo deploy. É a mesma
+ * falha "silenciosa, anual" documentada em `lib/site.ts`, e ela vale para toda
+ * rota que tenha rodapé, não só para as duas que já se protegiam sozinhas.
+ *
+ * O Next usa o MENOR `revalidate` entre layout e página numa mesma rota, e
+ * aqui os dois já concordam em 86400 — nenhuma dessas duas declarações fica
+ * redundante ao ponto de poder sair.
+ */
+export const revalidate = 86400;
+
 export const metadata: Metadata = {
   title: {
     default:

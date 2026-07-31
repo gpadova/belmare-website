@@ -50,15 +50,25 @@ function comando(binario: string, argumentos: string[]) {
 }
 
 /**
+ * ⚠️ `--force` derruba as conexões abertas antes de apagar. Sem ele o teardown
+ * corre com o pool do Payload: o Postgres recusa com "database is being
+ * accessed by other users" e a execução INTEIRA falha depois de todos os
+ * testes terem passado. Uma suíte que fica vermelha por causa da faxina ensina
+ * a ignorar o vermelho, que é o único jeito de um teste real passar
+ * despercebido. Exige Postgres 13+; o projeto usa 14.
+ */
+function apagar() {
+  comando("dropdb", ["--force", "--if-exists", NOME]);
+}
+
+/**
  * ⚠️ Apaga ANTES de criar, e não só no fim. Uma execução interrompida no meio
  * deixa o banco para trás, e o esquema velho de ontem passando por bom hoje é
  * um teste que mente sem falhar nenhuma vez.
  */
 export default function bancoDescartavel() {
-  comando("dropdb", ["--if-exists", NOME]);
+  apagar();
   comando("createdb", [NOME]);
 
-  return () => {
-    comando("dropdb", ["--if-exists", NOME]);
-  };
+  return apagar;
 }
