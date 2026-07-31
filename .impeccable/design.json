@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-31T01:34:26Z",
+  "title": "Design System: Belmare Representações",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Papel Off-White Quente",
+        "canonical": "oklch(96.2% 0.005 85)",
+        "tonalRamp": [
+          "oklch(15% 0.005 85)",
+          "oklch(26% 0.005 85)",
+          "oklch(37% 0.005 85)",
+          "oklch(48% 0.005 85)",
+          "oklch(59% 0.005 85)",
+          "oklch(70% 0.005 85)",
+          "oklch(81% 0.005 85)",
+          "oklch(96.2% 0.005 85)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Tinta Quase Preta",
+        "canonical": "oklch(19% 0.004 285)",
+        "tonalRamp": [
+          "oklch(15% 0.004 285)",
+          "oklch(19% 0.004 285)",
+          "oklch(30% 0.004 285)",
+          "oklch(42% 0.004 285)",
+          "oklch(54% 0.004 285)",
+          "oklch(66% 0.004 285)",
+          "oklch(80% 0.004 285)",
+          "oklch(95% 0.004 285)"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Grafite de Instrumento",
+        "canonical": "oklch(35% 0.004 285)",
+        "tonalRamp": [
+          "oklch(15% 0.004 285)",
+          "oklch(24% 0.004 285)",
+          "oklch(35% 0.004 285)",
+          "oklch(46% 0.004 285)",
+          "oklch(57% 0.004 285)",
+          "oklch(68% 0.004 285)",
+          "oklch(82% 0.004 285)",
+          "oklch(95% 0.004 285)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Cinza de Fio",
+        "canonical": "oklch(81% 0.007 85)",
+        "tonalRamp": [
+          "oklch(15% 0.007 85)",
+          "oklch(26% 0.007 85)",
+          "oklch(37% 0.007 85)",
+          "oklch(48% 0.007 85)",
+          "oklch(59% 0.007 85)",
+          "oklch(70% 0.007 85)",
+          "oklch(81% 0.007 85)",
+          "oklch(95% 0.007 85)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Branco de Superfície",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(37% 0 0)",
+          "oklch(48% 0 0)",
+          "oklch(59% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(85% 0 0)",
+          "oklch(100% 0 0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Duas ocorrências no site inteiro: o h1 da abertura da home sobre a foto e o ano 1999 no bloco 01 de /quem-somos. Gesto de abertura, nunca de seção."
+      },
+      "h1": {
+        "displayName": "Título de seção",
+        "purpose": "Título de seção e rótulo das portas. Sempre com teto de medida em ch (14–22ch) e text-balance em duas linhas."
+      },
+      "h2": {
+        "displayName": "Título de ação",
+        "purpose": "Uma ocorrência: o rótulo da ação de fecho. É o tamanho que faz um link de contato pesar sem virar botão."
+      },
+      "h3": {
+        "displayName": "Nome de item",
+        "purpose": "Nome de representada na galeria e na linha de ledger, e título do documento na linha de catálogo — onde a marca entra dentro do título (\"Catálogo Trisol\") quando a página não é dela. Sempre sublinhado no fio."
+      },
+      "body": {
+        "displayName": "Corpo",
+        "purpose": "Parágrafo corrido, teto de 44–64ch, text-pretty."
+      },
+      "support": {
+        "displayName": "Apoio",
+        "purpose": "Dado longo em caixa baixa: razão social, porte, endereço, descrição de CNAE, valor de ficha, legenda de figura, nota de fonte, e a nota de entrega da linha de documento (\"Envio pela Belmare\")."
+      },
+      "mono": {
+        "displayName": "Mono técnica",
+        "purpose": "Rótulo, código, sigla, número de bloco, ano, medida, navegação e cabeçalho de coluna. A caixa alta NÃO vem embutida: é aplicada item a item, e o teste é de classe da string — medida, código, sigla, rótulo de campo e estado de campo declarado vão em versal; nome próprio, frase e legenda ficam fora, mesmo curtos. Numerais tabulares embutidos."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "escala-imagem",
+        "value": "transform 700ms cubic-bezier(0, 0, 0.2, 1); scale(1.03)",
+        "purpose": "Hover de imagem na galeria de representadas e nas duas portas, com overflow-hidden recortando."
+      },
+      {
+        "name": "avanco-seta",
+        "value": "transform 300ms cubic-bezier(0, 0, 0.2, 1); translateX(0.375rem)",
+        "purpose": "Hover de grupo em todo link com seta — links de ação, linha de ledger, linha de documento e ação de fecho. O texto não se move, só a seta."
+      },
+      {
+        "name": "avanco-seta-curto",
+        "value": "transform 200ms cubic-bezier(0, 0, 0.2, 1); translateX(0.25rem)",
+        "purpose": "Variante usada na lista de saída do 404."
+      },
+      {
+        "name": "troca-de-cor",
+        "value": "color/background-color/text-decoration-color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Grafite para tinta na navegação e nos links; fio para tinta no sublinhado; papel para superfície no fundo de ledger, de linha de documento e da ação de fecho."
+      },
+      {
+        "name": "reducao-de-movimento",
+        "value": "motion-reduce:transition-none",
+        "purpose": "Acompanha todas as transições de transformação do site. Sem exceção."
+      },
+      {
+        "name": "foco",
+        "value": "outline: 2px solid var(--color-ink); outline-offset: 2px",
+        "purpose": "Global, via :focus-visible em @layer base. Não há anel de foco por componente."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "40rem" },
+      { "name": "md", "value": "48rem" },
+      { "name": "lg", "value": "64rem" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Item de navegação",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Item do cabeçalho: mono, caixa alta, grafite em repouso, tinta no hover. Sem sublinhado e sem estado ativo por rota.",
+      "html": "<nav aria-label='Principal'><ul class='ds-nav'><li><a class='ds-nav-item' href='#'>QUEM SOMOS</a></li><li><a class='ds-nav-item' href='#'>REPRESENTADAS</a></li><li><a class='ds-nav-item' href='#'>CATÁLOGOS</a></li><li><a class='ds-nav-item ds-nav-item--tinta' href='#'>WHATSAPP</a></li></ul></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 2rem; list-style: none; margin: 0; padding: 0; background: var(--color-paper); } .ds-nav-item { font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; text-transform: uppercase; color: var(--color-graphite); text-decoration: none; transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-nav-item:hover { color: var(--color-ink); } .ds-nav-item:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-nav-item--tinta { color: var(--color-ink); border-left: 1px solid var(--color-line); padding-left: 2rem; }"
+    },
+    {
+      "name": "Link de ação com seta",
+      "kind": "custom",
+      "refersTo": "link-acao",
+      "description": "A saída padrão de seção. Mono caixa alta em tinta, seta de 32×12 no traço de 1px avançando 0,375rem no hover. Não existe botão no sistema.",
+      "html": "<a class='ds-link-acao' href='#'>Ver as representadas<svg class='ds-seta' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg></a>",
+      "css": ".ds-link-acao { display: inline-flex; align-items: center; gap: 0.75rem; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-ink); text-decoration: none; } .ds-seta { width: 2rem; height: 0.75rem; flex-shrink: 0; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-link-acao:hover .ds-seta { transform: translateX(0.375rem); } .ds-link-acao:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } @media (prefers-reduced-motion: reduce) { .ds-seta { transition: none; } }"
+    },
+    {
+      "name": "Porta",
+      "kind": "card",
+      "refersTo": "porta",
+      "description": "Campo de imagem sangrada com véu preto em gradiente e texto branco no pé. Raio 0, sombra 0. Duas portas de igual peso, separadas por fio — não um botão e um link.",
+      "html": "<a class='ds-porta' href='#'><span class='ds-porta__veu'></span><span class='ds-porta__texto'><span class='ds-porta__rotulo'>Sou arquiteto ou designer</span><span class='ds-porta__apoio'>Catálogos das quatro marcas, arquivos 3D, cartas de acabamento e o canal direto com quem representa.</span><svg class='ds-porta__seta' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg></span></a>",
+      "css": ".ds-porta { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 26rem; padding: 1.5rem; overflow: hidden; background-color: var(--color-ink); border-radius: 0; text-decoration: none; } .ds-porta__veu { position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.15)); } .ds-porta__texto { position: relative; display: block; } .ds-porta__rotulo { display: block; max-width: 16ch; font-family: var(--font-sans); font-size: clamp(1.75rem, 2.6vw, 2.625rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.025em; color: #fff; } .ds-porta__apoio { display: block; max-width: 44ch; margin-top: 1rem; font-family: var(--font-sans); font-size: 1.0625rem; line-height: 1.55; color: rgb(255 255 255 / 0.85); } .ds-porta__seta { display: block; width: 2rem; height: 0.75rem; margin-top: 2rem; color: #fff; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-porta:hover .ds-porta__seta { transform: translateX(0.375rem); } .ds-porta:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } @media (min-width: 48rem) { .ds-porta { min-height: 32rem; padding: 2.5rem; } } @media (prefers-reduced-motion: reduce) { .ds-porta__seta { transition: none; } }"
+    },
+    {
+      "name": "Linha de ledger",
+      "kind": "custom",
+      "refersTo": "linha-ledger",
+      "description": "A linha inteira é link. Nome em h3 sublinhado no fio, origem em mono caixa alta, o que resolve em apoio, seta à direita. Hover eleva o fundo para branco puro — a única elevação do sistema.",
+      "html": "<ul class='ds-ledger'><li class='ds-ledger__item'><a class='ds-ledger__link' href='#'><span class='ds-ledger__nome'>Marê Mobília</span><span class='ds-ledger__origem'>CAMBÉ · PR</span><span class='ds-ledger__papel'>Resolve o móvel de autor</span><svg class='ds-ledger__seta' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg></a></li><li class='ds-ledger__item'><a class='ds-ledger__link' href='#'><span class='ds-ledger__nome'>Trisol</span><span class='ds-ledger__origem'>NÃO DECLARADA</span><span class='ds-ledger__papel'>Resolve a sombra</span><svg class='ds-ledger__seta' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg></a></li></ul>",
+      "css": ".ds-ledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-line); background: var(--color-paper); } .ds-ledger__item { border-bottom: 1px solid var(--color-line); } .ds-ledger__link { display: grid; grid-template-columns: minmax(0, 1fr) 2rem; align-items: baseline; column-gap: 1rem; row-gap: 0.5rem; padding: 1.25rem 0; text-decoration: none; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-ledger__link:hover { background-color: var(--color-surface); } .ds-ledger__link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-ledger__nome { font-family: var(--font-sans); font-size: 1.375rem; line-height: 1.25; font-weight: 400; color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-line); text-decoration-thickness: 1px; text-underline-offset: 6px; transition: text-decoration-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-ledger__link:hover .ds-ledger__nome { text-decoration-color: var(--color-ink); } .ds-ledger__origem { grid-column-start: 1; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-graphite); } .ds-ledger__papel { grid-column-start: 1; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-graphite); } .ds-ledger__seta { grid-column-start: 2; grid-row-start: 1; align-self: center; width: 2rem; height: 0.75rem; color: var(--color-graphite); transition: transform 300ms cubic-bezier(0, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-ledger__link:hover .ds-ledger__seta { transform: translateX(0.375rem); color: var(--color-ink); } @media (min-width: 48rem) { .ds-ledger__link { grid-template-columns: minmax(0, 18rem) minmax(0, 10rem) minmax(0, 1fr) 2rem; column-gap: 2rem; } .ds-ledger__origem { grid-column-start: 2; } .ds-ledger__papel { grid-column-start: 3; } .ds-ledger__seta { grid-column-start: 4; } } @media (prefers-reduced-motion: reduce) { .ds-ledger__seta { transition: none; } }"
+    },
+    {
+      "name": "Linha de documento",
+      "kind": "custom",
+      "refersTo": "linha-documento",
+      "description": "A linha do arquivo, compartilhada por /catalogos e pela seção \"Para levar\" da página de marca. Duas escritas — publicado (baixa/abre o PDF, medida completa, seta em tinta) e a pedir (abre o WhatsApp, edição declarada, nota em apoio, seta em grafite) — dentro de um markup só. Grade e teto de 52rem são exportados para o cabeçalho de colunas assentar exatamente sobre a linha.",
+      "html": "<div class='ds-doc'><div class='ds-doc__cabecalho' aria-hidden='true'><span>Documento</span><span class='ds-doc__cabecalho-medida'>Edição</span></div><ul class='ds-doc__lista' aria-label='Documentos declarados'><li class='ds-doc__item'><a class='ds-doc__link' href='#' target='_blank' rel='noopener noreferrer' download><span class='ds-doc__titulo'>Catálogo Trisol</span><span class='ds-doc__medida'><span class='ds-doc__valor'>PDF · 24,0 MB · 2026</span></span><svg class='ds-doc__seta ds-doc__seta--publicado' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg><span class='ds-doc__sr'>(abre o PDF)</span></a></li><li class='ds-doc__item'><a class='ds-doc__link' href='#' target='_blank' rel='noopener noreferrer'><span class='ds-doc__titulo'>Catálogo Marê Mobília</span><span class='ds-doc__medida'><span class='ds-doc__valor'>Edição não declarada</span><span class='ds-doc__nota'>Envio pela Belmare</span></span><svg class='ds-doc__seta ds-doc__seta--pedir' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg><span class='ds-doc__sr'>(abre o WhatsApp)</span></a></li></ul></div>",
+      "css": ".ds-doc { max-width: 52rem; background: var(--color-paper); } .ds-doc__cabecalho { display: grid; grid-template-columns: minmax(0, 1fr) 2rem; column-gap: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-line); font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; text-transform: uppercase; color: var(--color-graphite); } .ds-doc__cabecalho-medida { display: none; } .ds-doc__lista { list-style: none; margin: 0; padding: 0; } .ds-doc__item { border-bottom: 1px solid var(--color-line); } .ds-doc__link { display: grid; grid-template-columns: minmax(0, 1fr) 2rem; align-items: baseline; column-gap: 1rem; row-gap: 0.5rem; padding: 1.25rem 0; text-decoration: none; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-doc__link:hover { background-color: var(--color-surface); } .ds-doc__link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-doc__titulo { grid-column-start: 1; font-family: var(--font-sans); font-size: 1.375rem; line-height: 1.25; font-weight: 400; color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-line); text-decoration-thickness: 1px; text-underline-offset: 6px; transition: text-decoration-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-doc__link:hover .ds-doc__titulo { text-decoration-color: var(--color-ink); } .ds-doc__medida { grid-column-start: 1; margin-top: 0.25rem; } .ds-doc__valor { display: block; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; text-transform: uppercase; color: var(--color-graphite); } .ds-doc__nota { display: block; margin-top: 0.25rem; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-graphite); } .ds-doc__seta { grid-column-start: 2; grid-row-start: 1; align-self: center; width: 2rem; height: 0.75rem; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-doc__seta--publicado { color: var(--color-ink); } .ds-doc__seta--pedir { color: var(--color-graphite); transition: transform 300ms cubic-bezier(0, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-doc__link:hover .ds-doc__seta { transform: translateX(0.375rem); } .ds-doc__link:hover .ds-doc__seta--pedir { color: var(--color-ink); } .ds-doc__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } @media (min-width: 48rem) { .ds-doc__cabecalho, .ds-doc__link { grid-template-columns: minmax(0, 1fr) minmax(0, 13rem) 2rem; column-gap: 2rem; } .ds-doc__cabecalho-medida { display: block; } .ds-doc__medida { grid-column-start: 2; margin-top: 0; } .ds-doc__seta { grid-column-start: 3; } } @media (prefers-reduced-motion: reduce) { .ds-doc__seta { transition: none; } }"
+    },
+    {
+      "name": "Ficha (rótulo / valor)",
+      "kind": "custom",
+      "refersTo": "ficha-rotulo",
+      "description": "Rótulo em mono caixa alta à esquerda com largura fixa de 9rem, dado à direita, fio entre as linhas. A largura fixa é o que faz a coluna da direita alinhar entre linhas — sem ela, ficha vira lista.",
+      "html": "<dl class='ds-ficha'><div class='ds-ficha__linha'><dt class='ds-ficha__rotulo'>Telefone</dt><dd class='ds-ficha__valor'>(48) 3234-6004</dd></div><div class='ds-ficha__linha'><dt class='ds-ficha__rotulo'>Canal de venda</dt><dd class='ds-ficha__valor'>Sempre através de loja. A Belmare não vende direto ao consumidor final.</dd></div></dl>",
+      "css": ".ds-ficha { margin: 0; border-top: 1px solid var(--color-line); background: var(--color-paper); } .ds-ficha__linha { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.75rem 0; border-bottom: 1px solid var(--color-line); } .ds-ficha__rotulo { flex-shrink: 0; padding-top: 0.15rem; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; text-transform: uppercase; color: var(--color-graphite); } .ds-ficha__valor { min-width: 0; margin: 0; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-ink); } @media (min-width: 40rem) { .ds-ficha__linha { flex-direction: row; gap: 2rem; padding: 1rem 0; } .ds-ficha__rotulo { width: 9rem; } }"
+    },
+    {
+      "name": "Bloco numerado",
+      "kind": "custom",
+      "refersTo": "bloco",
+      "description": "A espinha das rotas de arquivo: fio de 1px abrindo a seção, número em mono na coluna de margem de 5rem, conteúdo com teto de 64rem e margem direita aberta. O número é aria-hidden.",
+      "html": "<section class='ds-bloco'><div class='ds-bloco__grade'><p class='ds-bloco__numero' aria-hidden='true'>04</p><div class='ds-bloco__conteudo'><h2 class='ds-bloco__titulo'>Três estados. Um interlocutor.</h2><p class='ds-bloco__corpo'>Paraná, Santa Catarina e Rio Grande do Sul — o mesmo território para as quatro representadas, sem recorte por marca.</p></div></div></section>",
+      "css": ".ds-bloco { border-top: 1px solid var(--color-line); padding: 3rem 1.25rem 3.5rem; background: var(--color-paper); } .ds-bloco__grade { display: grid; row-gap: 1.5rem; } .ds-bloco__numero { height: fit-content; margin: 0; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; color: var(--color-graphite); } .ds-bloco__conteudo { min-width: 0; } .ds-bloco__titulo { max-width: 18ch; margin: 0; font-family: var(--font-sans); font-size: clamp(1.75rem, 2.6vw, 2.625rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.025em; text-wrap: balance; color: var(--color-ink); } .ds-bloco__corpo { max-width: 52ch; margin: 1.5rem 0 0; font-family: var(--font-sans); font-size: 1.0625rem; line-height: 1.55; text-wrap: pretty; color: var(--color-graphite); } @media (min-width: 48rem) { .ds-bloco { padding: 4rem 2rem 6rem; } .ds-bloco__grade { grid-template-columns: 5rem minmax(0, 64rem); column-gap: 2rem; } }"
+    },
+    {
+      "name": "Ação de fecho",
+      "kind": "custom",
+      "refersTo": "acao-fecho",
+      "description": "O mais próximo de um botão primário que o sistema tem — e ainda assim é fio, não preenchimento. Único fio em tinta do sistema, rótulo em h2, hover eleva o fundo para branco.",
+      "html": "<a class='ds-acao-fecho' href='#'><span class='ds-acao-fecho__rotulo'>Pedir os catálogos num pedido só</span><svg class='ds-acao-fecho__seta' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg></a>",
+      "css": ".ds-acao-fecho { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.75rem 0; border-top: 1px solid var(--color-ink); border-bottom: 1px solid var(--color-ink); border-radius: 0; text-decoration: none; color: var(--color-ink); background: var(--color-paper); transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-acao-fecho:hover { background-color: var(--color-surface); } .ds-acao-fecho:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-acao-fecho__rotulo { font-family: var(--font-sans); font-size: clamp(1.375rem, 1.9vw, 1.875rem); font-weight: 400; line-height: 1.2; letter-spacing: -0.02em; } .ds-acao-fecho__seta { flex-shrink: 0; width: 2rem; height: 0.75rem; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-acao-fecho:hover .ds-acao-fecho__seta { transform: translateX(0.375rem); } @media (prefers-reduced-motion: reduce) { .ds-acao-fecho__seta { transition: none; } }"
+    },
+    {
+      "name": "Pular para o conteúdo",
+      "kind": "custom",
+      "refersTo": "pular-conteudo",
+      "description": "Skip link do layout: invisível até receber foco, e então tinta sobre papel no canto superior esquerdo. Renderizado aqui já no estado visível.",
+      "html": "<a class='ds-pular-conteudo' href='#conteudo'>Ir para o conteúdo</a>",
+      "css": ".ds-pular-conteudo { display: inline-block; padding: 0.5rem 0.75rem; background-color: var(--color-ink); color: var(--color-paper); font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; text-decoration: none; border-radius: 0; } .ds-pular-conteudo:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A Prancha de Arquivo",
+    "overview": "O sistema é uma folha técnica, não uma peça de campanha. Fundo de papel off-white, tinta quase preta, um fio de 1px como único ornamento, e duas famílias tipográficas dividindo o trabalho: a grotesca fala, a mono mede. Não há cor de acento em lugar nenhum do código — a energia cromática inteira vem da fotografia, e o resto da página sai da frente para deixá-la falar.\n\nA densidade é de amostrário: alinhamento visível e sem exceção, números de bloco na margem, fichas de rótulo e valor, tabelas regradas, um ledger de quatro linhas e uma prancha de território desenhada sobre malha oficial do IBGE. O que dá identidade é a grade, não a decoração. O teste que o projeto aplica em si mesmo: tire tudo menos tipografia, fio e foto — o site ainda tem que ficar de pé.\n\nO sistema recusa, em código e não só em intenção: raio, sombra, gradiente (exceto o véu de legibilidade sobre foto), matiz, terceira família tipográfica, textura de fundo, movimento por rolagem, botão. Cinco superfícies existem hoje — /, /quem-somos, /representadas, o template /representadas/[marca] e /catalogos. A segunda introduziu os padrões de composição de arquivo; a terceira os estendeu para a prancha chaveada sobre fotografia; a quarta acrescentou o único elemento fixo do sistema além do cabeçalho, a faixa de índice, mais o padrão de seção anulável com numeração calculada — a seção some quando o dado não existe, e a numeração fecha sem buraco; e a quinta acrescentou a linha de documento, primeira linha do sistema com duas escritas dentro de um markup só.\n\n/catalogos é a primeira superfície sem uma única imagem, e isso é direção, não falta de acervo: numa rota em que o visitante veio buscar um arquivo, fotografia de ambiente é ruído entre ele e o arquivo. O teste que o parágrafo acima declara passa a ter uma página que o cumpre com dois dos três elementos — ela fica de pé só com tipografia e fio, sem foto, sem prancha e sem gráfico: duas colunas partidas por um fio vertical de altura total, cabeçalho de colunas em mono e linhas regradas com a medida à direita. Não é licença para o resto do site. Onde há fotografia, ela continua sendo a única cor.",
+    "keyCharacteristics": [
+      "Acromático absoluto: cinco valores neutros, zero matiz",
+      "Fio de 1px #C9C6C0 como único ornamento, e estrutural",
+      "Raio 0 e sombra 0 impostos por deleção de namespace, não por convenção",
+      "Duas famílias: grotesca para fala, mono para medida",
+      "Elevação só por tom: #FFFFFF sobre #F5F3F0",
+      "Vocabulário de movimento fechado em quatro gestos, todos por ponteiro",
+      "Toda ação é link; não existe botão no sistema",
+      "Dado ausente é declarado por extenso, nunca inventado nem travessão",
+      "A fotografia é a única cor — e não é requisito: /catalogos fica de pé sem nenhuma",
+      "Formato, peso e edição declarados antes do clique, formatados por uma função só"
+    ],
+    "rules": [
+      {
+        "name": "A Regra da Cromia Zero",
+        "body": "Nenhum matiz entra em nenhuma superfície. Não há cor primária, não há cor de estado, não há verde de sucesso nem vermelho de erro. Estado se comunica por tom (grafite → tinta), por peso de fio e por posição. Atenção: diferente de raio e sombra, o namespace de cor padrão do Tailwind não foi deletado — text-red-500 ainda compila. A disciplina aqui é convenção, e a única guarda é a revisão.",
+        "section": "colors"
+      },
+      {
+        "name": "A Regra do Papel",
+        "body": "#F5F3F0 é fundo; #FFFFFF é superfície. Inverter os dois quebra a única forma de elevação que o sistema tem.",
+        "section": "colors"
+      },
+      {
+        "name": "A Regra da Divisão de Trabalho",
+        "body": "A grotesca fala, a mono mede. Material, formato, contador, código, ano, medida e sigla vão em mono. Frase inteira não é medida — vai na grotesca.",
+        "section": "typography"
+      },
+      {
+        "name": "A Regra da Caixa Alta",
+        "body": "Versal é aplicada explicitamente, item a item. O teste é de classe da string, não de tamanho: medida, código, sigla, rótulo de campo e estado de campo declarado vão em versal (PDF · 24,0 MB · 2026, EDIÇÃO NÃO DECLARADA, NÃO DECLARADA); nome próprio, frase e legenda ficam fora mesmo curtos — razão social, porte, endereço, descrição de CNAE, nome de coleção e nome de fábrica vão na grotesca em caixa baixa. A utilidade mono deliberadamente não carrega text-transform. A regra sobreviveu a uma violação real neste build: a primeira linha de documento punha o nome da fábrica em mono versal numa linha própria sob o título. A correção não foi trocar a caixa — foi apagar a linha, e a atribuição entrou dentro do título, em h3 caixa baixa (\"Catálogo Trisol\"). Se a solução for baixar a caixa e manter o elemento, quase sempre o elemento é que estava errado.",
+        "section": "typography"
+      },
+      {
+        "name": "A Regra das Duas Famílias",
+        "body": "Duas, e só duas. Uma terceira família é o primeiro sintoma de que alguém tentou resolver hierarquia com fonte em vez de com grade.",
+        "section": "typography"
+      },
+      {
+        "name": "A Regra da Margem Única",
+        "body": "Tudo pendura na mesma margem esquerda — fio, rótulo, parágrafo, tabela e a prancha. A prancha em particular não leva mx-auto: numa página em que a grade é o argumento, o único gráfico centralizado seria a única coisa fora do lugar.",
+        "section": "layout"
+      },
+      {
+        "name": "A Regra do Teto de 64rem",
+        "body": "A coluna de conteúdo tem teto; a margem direita fica aberta. Nada é centralizado para preencher tela larga.",
+        "section": "layout"
+      },
+      {
+        "name": "A Regra da Elevação por Tom",
+        "body": "Se algo precisa parecer acima do papel, ele fica branco. Não existe segunda opção — e quem tentar acrescentar uma vai descobrir que a utilidade não existe.",
+        "section": "elevation"
+      },
+      {
+        "name": "A Regra do Fio Estrutural",
+        "body": "Um fio de 1px em #C9C6C0 só entra onde há separação real de conteúdo. Fio decorativo, fio duplo e fio alinhado a nada estão fora: no bloco numerado, o fio sob o número foi removido justamente porque caía 27px acima do primeiro fio de conteúdo e lia como pendência.",
+        "section": "elevation"
+      },
+      {
+        "name": "A Regra do Raio Zero",
+        "body": "Não é preferência, é ausência de utilidade. Quem precisar de canto arredondado terá que reabrir o @theme — e essa é exatamente a conversa que a deleção do namespace existe para forçar.",
+        "section": "shapes"
+      },
+      {
+        "name": "A Regra do Cabeçalho de Coluna",
+        "body": "Um cabeçalho de coluna assenta sobre a coluna que nomeia — por isso a grade é importada, não redigitada — e nomeia o que a coluna de fato carrega hoje: enquanto nenhum documento está publicado ela leva edição e estado de entrega, e se chama EDIÇÃO; vira ARQUIVO sozinha no dia em que houver arquivo. Na largura em que a coluna não existe, o rótulo dela também não existe: no telefone a linha empilha e só DOCUMENTO fica. Cabeçalho que promete coluna inexistente é pior que cabeçalho nenhum.",
+        "section": "components"
+      },
+      {
+        "name": "A Regra da Chamada",
+        "body": "A seta nomeia a função, nunca o produto — e é a legenda, fora do desenho, que atribui a função à fábrica. Sobre fotografia gerada, uma seta com nome de marca afirma que aquele objeto é produto daquela marca. Efeito colateral que vale o desenho inteiro: como a chave é a função, o mesmo desenho aceita N marcas.",
+        "section": "components"
+      },
+      {
+        "name": "A Regra do Movimento Fechado",
+        "body": "Não existe movimento por rolagem em lugar nenhum do código — nem revelação suave, nem parallax, nem traço que se desenha. Isso é regra, não omissão: o arquiteto volta muitas vezes, e o que encanta na primeira visita irrita na décima. Movimento novo entra só se couber na tabela de quatro gestos.",
+        "section": "components"
+      },
+      {
+        "name": "A Regra do Link",
+        "body": "Toda ação é link. Se algo precisar de mais peso, ganha fio em tinta e corpo maior — nunca preenchimento e canto.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do construir profundidade com #FFFFFF sobre #F5F3F0 e com o fio de 1px. É a elevação inteira do sistema.",
+      "Do aplicar caixa alta explicitamente, e só em medida, código, sigla, rótulo de campo e estado de campo declarado. Nome próprio e frase vão na grotesca em caixa baixa por curtos que sejam — razão social, endereço, porte, descrição de CNAE, nome de fábrica.",
+      "Do limitar medida de texto em ch (título 14–24ch, corpo 44–68ch) e deixar a margem direita aberta.",
+      "Do pendurar todo elemento novo na margem única (1.25rem / 2rem), inclusive gráficos.",
+      "Do usar tabular-nums em qualquer coluna, ficha, tabela ou contador. Já vem embutido na utilidade mono.",
+      "Do acompanhar toda transição de transformação com motion-reduce:transition-none.",
+      "Do terminar o alt de toda imagem mock em \"imagem de referência\", e centralizar as referências em src/lib/acervo.ts — trocar o acervo não pode virar caça a URL espalhada.",
+      "Do acrescentar legenda visível quando a posição da imagem sugerir obra entregue. alt não resolve: ninguém que enxerga lê alt. É o que a foto de fecho de /quem-somos faz, e é a única legenda visível de foto do site.",
+      "Do escrever campo sem dado por extenso — \"não declarada\" — em vez de travessão, que o leitor confunde com erro de digitação.",
+      "Do manter seção sem conteúdo real renderizando null. projetos-realizados.tsx está construída inteira e no ar em zero pixels até existirem três projetos completos: sem markup vazio, sem título órfão, sem \"em breve\".",
+      "Do traçar toda linha de chamada sobre fotografia duas vezes — encamisamento de 3px em papel sob o traço de 1px em tinta. Um traço só não passa dos 3:1 que a WCAG pede para objeto gráfico, e a chamada vira decoração.",
+      "Do dar à prancha o mesmo aspecto do arquivo em toda largura. Qualquer outro aspecto recorta por dentro e move a chamada para fora do objeto.",
+      "Do derivar contagem de sumário de itens distintos, e derivar o próprio sumário da mesma função que monta as seções.",
+      "Do formatar toda medida por uma função só, nunca inline. pesoEmMB() fixa uma casa decimal para PDF · 24,0 MB assentar embaixo de SKP · 8,4 MB numa coluna de numeral tabular; toLocaleString solto em cada chamada devolve \"24\" num lugar e \"8,4\" no outro, e a coluna deixa de ler como medida.",
+      "Do compartilhar o componente de linha entre as superfícies que declaram o mesmo documento, desde a primeira linha escrita. Peso e edição são a promessa que a linha faz antes do clique, e promessa formatada em dois lugares diverge. O componente exporta a própria grade e o próprio teto, para o cabeçalho de colunas cair exatamente sobre ela.",
+      "Do derivar o rótulo de um cabeçalho de coluna do dado que a coluna carrega hoje — EDIÇÃO enquanto nada está publicado, ARQUIVO quando houver arquivo — e esconder o rótulo na largura em que a coluna não existe.",
+      "Do dar target=\"_blank\" a todo link de arquivo. O atributo download é ignorado em URL de outra origem, e os arquivos são servidos de storage: sem o target, o dia em que o primeiro PDF chegar o clique deixa de baixar e leva o visitante para fora da página, sem sintoma nenhum em revisão porque hoje não há arquivo para testar. A copy acompanha o fato — \"abre\", não \"baixa\".",
+      "Do derivar número exibido de função, nunca de literal. anosDeMercado() conta com dia e mês, e a rota declara revalidate = 86400 para o número não congelar entre builds."
+    ],
+    "donts": [
+      "Don't reabrir --radius-*, --shadow-* ou --drop-shadow-*. Eles estão em initial de propósito: as utilidades não existem, e essa impossibilidade é o sistema.",
+      "Don't introduzir matiz. Sem cor primária, sem cor de acento, sem verde de sucesso, sem vermelho de erro. O namespace de cor padrão do Tailwind continua compilando — a disciplina é sua.",
+      "Don't usar branco puro como fundo de página, nem papel como superfície elevada.",
+      "Don't tirar a hachura do logotipo. Ela não vira padrão de fundo, não vira textura de seção, não representa material e não tem irmãs.",
+      "Don't acrescentar uma terceira família tipográfica, nem substituir a pilha de fonte: Söhne já é a primeira da pilha, e Geist entra como fallback dentro dela.",
+      "Don't criar movimento disparado por rolagem, parallax, scroll-jacking, loader longo ou contador animado.",
+      "Don't desenhar botão preenchido. Toda ação é link.",
+      "Don't centralizar o único gráfico de uma página, nem qualquer bloco de conteúdo, para \"preencher\" tela larga.",
+      "Don't apresentar imagem mock como foto real de produto, fábrica ou projeto entregue — nem em copy, nem em alt, nem em legenda.",
+      "Don't escrever nome próprio, frase ou legenda em mono versal, nem quando são curtos. Versal é medida, código, sigla, rótulo de campo e estado de campo declarado; nome de fábrica, nome de coleção, nota de modelo e legenda de figura vão na grotesca em caixa baixa. Quando a saída for \"baixar a caixa e manter o elemento\", o elemento é que estava errado.",
+      "Don't tirar de uma célula o prefixo que a descreve só porque o cabeçalho da coluna repete a palavra. EDIÇÃO sobre três células que começam com EDIÇÃO repete a palavra quatro vezes, e a correção óbvia quebra o telefone: ali o cabeçalho está hidden e a célula precisa se descrever sozinha — \"2026\" solto não diz o que é. A repetição custa menos que uma máquina de prefixo condicional por breakpoint.",
+      "Don't nomear uma marca numa seta apontando para fotografia gerada. A chamada nomeia a função; a legenda, fora do desenho, é que atribui.",
+      "Don't preencher campo vazio com dado plausível. O que não existe fica ausente."
+    ]
+  }
+}

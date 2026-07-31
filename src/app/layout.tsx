@@ -1,0 +1,75 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+
+import { Cabecalho } from "@/components/cabecalho";
+import { DefinicaoDeHachura } from "@/components/hachura";
+import { Rodape } from "@/components/rodape";
+import { EMPRESA } from "@/lib/site";
+import "./globals.css";
+
+/* Geist é o fallback declarado na pilha de globals.css, não a fonte do projeto.
+   A tipografia é Söhne; ver a nota no topo daquele arquivo. */
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: {
+    default:
+      "Belmare Representações — móveis, estrutura, conforto e sombra para a área externa",
+    template: "%s — Belmare Representações",
+  },
+  description:
+    "Sofá, mesa, espreguiçadeira e ombrelone para área externa de alto padrão. A Belmare representa Marê Mobília, GDA Móveis, Bux Garden e Trisol no Paraná, Santa Catarina e Rio Grande do Sul, desde 1999.",
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: EMPRESA.nomeCompleto,
+  },
+};
+
+const CONTRATO_DE_DIRECAO = `<!--
+THESIS: A primeira linha nomeia OBJETOS, não o organograma. Recusa o herói de
+categoria ("móveis para área externa"), o grid de logos e — desde 30/07/2026 —
+o jargão de contar fábricas e interlocutores, que descreve como a empresa se
+organiza para quem não perguntou.
+OWN-WORLD: Papel #F5F3F0, tinta #17171A, grafite #3D3D40, fio #C9C6C0. Zero
+cor de marca, raio 0, sombra 0. A interface é invisível: a fotografia carrega
+a página. A mono é rótulo, não linguagem. Nenhuma textura, nenhum padrão de
+fundo — a identidade é tipografia, grade e o fio de 1px.
+STORY: O visitante vê nomeadas as peças que resolvem uma área externa, descobre
+que uma só empresa dá conta das quatro, e escolhe uma das duas portas.
+FIRST VIEWPORT: cabeçalho 72px em papel; fotografia sangrando na altura da
+tela; sobre o pé da imagem, "Sofá, mesa, espreguiçadeira e ombrelone." e a
+linha que nomeia Marê, GDA, Bux e Trisol, o território e o tempo de casa.
+WhatsApp persistente no topo.
+FORM: Direção A — editorial/arquivo. Revisado em 30/07/2026: o eixo de
+material foi cancelado por falta de dado (4 de 32 células), e com ele saíram a
+marca-sistema generativa e a anatomia de etiqueta. Ver briefing/estrutura.md §4.
+-->`;
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html
+      lang="pt-BR"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="flex min-h-full flex-col">
+        <div hidden dangerouslySetInnerHTML={{ __html: CONTRATO_DE_DIRECAO }} />
+        <DefinicaoDeHachura />
+        <a
+          href="#conteudo"
+          className="mono sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-ink focus:px-3 focus:py-2 focus:text-paper"
+        >
+          Ir para o conteúdo
+        </a>
+        <Cabecalho />
+        <main id="conteudo" className="flex-1">
+          {children}
+        </main>
+        <Rodape />
+      </body>
+    </html>
+  );
+}

@@ -1,0 +1,5 @@
+# sharp faz a otimização de imagem do next/image — este site é feito de macro
+# fotográfica, então ele não é opcional. unrs-resolver é do eslint.
+allowBuilds:
+  sharp: true
+  unrs-resolver: true

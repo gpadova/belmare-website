@@ -1,0 +1,15 @@
+{
+  "surface": "src/app/representadas/[marca]/page.tsx",
+  "direction": "o índice da prancha",
+  "seed_key": "f587693a",
+  "approved": true,
+  "approved_at": "2026-07-30",
+  "model": "fal-ai/nano-banana-pro",
+  "aspect_ratio": "16:9",
+  "prompt": "A flat desktop WEBSITE DESIGN MOCKUP — a screenshot of a web page layout, not a photograph, not a poster. 16:9 desktop viewport. ENTIRE PAGE IS ACHROMATIC: off-white paper #F5F3F0, near-black ink #17171A, 1px hairlines #C9C6C0. No colour, no rounded corners, no shadows, no gradients, no buttons. LAYOUT: header 72px with wordmark BELMARE over a hatched band, nav in mono caps, WHATSAPP right. A SECOND STICKY BAND directly beneath, 40px tall, closed by a hairline, spanning full width: index entries in tiny mono caps with lighter grey counts — IDENTIFICAÇÃO, O QUE DECLARA 4, QUEM ASSINA 2, VOCABULÁRIO 12, PARA LEVAR PDF 18,2 MB, FALAR — with the active entry in near-black and a mono caps link with arrow at the far right. Then a FULL-BLEED LANDSCAPE PHOTOGRAPH about 40% of page height, edge to edge, no text over it and no dark veil. Below it, hanging on a 32px left margin: mono strip GDA MÓVEIS · CLÁUDIO · MG, a 52px grotesque brand name, a short grey paragraph, then a hairline opening a section with four ruled fact rows, each a mono caps label in a fixed left column and a larger grotesque value on the right.",
+  "notes_not_to_literalize": [
+    "The comp's header nav reads ÍNDICE / MARCAS / ARQUIVO / SOBRE; the real nav is the site's four items and is not touched.",
+    "Institutional prose under the brand name is invented comp copy — no factory has published usable history (see briefing/marcas/*). That paragraph carries only 'Resolve …' plus declared facts.",
+    "The index counts are illustrative; real counts derive from the rendered sections."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "surface": "src/app/representadas/page.tsx",
+  "direction": "PRANCHA 02 — a área externa desmontada",
+  "seed_key": "77738b15",
+  "approved": true,
+  "approved_at": "2026-07-30",
+  "model": "fal-ai/nano-banana-pro",
+  "aspect_ratio": "16:9",
+  "prompt": "A flat desktop WEBSITE DESIGN MOCKUP — a screenshot of a web page layout, not a photograph, not a poster. 16:9 desktop viewport. ENTIRE PAGE IS ACHROMATIC: off-white paper background #F5F3F0, near-black ink #17171A, 1px hairline rules in warm grey #C9C6C0. No colour anywhere, no rounded corners, no shadows, no gradients, no buttons. A clean Swiss grotesque for headlines, tiny monospace caps with wide letter-spacing for labels. LAYOUT: header 72px with wordmark BELMARE over a hatched band, centre nav in mono caps, WHATSAPP right. Two-column first viewport split by a full-height vertical hairline: LEFT 62% the technical plate — a wide desaturated near-colourless editorial photograph of an outdoor terrace, framed by a 1px hairline with register crosses, carrying four callout marks (mono numbers 01–04 on off-white paper chips joined by thin leader lines to the objects they identify). RIGHT 38%: mono label PRANCHA 02 · ÁREA EXTERNA, a 36px grotesque headline, then the legend as a stacked ruled list of four entries, each a mono number and function above a grotesque factory name, each with a thin horizontal arrow at its right edge. Below the fold: brand records as horizontal rows opened by hairlines, each with a small square reference photograph, mono number, grotesque brand name with thin underline, grey supporting line, and a thin arrow at the far right.",
+  "notes_not_to_literalize": [
+    "The comp mislabels the records: Trisol is shown with Cambé/PR and Marê's designer count, GDA with Ubá/MG. All brand facts come from src/lib/representadas.ts, never from the comp.",
+    "The word LEGEND renders in English in the comp; the build says 'Legenda'.",
+    "Invented supporting copy in the record rows is comp noise."
+  ]
+}

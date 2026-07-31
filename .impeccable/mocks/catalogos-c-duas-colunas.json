@@ -1,0 +1,24 @@
+{
+  "surface": "src/app/catalogos/page.tsx",
+  "direction": "O índice de documentos — a linha é o documento, não a marca",
+  "approved": true,
+  "approved_at": "2026-07-30",
+  "model": "fal-ai/nano-banana-pro",
+  "aspect_ratio": "16:9",
+  "prompt": "A flat desktop WEBSITE DESIGN MOCKUP — a screenshot of a web page layout, not a photograph, not a poster, not a scene. 16:9 desktop viewport. ENTIRE PAGE IS ACHROMATIC: off-white paper background #F5F3F0, near-black ink #17171A, 1px hairline rules in warm grey #C9C6C0. No colour anywhere, no rounded corners, no shadows, no gradients, no filled buttons, and ABSOLUTELY NO PHOTOGRAPHS OR IMAGES anywhere on this page — it is pure typography and hairlines. A clean Swiss grotesque for headlines, tiny monospace caps with wide letter-spacing for labels and file data. Header band 72px tall with the wordmark BELMARE above a small hatched stripe, centre navigation in mono caps QUEM SOMOS REPRESENTADAS CATÁLOGOS ARQUIVOS 3D, and WHATSAPP at the right, closed by a hairline. LAYOUT: the page body is split into two columns by a single FULL-HEIGHT VERTICAL HAIRLINE. LEFT COLUMN, 34% wide: a tiny mono caps label CATÁLOGOS at the top, then a 40px grotesque headline set over two lines reading 'Medida, acabamento e ficha cotada.', then a short grey paragraph of about 45 characters per line, and lower down in the same column a mono caps action line with a thin horizontal arrow beside it. RIGHT COLUMN, 66% wide: the document list fills the column edge to edge — a hairline across its top, a row of tiny mono caps column labels DOCUMENTO / ARQUIVO, then four list rows each separated by a hairline. Every row carries a 22px grotesque document title with a thin underline, a mono caps brand name set small beneath the title, mono file data aligned right (the first row reads PDF · 24,0 MB · 2025, the others read ENVIO PELA BELMARE), and a thin horizontal arrow at the row's far right edge. Below both columns, spanning the full width, one action line bounded above and below by ink-black hairlines with a 28px grotesque label at its left and a thin arrow at its right. Footer in four columns of mono caps text.",
+  "carry_forward": [
+    "The full-height vertical hairline splitting argument from list — it is what keeps the list from reading as a fourth enumeration of the same four brands.",
+    "The brand set in small mono BENEATH the document title, never as its own column: that is what makes the document the subject and the brand its attribution.",
+    "File data aligned to the right of the row, arrow at the far edge.",
+    "Explicit mono column header opening the list (carried over from comp A, approved 30/07/2026).",
+    "Left column carrying the label, headline, expectation paragraph, and secondary outbound links at its foot."
+  ],
+  "notes_not_to_literalize": [
+    "Every string of data in the comp is noise: document names, 'BELMARE' as the brand of every row, the São Paulo address, the phone number, the e-mail. All facts come from src/lib/representadas.ts and src/lib/site.ts.",
+    "The closing action renders in grotesque CAPS ('SOLICITE SUA FICHA COTADA AGORA.'). The system applies versal only to mono labels and short codes — the fecho is sentence case.",
+    "'ENVIO PELA BELMARE' renders as mono caps. A phrase in mono versal is banned; the state line goes in support grotesque, lower case.",
+    "'VISUALIZAR TODOS' in the left column duplicates the fecho. The left column's foot carries the outbound links (3D, brand page), not a second WhatsApp action.",
+    "The arrow spanning the full page width inside the fecho is a comp flourish; the fecho arrow is the system's 32×12 glyph.",
+    "The comp shows four rows because four is what it was told to draw. The list is N documents, and today three brands declare one document each."
+  ]
+}
