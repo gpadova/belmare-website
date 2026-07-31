@@ -30,7 +30,8 @@ institucional de uma marca, legenda de materiais de uma peça, dados de contato.
 _Avoid_: editável, conteúdo
 
 A classificação campo a campo — feita uma vez em PRA-119 e estendida por PRA-120 (Peça,
-Arquivo3D, Acabamento) e PRA-122 (os globais Empresa, Home e QuemSomos) — está registrada em
+Arquivo3D, Acabamento), PRA-122 (os globais Empresa, Home e QuemSomos) e PRA-123 (a Prancha,
+onde o campo é geometria em vez de texto) — está registrada em
 `docs/classificacao-de-texto.md`. Consulte-a antes de reabrir a discussão para um campo já
 classificado; estenda-a, em vez de recomeçar, quando uma coleção nova entrar. A seção "o que
 PRA-122 recusou a transformar em campo" existe para que a lista do que fica **fixo** não precise

@@ -18,6 +18,7 @@ import { Representadas } from "@/collections/representadas";
 import { Usuarios } from "@/collections/usuarios";
 import { Empresa } from "@/globals/empresa";
 import { Home } from "@/globals/home";
+import { Prancha } from "@/globals/prancha";
 import { QuemSomos } from "@/globals/quem-somos";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -136,13 +137,20 @@ export default buildConfig({
   ],
 
   /**
-   * ⚠️ Os três globais são o conteúdo que não pende de nenhuma coleção — a
-   * decisão 10 da spec. `Empresa` é o que destrava o lançamento: o WhatsApp e o
-   * e-mail comercial estavam mockados em `lib/site.ts` e saíram do código
-   * inteiramente em PRA-122. `Home` e `QuemSomos` guardam a prosa DENTRO da
-   * espinha fixa — nunca a ordem das seções, nunca os títulos.
+   * ⚠️ Os globais são o conteúdo que não pende de nenhuma coleção — a decisão
+   * 10 da spec. `Empresa` é o que destrava o lançamento: o WhatsApp e o e-mail
+   * comercial estavam mockados em `lib/site.ts` e saíram do código inteiramente
+   * em PRA-122. `Home` e `QuemSomos` guardam a prosa DENTRO da espinha fixa —
+   * nunca a ordem das seções, nunca os títulos.
+   *
+   * ⚠️ `Prancha` (PRA-123) é o quarto, e é de outra natureza: não guarda prosa,
+   * guarda uma fotografia e a geometria das chamadas que apontam para dentro
+   * dela. Entrou como global pela mesma regra dos outros — é conteúdo de UMA
+   * página (`/representadas`) e não pende de fábrica nenhuma. A prancha do
+   * TERRITÓRIO, de `/quem-somos`, continua fora do painel: é malha do IBGE,
+   * regerada da fonte.
    */
-  globals: [Empresa, Home, QuemSomos],
+  globals: [Empresa, Home, QuemSomos, Prancha],
 
   /**
    * ⚠️ O painel é para UMA pessoa não técnica na Belmare, que o abre uma vez

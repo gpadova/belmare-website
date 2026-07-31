@@ -1,4 +1,4 @@
-# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento, Empresa, Home, QuemSomos
+# Classificação gerado / fixo / campo — Representada, Imagem, Peça, Arquivo3D, Acabamento, Empresa, Home, QuemSomos, Prancha
 
 Registro exaustivo, pedido pela decisão 3 da spec e por PRA-119: toda string tocada pela
 migração do conteúdo de `lib/representadas.ts` e `lib/acervo.ts` para o Payload, classificada
@@ -19,6 +19,13 @@ pessoa bem-intencionada põe tudo. **A lista do que NÃO virou campo vale mais d
 virou**, e está registrada abaixo justamente para o próximo ticket não precisar reabrir cada
 string.
 
+**PRA-123 estendeu esta tabela** com o global `Prancha` — e é o único caso em que um CAMPO não
+é texto nem arquivo, e sim GEOMETRIA: quatro porcentagens por chamada. A pergunta que a
+classificação faz continua a mesma ("quem decide este valor, e a partir de quê?"), e a resposta
+aqui é o operador olhando para a própria fotografia. O rótulo da chamada, que é a única string
+do desenho, **não virou campo de propósito** — ver a linha de `Representada.parte` na tabela de
+gerado.
+
 ## Coleção `representadas` (`src/collections/representadas.ts`)
 
 | Campo | Camada | Por quê |
@@ -27,7 +34,7 @@ string.
 | `slug` | Campo | Decisão de endereço, não de conteúdo — mas é o operador quem a toma (a Belmare decide a URL). |
 | `ordem` | Campo | Decisão de apresentação da Belmare, explícita no rótulo do campo ("Posição nas listas"). Não é derivada de nenhum outro dado. |
 | `resolve` | Campo | Prosa institucional por marca — o que a spec chama de "editar a prosa institucional de uma representada" (história 5). |
-| `parte` | Campo | O rótulo da chamada na prancha; a fábrica não o publica, é uma escolha editorial da Belmare, mas ainda assim digitada, não calculada. |
+| `parte` | Campo | O rótulo da chamada na prancha; a fábrica não o publica, é uma escolha editorial da Belmare, mas ainda assim digitada, não calculada. **[PRA-123]** É o ÚNICO lugar onde essa palavra existe: a chamada da prancha não tem campo de texto próprio, e o rótulo do desenho é lido daqui. |
 | `base` | Campo | Fato verificável, mas só existe se alguém o registrar — sem ele, ausente, nunca inventado. |
 | `fato` | Campo | Idem. |
 | `imagem`, `imagemLarga` | Campo (upload) | O operador escolhe o upload; a validação (recusa de repetição, formato) é editor UX, não geração. |
@@ -109,6 +116,33 @@ deploy para corrigir um telefone.
 
 O bloco 04 (a prancha do território) **não tem campo nenhum** — ver a tabela de gerado abaixo.
 
+## Global `prancha` (`src/globals/prancha.ts`) — PRA-123
+
+A PRANCHA 02 de `/representadas`: a fotografia da área externa e as chamadas numeradas que
+apontam para os objetos dela. Existe por um modo de falha, não por simetria com os outros
+globais — as coordenadas eram porcentagens **medidas à mão** contra uma fotografia específica, e
+trocar a fotografia sem recalcular as quatro deixava quatro linhas apontando para deck vazio,
+sem quebrar nada visivelmente.
+
+| Campo | Camada | Por quê |
+|---|---|---|
+| `foto` | Campo (upload) | A fotografia da cena. Recusa salvar sem ela, em pt-BR. As dimensões do arquivo (`width`/`height`) **não** são campo — são lidas pelo Payload e definem o aspecto da moldura na página, que é o que mantém a porcentagem valendo (`lib/prancha-traducao.ts`). |
+| `chamadas[].representada` | Campo (relacionamento) | Qual fábrica responde por aquele objeto da cena. É o único campo da chamada que o operador **escolhe** em vez de arrastar. |
+| `chamadas[].rotuloX`, `.rotuloY` | Campo | Onde a etiqueta numerada pousa, em porcentagem da caixa da imagem. Digitável nos campos numéricos **e** arrastável no campo de pinos — o mesmo valor, dois caminhos, porque um campo só de mouse tranca do lado de fora quem não usa mouse. |
+| `chamadas[].alvoX`, `.alvoY` | Campo | Onde a linha de chamada encosta no objeto. Independente da etiqueta de propósito: a etiqueta pousa em área vazia, o alvo pousa no objeto, e são justamente os dois lugares que uma fotografia nova desloca de forma diferente. |
+
+## Prancha — o que PRA-123 recusou a transformar em campo
+
+| Texto | Onde mora | Por que não é campo |
+|---|---|---|
+| O rótulo da chamada ("MÓVEL", "ESTRUTURA", "ESTOFADO", "SOMBRA") | **Gerado** de `Representada.parte` | Um campo de texto na chamada seria a SEGUNDA cópia da mesma palavra — a primeira mora na representada —, e é assim que uma seta acaba escrita com o nome de uma fábrica. A cena é gerada: uma seta dizendo "Trisol" afirma que aquele ombrelone é produto da Trisol. Nomear a função é verdade; nomear a peça é inventar acervo com cara de ficha técnica. |
+| A numeração `01`, `02`, `03`… | **Gerado** de `lib/prancha-area-externa.ts#numeroDaChamada` | É a posição na lista, recalculada a cada leitura. Três chamadas numeram 01–03. Um campo de número deixaria o painel publicar duas chamadas "02". |
+| O aspecto da moldura da prancha | **Gerado** de `width`/`height` da fotografia | Era `aspect-16/9` cravado no componente. Com a fotografia vindo do operador, cravar o aspecto da foto ANTERIOR é a mesma armadilha das coordenadas medidas à mão, uma camada acima: `object-cover` num aspecto diferente recorta a imagem por dentro da moldura e desloca TODAS as chamadas de uma vez. |
+| "Três fábricas para uma área externa." | **Gerado** de `lib/frase.ts#porExtenso` sobre as chamadas desenhadas | A sexta contagem em prosa do site, e a única que PRA-122 não pegou. Com o painel abrindo a prancha para três ou cinco chamadas, um "Quatro" cravado passaria a discordar do desenho ao lado. |
+| O h1 "O móvel, a estrutura, o estofado e a sombra." | **Fixo** (`components/representadas/prancha-area-externa.tsx`) | Mesma regra do h1 da home, e a mesma decisão de PRA-122 que este ticket não relitiga: h1 é o argumento do desenho. **Consequência aceita e registrada:** ele nomeia quatro objetos, e uma prancha de três ou cinco chamadas não o atualiza. É deliberado — uma quinta função na cena é reposicionamento, e reposicionamento é conversa, não edição. É a mesma nota que a ajuda do campo `Home.galeria` já dá ao operador. |
+| O carimbo "N representadas · Sul do Brasil" | **Gerado** das representadas cadastradas, e **não** das chamadas | Os dois números podem divergir a partir deste ticket. A linha está emparelhada com o território, que é fato da empresa e não do desenho, e o índice de registros logo abaixo lista todas as marcas. Quem conta o desenho é a legenda. |
+| A prancha do TERRITÓRIO de `/quem-somos` | **Fixo** (`lib/territorio.ts`) | Fora de escopo por decisão 4 da spec e pelo próprio ticket: malha oficial do IBGE, reprojetada e simplificada. Regerada da fonte quando muda, nunca editada à mão, nunca no CMS. As duas pranchas compartilham a gramática de desenho e nada mais. |
+
 ## Gerado — derivado em tempo de leitura, nunca um campo
 
 | Valor | Onde nasce | Por que não pode virar campo |
@@ -123,7 +157,7 @@ O bloco 04 (a prancha do território) **não tem campo nenhum** — ver a tabela
 | A contagem de categorias distintas na faixa de índice | `lib/representadas.ts#secoesDaRepresentada` | Itens repetidos entre grupos (a GDA repete as mesmas seis categorias em Externo/Interno) não podem contar em dobro; a contagem é sempre recalculada a partir dos grupos, nunca digitada. |
 | A numeração das seções (`01`, `02`, ...) | `lib/representadas.ts#secoesDaRepresentada` | Recalculada a cada leitura, a partir de quais seções sobreviveram — nunca um número fixo por seção. |
 | A lista "Marê Mobília, GDA Móveis, Bux Garden e Trisol" | `components/abertura.tsx` (`nomeadas`), `app/representadas/page.tsx` (metadata) | Junção de `REPRESENTADAS.map(r => r.nome)` (ou, depois de PRA-119 completo em todas as superfícies, de `buscarRepresentadas()`) — nunca digitada como frase própria. |
-| A contagem "N representadas" | `components/representadas/prancha-area-externa.tsx`, `app/representadas/page.tsx` | `REPRESENTADAS.length` — muda sozinha se uma quinta marca entrar. |
+| A contagem "N representadas" | `components/representadas/prancha-area-externa.tsx`, `app/representadas/page.tsx` | Sai do painel (`representadasDaPagina()`) desde PRA-123 — muda sozinha se uma quinta marca entrar. |
 | O tempo de casa ("27 anos") | `lib/empresa.ts#anosDeMercado` (era `lib/site.ts`) | O exemplo canônico da spec para "gerado": contagem por dia e mês a partir de `Empresa.abertura`, nunca um número escrito. **[PRA-122]** Não existe campo de "anos de mercado" em lugar nenhum do painel, e o aviso está escrito na ajuda do campo de data. Um "26" digitado congela e passa a errar em silêncio a partir do aniversário seguinte, uma vez por ano, no primeiro número da primeira tela. |
 | **[PRA-122]** O ano de fundação ("Desde 1999") | `lib/empresa.ts#anoDeFundacao` | Era `fundacao: 1999` ao lado de `abertura: "22.04.1999"` em `lib/site.ts` — dois campos para um fato só. Agora sai da data. |
 | **[PRA-122]** A data de abertura por extenso ("22.04.1999") | `lib/empresa.ts#aberturaPorExtenso` | Mesma razão: a ficha do bloco 01 imprime a transcrição do registro, e ela sai da data que o operador escolheu no calendário — não de um segundo campo de texto que poderia discordar. |

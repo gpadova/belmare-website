@@ -101,6 +101,17 @@ describe("tagsDaMudanca", () => {
     ).toEqual([tagDaRepresentada("bux-garden")]);
   });
 
+  test("a prancha deriva só a rota onde ela aparece — PRA-123", () => {
+    // A fotografia e as chamadas só existem em /representadas. Trocar a
+    // fotografia não pode invalidar a página estática de marca nenhuma, nem a
+    // home, nem o rodapé — e a etiqueta é a MESMA que a mudança de uma
+    // representada já derruba, porque a legenda da prancha nomeia as fábricas.
+    expect(tagsDaMudanca({ colecao: "prancha" })).toEqual([TAG_REPRESENTADAS]);
+
+    expect(tagsDaMudanca({ colecao: "prancha" })).not.toContain(TAG_SITE);
+    expect(tagsDaMudanca({ colecao: "prancha" })).not.toContain(TAG_HOME);
+  });
+
   test("projeto deriva só a etiqueta de /quem-somos — PRA-121, o caso sem slug de marca", () => {
     // Diferente de peça/arquivo3D/acabamento, um projeto não pende de UMA
     // representada — ele cita várias, e a única superfície onde aparece é a

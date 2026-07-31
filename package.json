@@ -13,7 +13,7 @@
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "db:local": "dropdb --if-exists belmare_dev && createdb belmare_dev",
-    "db:seed": "payload run src/seed/semear-representadas.ts && payload run src/seed/semear-globais.ts"
+    "db:seed": "payload run src/seed/semear-representadas.ts && payload run src/seed/semear-globais.ts && payload run src/seed/semear-prancha.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.86.0",
@@ -21,6 +21,7 @@
     "@payloadcms/richtext-lexical": "3.86.0",
     "@payloadcms/storage-s3": "3.86.0",
     "@payloadcms/translations": "3.86.0",
+    "@payloadcms/ui": "3.86.0",
     "date-fns": "^4.4.0",
     "graphql": "^16.14.2",
     "next": "16.2.12",

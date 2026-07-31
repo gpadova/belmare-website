@@ -102,6 +102,7 @@ export type MudancaNoPainel =
   | { colecao: "empresa" }
   | { colecao: "home" }
   | { colecao: "quem-somos" }
+  | { colecao: "prancha" }
   | {
       colecao: "pecas" | "arquivos3d" | "acabamentos";
       representadaSlug: string;
@@ -137,6 +138,16 @@ export function tagsDaMudanca(mudanca: MudancaNoPainel): string[] {
       return [TAG_HOME];
     case "quem-somos":
       return [TAG_QUEM_SOMOS];
+    /* ⚠️ **PRANCHA (PRA-123) É O CASO MAIS ESTREITO DE TODOS: UMA ROTA.** A
+       fotografia e as chamadas só aparecem em `/representadas` — não há
+       galeria, não há ledger, não há rodapé. Trocar a fotografia da prancha não
+       pode invalidar a página estática de nenhuma marca. Reparar que esta é a
+       MESMA etiqueta que a mudança de uma representada já derruba não é
+       coincidência: a legenda da prancha nomeia as fábricas, então as duas
+       edições mexem na mesma superfície — e é justamente por elas convergirem
+       para uma etiqueta só que ninguém precisa lembrar de invalidar as duas. */
+    case "prancha":
+      return [TAG_REPRESENTADAS];
     case "pecas":
     case "arquivos3d":
     case "acabamentos":

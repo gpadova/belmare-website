@@ -2,13 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Seta } from "@/components/icones";
-import { PRANCHA_AREA_EXTERNA } from "@/lib/acervo";
-import { CHAMADAS } from "@/lib/prancha-area-externa";
+import { presente } from "@/lib/campo-opcional";
+import { comInicialMaiuscula, porExtenso } from "@/lib/frase";
 import {
-  REPRESENTADAS,
-  paginaDaRepresentada,
-  representadaPorSlug,
-} from "@/lib/representadas";
+  linhaDaChamada,
+  numeroDaChamada,
+  type Chamada,
+} from "@/lib/prancha-area-externa";
+import { pranchaDaPagina } from "@/lib/prancha-consulta";
+import { paginaDaRepresentada, type Representada } from "@/lib/representadas";
+import { representadasDaPagina } from "@/lib/representadas-consulta";
+
+/** Uma chamada e a marca que ela nomeia, já conferida como publicada. */
+type ChamadaComMarca = { chamada: Chamada; representada: Representada };
 
 /**
  * PRANCHA 02 — a área externa desmontada.
@@ -34,6 +40,20 @@ import {
  * `bg-paper px-1.5` que abre a graticula para a sigla do estado na PRANCHA 01.
  * Escurecer a foto seria a solução da abertura da home, e é o gesto errado
  * aqui: numa prancha o desenho não se apaga para o rótulo caber.
+ *
+ * ⚠️ **A FOTOGRAFIA E AS CHAMADAS VÊM DO PAINEL A PARTIR DE PRA-123.** Eram uma
+ * constante de acervo e quatro pares de porcentagens medidas à mão; hoje o
+ * operador sobe a fotografia e arrasta os pinos (`globals/prancha.ts`). O que
+ * este componente ganhou com isso, e não é cosmético: a moldura passou a tomar
+ * o ASPECTO DO ARQUIVO em vez de um `aspect-16/9` cravado. Enquanto a foto era
+ * fixa dava para conferir o aspecto à mão; com o operador subindo a dele, um
+ * aspecto cravado recortaria a imagem por dentro da moldura e cada seta sairia
+ * de lugar de uma vez só — silenciosamente.
+ *
+ * ⚠️ **CHAMADA SEM REPRESENTADA PUBLICADA NÃO É DESENHADA.** Antes, a legenda
+ * pulava a linha e o número continuava sobre a foto: uma chave apontando para
+ * uma legenda que não existe. Hoje o desenho e a legenda saem da MESMA lista
+ * filtrada, e a numeração é a posição nela — três chamadas numeram 01–03.
  */
 
 /** Registro de canto: a cruz de esquadro de toda folha desenhada, no fio. */
@@ -54,7 +74,21 @@ function Registro({ className }: { className?: string }) {
   );
 }
 
-export function PranchaAreaExterna() {
+export async function PranchaAreaExterna() {
+  const [prancha, representadas] = await Promise.all([
+    pranchaDaPagina(),
+    representadasDaPagina(),
+  ]);
+
+  /* Desenho e legenda saem daqui, das duas listas cruzadas uma vez. Uma chamada
+     cuja marca não está publicada some das duas — nunca de uma só. */
+  const chamadas: ChamadaComMarca[] = prancha.chamadas
+    .map((chamada) => {
+      const representada = representadas.find((r) => r.slug === chamada.slug);
+      return representada === undefined ? undefined : { chamada, representada };
+    })
+    .filter(presente);
+
   return (
     <section
       aria-labelledby="prancha-02"
@@ -71,16 +105,26 @@ export function PranchaAreaExterna() {
             <Registro className="absolute -bottom-1.5 -left-1.5 h-3 w-3 text-line" />
             <Registro className="absolute -right-1.5 -bottom-1.5 h-3 w-3 text-line" />
 
-            {/* ⚠️ 16/9 EM TODA LARGURA, igual ao aspecto do arquivo, e isso não
-                é preferência de enquadramento: as chamadas estão em
-                porcentagem DA CAIXA, e `object-cover` num aspecto diferente
-                recorta a imagem por dentro dela. Um 3/2 no telefone corta 7,8%
-                de cada lado e empurra a chamada 01 para fora do sofá — a seta
-                passa a apontar para o deck vazio. A prancha não recorta. */}
-            <div className="relative aspect-16/9 bg-ink">
+            {/* ⚠️ O ASPECTO É O DO ARQUIVO, EM TODA LARGURA, e isso não é
+                preferência de enquadramento: as chamadas estão em porcentagem
+                DA CAIXA, e `object-cover` num aspecto diferente recorta a
+                imagem por dentro dela. Um 3/2 no telefone cortaria 7,8% de cada
+                lado e empurraria a chamada 01 para fora do sofá — a seta
+                passaria a apontar para o deck vazio. A prancha não recorta.
+
+                ⚠️ O número sai de `width`/`height` do arquivo (PRA-123), não de
+                um `aspect-16/9` cravado: a fotografia agora é do operador, e
+                cravar aqui o aspecto da foto ANTERIOR seria a mesma armadilha
+                das coordenadas medidas à mão, só que uma camada acima. */}
+            <div
+              className="relative bg-ink"
+              style={{
+                aspectRatio: `${prancha.foto.largura} / ${prancha.foto.altura}`,
+              }}
+            >
               <Image
-                src={PRANCHA_AREA_EXTERNA.src}
-                alt={PRANCHA_AREA_EXTERNA.alt}
+                src={prancha.foto.src}
+                alt={prancha.foto.alt}
                 fill
                 priority
                 sizes="(min-width: 768px) 58vw, 100vw"
@@ -108,8 +152,12 @@ export function PranchaAreaExterna() {
                 preserveAspectRatio="none"
                 className="absolute inset-0 h-full w-full"
               >
-                {CHAMADAS.map((chamada) => {
-                  const traco = `M${chamada.rotulo.x} ${chamada.rotulo.y} L${chamada.alvo.x} ${chamada.alvo.y}`;
+                {chamadas.map(({ chamada }) => {
+                  /* ⚠️ O traço sai da MESMA função que o painel usa para
+                     desenhar a pré-visualização (`lib/prancha-area-externa.ts`).
+                     Duas cópias desta expressão é como o operador arrasta
+                     olhando para um desenho e publica outro. */
+                  const traco = linhaDaChamada(chamada);
 
                   return (
                     <g key={chamada.slug} fill="none">
@@ -134,7 +182,7 @@ export function PranchaAreaExterna() {
                   abaixo é a alternativa textual da prancha e diz o mesmo em
                   ordem. Ouvir "zero um" solto sobre uma foto não informa nada. */}
               <div aria-hidden="true" className="absolute inset-0">
-                {CHAMADAS.map((chamada, i) => (
+                {chamadas.map(({ chamada }, i) => (
                   <span
                     key={chamada.slug}
                     className="mono absolute -translate-x-1/2 -translate-y-1/2 bg-paper px-1.5 py-0.5 text-ink"
@@ -143,7 +191,7 @@ export function PranchaAreaExterna() {
                       top: `${chamada.rotulo.y}%`,
                     }}
                   >
-                    {String(i + 1).padStart(2, "0")}
+                    {numeroDaChamada(i)}
                   </span>
                 ))}
               </div>
@@ -186,23 +234,36 @@ export function PranchaAreaExterna() {
             O móvel, a estrutura, o estofado e a sombra.
           </h1>
 
+          {/* ⚠️ A contagem é GERADA das chamadas de fato desenhadas, não da
+              palavra "quatro" digitada — a mesma regra de `lib/frase.ts` que
+              PRA-122 aplicou nas outras cinco frases contadas do site, e que
+              esta tinha escapado. Com o painel abrindo a prancha para três ou
+              cinco chamadas, um "Quatro" cravado aqui passaria a discordar do
+              desenho logo ao lado, em silêncio. */}
           <p className="text-body mt-5 max-w-[46ch] text-pretty text-graphite">
-            Quatro fábricas para uma área externa. A prancha identifica cada uma
-            na cena; a legenda diz quem resolve, e leva à página dela.
+            {comInicialMaiuscula(porExtenso(chamadas.length))} fábricas para uma
+            área externa. A prancha identifica cada uma na cena; a legenda diz
+            quem resolve, e leva à página dela.
           </p>
 
           {/* h2, não h3: promover o título da página a h1 abriu um salto de
               nível — quem navega por rotor saía do h1 e caía em "Legenda" como
               neto, concluindo que uma seção intermediária tinha ficado de fora.
               É o mesmo papel de rótulo em mono que o h2 da seção de registros
-              já cumpre. */}
+              já cumpre.
+
+              ⚠️ Sem chamada nenhuma, o título e a lista SOMEM — seção anulável.
+              O painel recusa publicar uma prancha sem chamadas, mas a página
+              não pode contar com isso: um rascunho, ou uma prancha cujas marcas
+              foram todas despublicadas, chega aqui com a lista vazia, e um
+              "Legenda" sobre nada é exatamente o título órfão que a regra
+              existe para não ter. */}
+          {chamadas.length > 0 && (
+            <>
           <h2 className="mono uppercase mt-10 text-graphite">Legenda</h2>
 
           <ol className="mt-3 border-t border-line">
-            {CHAMADAS.map((chamada, i) => {
-              const representada = representadaPorSlug(chamada.slug);
-              if (!representada) return null;
-
+            {chamadas.map(({ chamada, representada }, i) => {
               return (
                 <li key={chamada.slug} className="border-b border-line">
                   <Link
@@ -210,7 +271,7 @@ export function PranchaAreaExterna() {
                     className="group grid grid-cols-[2.5rem_minmax(0,1fr)_2rem] items-baseline gap-x-3 py-4 transition-colors hover:bg-surface"
                   >
                     <span className="mono text-graphite">
-                      {String(i + 1).padStart(2, "0")}
+                      {numeroDaChamada(i)}
                     </span>
                     <span className="min-w-0">
                       <span className="mono uppercase block text-graphite">
@@ -226,11 +287,19 @@ export function PranchaAreaExterna() {
               );
             })}
           </ol>
+            </>
+          )}
 
-          {/* A prancha aceita N marcas porque a chave é a parte, não a fábrica.
-              O contador sai do array, nunca do literal "quatro". */}
+          {/* O carimbo do pé conta as REPRESENTADAS CADASTRADAS, não as
+              chamadas desenhadas — e desde PRA-123 os dois números podem
+              divergir. É deliberado: a linha está emparelhada com o território
+              ("Sul do Brasil"), que é fato da empresa e não do desenho, e logo
+              abaixo desta seção o índice de registros lista todas as marcas.
+              Contar as chamadas aqui faria o carimbo dizer "três" três
+              centímetros acima de uma lista de quatro. Quem conta o desenho é a
+              legenda, que o leitor acabou de ler linha a linha. */}
           <p className="mono uppercase mt-4 text-graphite">
-            {REPRESENTADAS.length} representadas · Sul do Brasil
+            {representadas.length} representadas · Sul do Brasil
           </p>
         </div>
       </div>

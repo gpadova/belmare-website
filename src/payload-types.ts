@@ -103,11 +103,13 @@ export interface Config {
     empresa: Empresa;
     home: Home;
     'quem-somos': QuemSomos;
+    prancha: Prancha;
   };
   globalsSelect: {
     empresa: EmpresaSelect<false> | EmpresaSelect<true>;
     home: HomeSelect<false> | HomeSelect<true>;
     'quem-somos': QuemSomosSelect<false> | QuemSomosSelect<true>;
+    prancha: PranchaSelect<false> | PranchaSelect<true>;
   };
   locale: null;
   widgets: {
@@ -936,6 +938,50 @@ export interface QuemSomos {
   createdAt?: string | null;
 }
 /**
+ * A fotografia de /representadas e as chamadas numeradas que apontam para os objetos dela. Suba a fotografia, arraste cada pino até o lugar e publique — nenhum número precisa ser calculado.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prancha".
+ */
+export interface Prancha {
+  id: number;
+  /**
+   * A vista de conjunto que a prancha chaveia: uma área externa inteira com os objetos SEPARADOS no quadro, cada um com ar em volta para receber uma chamada. ⚠️ Numa cena em que o ombrelone cobre o sofá, duas chamadas apontam para o mesmo ponto e a prancha deixa de ser conferível. Ao trocar a fotografia, confira os pinos abaixo: eles continuam onde estavam, e o que estava embaixo deles mudou.
+   */
+  foto: number | Imagen;
+  /**
+   * Uma chamada por fábrica identificada na cena. A ordem aqui é a numeração do desenho e a ordem da legenda — 01, 02, 03… O número não se digita: ele é a posição na lista.
+   */
+  chamadas?:
+    | {
+        /**
+         * A fábrica que resolve esta parte da cena. O texto da chamada NÃO se escreve aqui: ele é a palavra que a representada já declara em "A parte que ela resolve" — móvel, estrutura, estofado, sombra. Duas marcas que dividem a mesma função entram como duas chamadas apontando para o mesmo objeto.
+         */
+        representada: number | Representada;
+        /**
+         * 0 é a borda esquerda da fotografia, 100 a direita.
+         */
+        rotuloX: number;
+        /**
+         * 0 é o topo da fotografia, 100 o pé.
+         */
+        rotuloY: number;
+        /**
+         * Onde a linha encosta no objeto, não onde o número fica.
+         */
+        alvoX: number;
+        /**
+         * Idem, no eixo vertical.
+         */
+        alvoY: number;
+        id?: string | null;
+      }[]
+    | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "empresa_select".
  */
@@ -989,6 +1035,27 @@ export interface QuemSomosSelect<T extends boolean = true> {
   nome?: T;
   acervo?: T;
   interlocutor?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prancha_select".
+ */
+export interface PranchaSelect<T extends boolean = true> {
+  foto?: T;
+  chamadas?:
+    | T
+    | {
+        representada?: T;
+        rotuloX?: T;
+        rotuloY?: T;
+        alvoX?: T;
+        alvoY?: T;
+        id?: T;
+      };
   _status?: T;
   updatedAt?: T;
   createdAt?: T;
