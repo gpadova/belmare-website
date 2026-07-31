@@ -1,5 +1,16 @@
 # sharp faz a otimização de imagem do next/image — este site é feito de macro
 # fotográfica, então ele não é opcional. unrs-resolver é do eslint.
+#
+# ⚠️ A versão do sharp está PRESA em 0.34.5 no package.json, que é a mesma que o
+# Next 16.2.12 traz. Não é capricho: o Payload declara `sharp` como dependência
+# de tipo, e duas cópias de sharp na árvore são dois tipos `Sharp` diferentes
+# para o TypeScript — `pnpm exec tsc --noEmit` passa a reclamar de
+# `SharpDependency` numa linha que ninguém tocou. Ao subir o Next, conferir qual
+# sharp ele passou a trazer e acompanhar.
+# esbuild veio com o Payload: a CLI dele carrega `payload.config.ts` através do
+# tsx, e o postinstall do esbuild é quem baixa o binário da plataforma. Sem
+# aprovar o build, `pnpm payload` não roda.
 allowBuilds:
+  esbuild: true
   sharp: true
   unrs-resolver: true

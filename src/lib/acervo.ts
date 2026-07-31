@@ -25,6 +25,90 @@ export type Imagem = {
 };
 
 /**
+ * A marcação de mock, palavra por palavra. Existe como constante e não como
+ * literal solto porque é o texto que `CONTEXT.md` torna vinculante: "o `alt`
+ * termina sempre em 'imagem de referência'".
+ */
+export const MARCACAO_DE_MOCK = "imagem de referência";
+
+/** O travessão e o ponto que fecham a frase. Ver `descricaoDeImagem`. */
+const SUFIXO_DE_MOCK = ` — ${MARCACAO_DE_MOCK}.`;
+
+/**
+ * O `alt` de uma imagem, composto a partir do que o operador escreveu.
+ *
+ * ⚠️ A marcação de mock é **gerada**, nunca digitada, e nunca gravada de volta
+ * no campo. O operador escreve só o assunto da foto; quem garante que a frase
+ * termina em "imagem de referência" é esta função. Duas razões, e as duas
+ * doem se ignoradas:
+ *
+ *   1. Persistir o sufixo faz desmarcar o mock não limpar nada — a foto real
+ *      chega e o site continua se declarando referência. A honestidade tem que
+ *      poder ser desfeita tão fácil quanto foi ligada.
+ *   2. Um hook que concatena no salvar concatena de novo no próximo salvar. A
+ *      guarda de idempotência abaixo existe porque essa é a falha que aparece
+ *      só na terceira edição, quando ninguém está mais olhando.
+ *
+ * A descrição chega do painel como o operador escreveu — com ou sem ponto
+ * final. Os dois casos produzem a mesma frase.
+ */
+export function descricaoDeImagem({
+  descricao,
+  mock,
+}: {
+  descricao: string;
+  mock?: boolean | null;
+}): string {
+  const assunto = descricao.trim();
+
+  if (!mock) return assunto;
+  if (assunto === "") return assunto;
+
+  // Já marcada: devolver como está. `descricaoDeImagem(descricaoDeImagem(x))`
+  // tem que ser `descricaoDeImagem(x)`, ou a frase cresce a cada leitura.
+  if (assunto.toLowerCase().endsWith(MARCACAO_DE_MOCK)) return assunto;
+  if (assunto.toLowerCase().endsWith(`${MARCACAO_DE_MOCK}.`)) return assunto;
+
+  return `${assunto.replace(/\.$/, "")}${SUFIXO_DE_MOCK}`;
+}
+
+/**
+ * O `object-position` de uma imagem, a partir do ponto focal do painel.
+ *
+ * ⚠️ Isto é o que substitui os valores de `posicao` medidos à mão neste
+ * arquivo. O problema que eles resolvem é real — quando o quadro estreita no
+ * telefone, o corte central decapita o assunto — mas a solução era um número
+ * que só o desenvolvedor sabia calcular e que virava mentira toda vez que a
+ * fotografia era trocada. O painel resolve isso clicando no assunto.
+ *
+ * O Payload grava `focalX`/`focalY` em porcentagem (0–100), e grava `null`
+ * enquanto ninguém clicou. Centro é o padrão do CSS, então centro devolve
+ * `undefined`: `posicao` é opcional justamente para não escrever no HTML uma
+ * declaração que não muda nada.
+ */
+export function posicaoDoFoco({
+  focoX,
+  focoY,
+}: {
+  focoX?: number | null;
+  focoY?: number | null;
+}): string | undefined {
+  const x = porcentagem(focoX);
+  const y = porcentagem(focoY);
+
+  if (x === 50 && y === 50) return undefined;
+
+  return `${x}% ${y}%`;
+}
+
+/** Sem foco declarado é centro. Fora da faixa é erro de quem chamou, não
+ *  motivo para o site quebrar — o valor entra na faixa e a página renderiza. */
+function porcentagem(valor: number | null | undefined): number {
+  if (typeof valor !== "number" || !Number.isFinite(valor)) return 50;
+  return Math.round(Math.min(100, Math.max(0, valor)));
+}
+
+/**
  * A vista de abertura: uma área externa inteira resolvida — móvel, estrutura,
  * conforto e sombra na mesma imagem. É a promessa da página em uma foto, e é
  * o LCP do site.

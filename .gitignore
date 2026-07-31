@@ -32,6 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...menos o exemplo. Ele não tem segredo nenhum e é a única lista de quais
+# variáveis o site precisa para subir — fora do repositório, ela vira memória
+# de uma pessoa só.
+!.env.example
+
+# uploads locais do painel, quando não há R2 configurado
+/.uploads/
 
 # vercel
 .vercel
