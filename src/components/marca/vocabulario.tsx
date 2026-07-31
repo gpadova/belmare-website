@@ -1,5 +1,5 @@
 import { SecaoDaMarca } from "@/components/marca/secao";
-import type { Representada } from "@/lib/representadas";
+import { eixoDeFiltro, type Representada } from "@/lib/representadas";
 
 /**
  * O vocabulário da fábrica — as palavras dela, não as nossas.
@@ -43,8 +43,12 @@ export function VocabularioDaMarca({
      que ainda não declarou taxonomia — a Bux, hoje (P30). */
   if (!vocabulario && !colecoes?.length) return null;
 
-  const temEixo =
-    Boolean(vocabulario?.eixo) && (vocabulario?.grupos.length ?? 0) > 1;
+  /* ⚠️ Quem decide se há recorte a oferecer é `eixoDeFiltro`, em `lib` — a
+     mesma regra que vai governar o filtro da grade de peças quando ela existir.
+     Aqui ela decide se os grupos ganham título: sem eixo há uma lista só, e uma
+     lista só não tem por onde ser recortada. */
+  const eixo = eixoDeFiltro(representada);
+  const temEixo = eixo !== undefined;
 
   return (
     <SecaoDaMarca
@@ -76,9 +80,9 @@ export function VocabularioDaMarca({
       <div className="mt-10 space-y-10 md:mt-12">
         {(vocabulario?.grupos ?? []).map((grupo) => (
           <div key={grupo.slug}>
-            {temEixo ? (
+            {eixo ? (
               <h3 className="mono uppercase text-graphite">
-                {vocabulario?.eixo} · {grupo.nome}
+                {eixo} · {grupo.nome}
               </h3>
             ) : null}
 

@@ -55,6 +55,25 @@ Rode `generate:types` sempre que mexer numa coleção. `generate:importmap` só
 quando entrar ou sair um componente de painel — o handler de upload do
 navegador está lá, e sem ele o upload direto para o bucket não acontece.
 
+### Os testes
+
+Um seam só: a superfície pública de `src/lib`. Componente e rota ficam de fora
+porque são finos, e o que eles fazem é consequência do que o seam devolve.
+
+`pnpm test` roda dois projetos:
+
+- **puro** — mappers e ajudantes, sem banco e sem framework. É onde cabem os
+  estados que um banco esconderia: um upload que voltou só como identificador,
+  um arquivo sem tamanho gravado.
+- **integração** — as consultas contra um Payload de verdade, semeado pela API
+  local. É também onde a recusa de validação é provada: gravar entrada inválida
+  pela API local é a mesma porta por onde o operador salva.
+
+⚠️ O projeto de integração **cria e apaga o próprio banco** (`belmare_teste`) a
+cada execução — nunca o de desenvolvimento e nunca o de produção. Não há passo
+manual, mas o Postgres local precisa estar de pé, o mesmo do desenvolvimento.
+Rodar só a parte rápida: `pnpm vitest run --project puro`.
+
 ## Cloudflare R2
 
 Os binários pesados — catálogos de 24 MB, arquivos 3D de 8 MB — vão para o R2,

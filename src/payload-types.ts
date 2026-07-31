@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    representadas: Representada;
     imagens: Imagen;
     arquivos: Arquivo;
     usuarios: Usuario;
@@ -77,6 +78,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    representadas: RepresentadasSelect<false> | RepresentadasSelect<true>;
     imagens: ImagensSelect<false> | ImagensSelect<true>;
     arquivos: ArquivosSelect<false> | ArquivosSelect<true>;
     usuarios: UsuariosSelect<false> | UsuariosSelect<true>;
@@ -118,6 +120,154 @@ export interface UsuarioAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * As fábricas que a Belmare representa. Cada uma tem uma página no site, e essa página mostra só o que a fábrica de fato declara — o que não existe fica ausente, sem "em breve" e sem espaço em branco.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "representadas".
+ */
+export interface Representada {
+  id: number;
+  /**
+   * Como a fábrica se chama, escrito como ela mesma escreve — "Marê Mobília", "GDA Móveis". É o título da página dela no site.
+   */
+  nome: string;
+  /**
+   * O fim do endereço da página: com "trisol" aqui, a página fica em belmare.com.br/representadas/trisol. Só letras minúsculas sem acento, números e hífen. Depois que a página estiver no ar, mudar isto quebra todo link que já foi enviado.
+   */
+  slug: string;
+  /**
+   * Em que ordem esta marca aparece na galeria da home e nas listas do site. Menor vem primeiro. Deixe em branco e ela vai para o fim.
+   */
+  ordem?: number | null;
+  /**
+   * O que esta fábrica resolve na área externa, em minúscula e sem ponto final — o site escreve "Resolve a sombra." a partir daqui. Nomeie a coisa: "a sombra", "a estrutura", "o móvel de autor".
+   */
+  resolve: string;
+  /**
+   * A palavra que a seta da prancha aponta e que legenda a galeria — "Sombra", "Estrutura", "Estofado". Tem que ser algo que se enxerga na fotografia: duas setas escritas "conforto" e "móvel" sobre dois estofados não ensinam nada.
+   */
+  parte: string;
+  /**
+   * Onde a fábrica fica, no formato "Cambé · PR". Deixe em branco se a fábrica não publica isso em lugar nenhum — a página escreve "Origem não declarada" com todas as letras, e é melhor do que um chute que o leitor desta página repara.
+   */
+  base?: string | null;
+  /**
+   * Um dado que qualquer um pode conferir na fonte da própria fábrica — "Ferragem em inox 304, resistência a vento de 30 a 80 km/h". Sem superlativo e sem adjetivo: "a melhor", "referência no mercado" e "alta qualidade" não são fatos e derrubam a autoridade de tudo o mais que a página diz.
+   */
+  fato: string;
+  /**
+   * A imagem que representa esta marca na galeria da home e nos registros de /representadas. Mostre o que a fábrica resolve — não uma peça do catálogo dela, que o site não tem autorização para apresentar como acervo.
+   */
+  imagem: number | Imagen;
+  /**
+   * A imagem larga que abre a página desta marca, sangrando de ponta a ponta. Precisa ser OUTRA fotografia, e num enquadramento panorâmico: é a mesma marca vista de outro jeito, não a foto da galeria em tamanho maior.
+   */
+  imagemLarga: number | Imagen;
+  /**
+   * A ficha técnica nas palavras da própria fábrica: matéria, prazo, garantia, ambiente. Só o que ela publica — não complete a lista de uma marca para igualar a de outra, porque a autoridade desta seção é o leitor poder conferir cada linha na fonte.
+   */
+  declaracoes?:
+    | {
+        /**
+         * O que está sendo declarado, em uma ou duas palavras — "Matéria", "Prazo", "Vento".
+         */
+        rotulo: string;
+        /**
+         * O que a fábrica declara, como ela declara — "De 30 a 80 km/h, conforme o modelo". Faixa continua faixa: quebrar em número por modelo dá uma tabela mais bonita e inventada.
+         */
+        valor: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Os designers que assinam para esta fábrica, quando ela publica os nomes. É o que separa marca de autor de fabricante genérico, e é o que o arquiteto usa para defender a escolha dele. Nome e coleção, e nada além: retrato e biografia são de terceiros e não são nossos para publicar.
+   */
+  designers?:
+    | {
+        /**
+         * O nome como a fábrica o publica, incluindo estúdio — "Estúdio Galho".
+         */
+        nome: string;
+        /**
+         * Só onde a própria fábrica liga o designer à coleção. A GDA publica os designers e publica as coleções, mas não diz quem assinou o quê — nesse caso deixe vazio, porque adivinhar por afinidade é palpite com cara de ficha técnica. As coleções sem atribuição vão no campo "Coleções da fábrica", mais abaixo.
+         */
+        colecoes?: string[] | null;
+        /**
+         * Uma linha curta que a fábrica publica sobre o designer — "Estúdio interno". Deixe em branco se ela não publica nada.
+         */
+        nota?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * As coleções que a fábrica publica sem dizer quem as assinou. Elas aparecem na seção de vocabulário, sem atribuição — que é onde de fato pertencem. Se a fábrica atribui cada coleção a um designer, use o campo de coleções dentro de "Quem assina" e deixe este vazio.
+   */
+  colecoes?: string[] | null;
+  /**
+   * As categorias de produto nas palavras desta fábrica. O site não normaliza vocabulário entre marcas: cada uma usa as suas, e o filtro nunca sai da marca. Uma fábrica que ainda não declarou taxonomia fica sem esta seção e as outras vão ao ar sem esperar por ela.
+   */
+  vocabulario?: {
+    /**
+     * Como a fábrica divide o catálogo dela antes de chegar na categoria: a GDA separa por ambiente, a Trisol por tipo de haste. É a presença deste eixo que decide se a página oferece um filtro de categoria. Sem eixo é uma lista só, e uma lista só não se filtra.
+     */
+    eixo?: string | null;
+    /**
+     * Um grupo por valor do eixo — "Externo" e "Interno" na GDA. Sem eixo declarado, use um grupo só com todas as categorias dentro.
+     */
+    grupos?:
+      | {
+          /**
+           * Como a fábrica chama este recorte — "Laterais", "Centrais", "Externo".
+           */
+          nome: string;
+          /**
+           * O que entra na barra do navegador quando o visitante filtrar por este grupo: "laterais", "area-externa". Só letras minúsculas sem acento, números e hífen.
+           */
+          slug: string;
+          /**
+           * As categorias deste grupo, uma por linha, nas palavras da fábrica. Um grupo sem nenhuma categoria não aparece na página — não vira título vazio.
+           */
+          itens?:
+            | {
+                /**
+                 * O nome da categoria como a fábrica a chama — "Espreguiçadeiras", "Bistrô", "Vitta".
+                 */
+                nome: string;
+                /**
+                 * Uma distinção que a fábrica publica sobre esta categoria — "Comercial, resiste a 80 km/h". Só onde ela publica: deduzir a diferença pelo nome é inventar especificação.
+                 */
+                nota?: string | null;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Os catálogos que esta fábrica publica. Declare o documento mesmo quando a Belmare ainda não recebeu o arquivo: com o PDF anexado a página oferece o download, sem ele a página diz que o envio é pela Belmare e leva o visitante ao WhatsApp. Os dois são verdade; o que não pode é a página fingir que o catálogo não existe.
+   */
+  catalogos?:
+    | {
+        /**
+         * Como o documento se chama — "Catálogo". Não escreva a edição aqui: o ano tem campo próprio logo abaixo e o site compõe a linha sozinho.
+         */
+        titulo: string;
+        /**
+         * O ano da edição, só quando a fábrica o declara. Em branco, a página escreve "Edição não declarada" com todas as letras — que é o certo. Um 2025 plausível inventado aqui é o site mentindo sobre a única coisa que o arquiteto usa para saber se o documento está velho.
+         */
+        ano?: number | null;
+        /**
+         * Anexe o PDF só quando ele estiver em mãos. O peso aparece sozinho na página, lido do arquivo — não há o que preencher e não há o que estimar. Sem anexo, a linha continua existindo e vira um pedido pelo WhatsApp.
+         */
+        arquivo?: (number | null) | Arquivo;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * As fotografias do site. Toda imagem precisa de descrição, e toda imagem que ainda não é fotografia real precisa estar marcada como referência.
@@ -229,6 +379,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'representadas';
+        value: number | Representada;
+      } | null)
+    | ({
         relationTo: 'imagens';
         value: number | Imagen;
       } | null)
@@ -281,6 +435,66 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "representadas_select".
+ */
+export interface RepresentadasSelect<T extends boolean = true> {
+  nome?: T;
+  slug?: T;
+  ordem?: T;
+  resolve?: T;
+  parte?: T;
+  base?: T;
+  fato?: T;
+  imagem?: T;
+  imagemLarga?: T;
+  declaracoes?:
+    | T
+    | {
+        rotulo?: T;
+        valor?: T;
+        id?: T;
+      };
+  designers?:
+    | T
+    | {
+        nome?: T;
+        colecoes?: T;
+        nota?: T;
+        id?: T;
+      };
+  colecoes?: T;
+  vocabulario?:
+    | T
+    | {
+        eixo?: T;
+        grupos?:
+          | T
+          | {
+              nome?: T;
+              slug?: T;
+              itens?:
+                | T
+                | {
+                    nome?: T;
+                    nota?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  catalogos?:
+    | T
+    | {
+        titulo?: T;
+        ano?: T;
+        arquivo?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

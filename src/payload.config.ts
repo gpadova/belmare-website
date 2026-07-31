@@ -10,6 +10,7 @@ import sharp from "sharp";
 
 import { Arquivos } from "@/collections/arquivos";
 import { Imagens } from "@/collections/imagens";
+import { Representadas } from "@/collections/representadas";
 import { Usuarios } from "@/collections/usuarios";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -116,7 +117,7 @@ export default buildConfig({
     },
   },
 
-  collections: [Imagens, Arquivos, Usuarios],
+  collections: [Representadas, Imagens, Arquivos, Usuarios],
 
   /**
    * ⚠️ O painel é para UMA pessoa não técnica na Belmare, que o abre uma vez

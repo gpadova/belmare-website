@@ -145,6 +145,13 @@ export type Representada = {
   base?: string;
   /** Um fato técnico verificável. Sem superlativo. */
   fato: string;
+  /** A fotografia da galeria e a vista larga que abre a página, quando vêm do
+   *  painel. São OUTRAS uma da outra por desenho, e o painel recusa a mesma nas
+   *  duas — ver `collections/representadas.ts`. Opcionais porque as quatro
+   *  marcas escritas à mão ainda buscam a imagem no acervo central; ver
+   *  `imagemDaRepresentada`. */
+  imagem?: Imagem;
+  imagemLarga?: Imagem;
   declaracoes?: Declaracao[];
   designers?: Designer[];
   colecoes?: string[];
@@ -391,15 +398,44 @@ export function representadaPorSlug(slug: string): Representada | undefined {
   return REPRESENTADAS.find((r) => r.slug === slug);
 }
 
-/** A imagem de referência da marca. Vem do acervo central — trocar o mock por
- *  foto real é editar `acervo.ts`, não este arquivo. */
+/**
+ * A imagem de referência da marca.
+ *
+ * ⚠️ O painel primeiro, o acervo central depois. As duas fontes coexistem
+ * enquanto a migração das quatro marcas escritas à mão não passou (PRA-119):
+ * uma marca cadastrada no painel traz a própria fotografia, com o ponto focal
+ * clicado pelo operador e a marcação de mock composta na leitura; as quatro
+ * daqui continuam buscando o mock de `acervo.ts` pela chave do slug. Quando o
+ * array `REPRESENTADAS` sair, o `??` sai com ele.
+ */
 export function imagemDaRepresentada(r: Representada): Imagem {
-  return IMAGEM_DA_MARCA[r.slug];
+  return r.imagem ?? IMAGEM_DA_MARCA[r.slug];
 }
 
-/** A vista larga que abre a página da marca. */
+/** A vista larga que abre a página da marca. Mesma regra de fonte dupla. */
 export function imagemLargaDaRepresentada(r: Representada): Imagem {
-  return IMAGEM_LARGA_DA_MARCA[r.slug];
+  return r.imagemLarga ?? IMAGEM_LARGA_DA_MARCA[r.slug];
+}
+
+/**
+ * O eixo que autoriza um filtro de categoria — e `undefined` quando não há
+ * filtro a oferecer.
+ *
+ * ⚠️ **É A PRESENÇA DO EIXO QUE DECIDE SE EXISTE FILTRO, não a vontade de ter
+ * um.** A GDA separa o catálogo por ambiente e a Trisol por tipo de haste: ali
+ * há um primeiro nível pelo qual recortar. A Marê declara dezenove categorias
+ * numa lista só, e uma lista só não se filtra — um controle que reduz uma lista
+ * a ela mesma é teatro de interface. A regra mora aqui, e não dentro do
+ * componente, porque é ela que a página promete: sem eixo, nenhum recorte é
+ * oferecido, nem hoje na seção de vocabulário nem depois na grade de peças.
+ *
+ * Um grupo só também não é filtro: filtrar é escolher entre alternativas, e uma
+ * alternativa sozinha é a lista inteira com um rótulo em cima.
+ */
+export function eixoDeFiltro(r: Representada): string | undefined {
+  const vocabulario = r.vocabulario;
+  if (!vocabulario?.eixo) return undefined;
+  return vocabulario.grupos.length > 1 ? vocabulario.eixo : undefined;
 }
 
 /** Uma marca, uma página — e ela carrega tudo o que é da marca. */

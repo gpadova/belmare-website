@@ -12,23 +12,31 @@ import { ParaLevarDaMarca } from "@/components/marca/para-levar";
 import { SecaoDaMarca } from "@/components/marca/secao";
 import { VocabularioDaMarca } from "@/components/marca/vocabulario";
 import {
-  REPRESENTADAS,
-  representadaPorSlug,
-  secoesDaRepresentada,
-} from "@/lib/representadas";
+  representadaDaPagina,
+  slugsDeRepresentadas,
+} from "@/lib/representadas-consulta";
+import { secoesDaRepresentada } from "@/lib/representadas";
 import { EMPRESA } from "@/lib/site";
 
 type Parametros = { marca: string };
 
 /**
- * Uma URL canônica por marca, geradas no build a partir do array.
+ * Uma URL canônica por marca, geradas no build.
  *
- * `dynamicParams = false` fecha a rota nas quatro: um slug que não existe vira
- * 404 estático, sem passar pelo servidor. Nada nesta página lê `searchParams`,
- * e é isso que a mantém estática — a decisão está em `vocabulario.tsx`.
+ * ⚠️ A lista vem do painel — `slugsDeRepresentadas()` — e não mais de um array
+ * em código. Enquanto a migração das quatro não passou (PRA-119), ela é a união
+ * das duas fontes: quem já está cadastrado renderiza do CMS, quem ainda não
+ * está continua renderizando do código, e nenhuma marca cai fora no meio da
+ * travessia.
+ *
+ * `dynamicParams = false` fecha a rota nesses endereços: um slug que não existe
+ * vira 404 estático, sem passar pelo servidor. Nada nesta página lê
+ * `searchParams`, e é isso que a mantém estática — a decisão está em
+ * `vocabulario.tsx`.
  */
-export function generateStaticParams(): Parametros[] {
-  return REPRESENTADAS.map((r) => ({ marca: r.slug }));
+export async function generateStaticParams(): Promise<Parametros[]> {
+  const slugs = await slugsDeRepresentadas();
+  return slugs.map((marca) => ({ marca }));
 }
 
 export const dynamicParams = false;
@@ -39,7 +47,7 @@ export async function generateMetadata({
   params: Promise<Parametros>;
 }): Promise<Metadata> {
   const { marca } = await params;
-  const representada = representadaPorSlug(marca);
+  const representada = await representadaDaPagina(marca);
   if (!representada) return {};
 
   const origem = representada.base ? `${representada.base}. ` : "";
@@ -93,7 +101,7 @@ export default async function PaginaDaMarca({
   params: Promise<Parametros>;
 }) {
   const { marca } = await params;
-  const representada = representadaPorSlug(marca);
+  const representada = await representadaDaPagina(marca);
   if (!representada) notFound();
 
   const secoes = secoesDaRepresentada(representada);
