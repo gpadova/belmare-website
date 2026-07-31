@@ -13,6 +13,7 @@ import { Arquivos } from "@/collections/arquivos";
 import { Arquivos3d } from "@/collections/arquivos3d";
 import { Imagens } from "@/collections/imagens";
 import { Pecas } from "@/collections/pecas";
+import { Projetos } from "@/collections/projetos";
 import { Representadas } from "@/collections/representadas";
 import { Usuarios } from "@/collections/usuarios";
 
@@ -125,6 +126,7 @@ export default buildConfig({
     Pecas,
     Arquivos3d,
     Acabamentos,
+    Projetos,
     Imagens,
     Arquivos,
     Usuarios,

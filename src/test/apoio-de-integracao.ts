@@ -25,15 +25,24 @@ export async function jpegDeTeste(): Promise<Buffer> {
     .toBuffer();
 }
 
+/**
+ * ⚠️ `mock` tem padrão `true` para não mudar o comportamento das suítes que já
+ * chamam esta função sem o quarto argumento (Peça, Arquivo3D, Acabamento —
+ * nenhuma delas se importa com o estado de mock). PRA-121 precisa do oposto:
+ * uma fotografia genuinamente `mock: false` para provar que um projeto com
+ * foto de verdade PASSA pelo portão de três, e uma `mock: true` para provar
+ * que ele é excluído mesmo publicado — ver `lib/projetos-consulta.integracao.test.ts`.
+ */
 export async function criarImagem(
   payload: Payload,
   descricao: string,
   nome: string,
+  mock = true,
 ): Promise<number> {
   const dados = await jpegDeTeste();
   const doc = await payload.create({
     collection: "imagens",
-    data: { descricao, mock: true },
+    data: { descricao, mock },
     file: {
       data: dados,
       mimetype: "image/jpeg",

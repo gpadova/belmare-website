@@ -71,6 +71,7 @@ export interface Config {
     pecas: Peca;
     arquivos3d: Arquivos3D;
     acabamentos: Acabamento;
+    projetos: Projeto;
     imagens: Imagen;
     arquivos: Arquivo;
     usuarios: Usuario;
@@ -85,6 +86,7 @@ export interface Config {
     pecas: PecasSelect<false> | PecasSelect<true>;
     arquivos3d: Arquivos3DSelect<false> | Arquivos3DSelect<true>;
     acabamentos: AcabamentosSelect<false> | AcabamentosSelect<true>;
+    projetos: ProjetosSelect<false> | ProjetosSelect<true>;
     imagens: ImagensSelect<false> | ImagensSelect<true>;
     arquivos: ArquivosSelect<false> | ArquivosSelect<true>;
     usuarios: UsuariosSelect<false> | UsuariosSelect<true>;
@@ -421,6 +423,46 @@ export interface Acabamento {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Obras entregues em que peças das representadas foram especificadas e instaladas. A seção só entra no ar em /quem-somos no dia em que houver três projetos publicados — dois leem como exceção, e a página fica de pé sem esta seção até lá. Antes de publicar qualquer projeto, confirme três consentimentos: o direito de uso da fotografia, a autorização do cliente final e o crédito do arquiteto (campo obrigatório, abaixo). Projeto residencial de alto padrão costuma ter cláusula de confidencialidade — confirme antes de publicar, não depois.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projetos".
+ */
+export interface Projeto {
+  id: number;
+  /**
+   * Como a obra é nomeada publicamente — "Residência Costa", "Cobertura Beira-Mar". Nunca o endereço: cidade e estado, logo abaixo, bastam para localizar.
+   */
+  obra: string;
+  /**
+   * A cidade onde a obra foi entregue. Sem rua, sem número.
+   */
+  cidade: string;
+  /**
+   * A sigla do estado — "SC", "PR", "RS".
+   */
+  uf: string;
+  /**
+   * O ano em que a obra foi entregue.
+   */
+  ano: number;
+  /**
+   * Quais fábricas representadas pela Belmare foram DE FATO especificadas nesta obra — uma, duas ou as quatro. Não é lista de patrocínio: só quem entrou no projeto de verdade.
+   */
+  marcas: (number | Representada)[];
+  /**
+   * A fotografia da obra entregue. Nunca uma imagem de referência: se a foto escolhida estiver marcada como referência (mock) no acervo, a publicação deste projeto é recusada. Confirme o direito de uso da imagem e a autorização do cliente final antes de escolher.
+   */
+  foto: number | Imagen;
+  /**
+   * O escritório ou profissional responsável pelo projeto — "Estúdio Galho Arquitetura". Campo obrigatório: não é cortesia, é o que faz o multiplicador que enviou este projeto mandar o próximo.
+   */
+  creditoArquiteto: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "usuarios".
  */
@@ -488,6 +530,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'acabamentos';
         value: number | Acabamento;
+      } | null)
+    | ({
+        relationTo: 'projetos';
+        value: number | Projeto;
       } | null)
     | ({
         relationTo: 'imagens';
@@ -640,6 +686,22 @@ export interface AcabamentosSelect<T extends boolean = true> {
   nome?: T;
   tipo?: T;
   amostra?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projetos_select".
+ */
+export interface ProjetosSelect<T extends boolean = true> {
+  obra?: T;
+  cidade?: T;
+  uf?: T;
+  ano?: T;
+  marcas?: T;
+  foto?: T;
+  creditoArquiteto?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

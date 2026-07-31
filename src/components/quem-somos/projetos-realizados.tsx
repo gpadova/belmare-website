@@ -1,26 +1,24 @@
 import Image from "next/image";
 
 import { Bloco } from "@/components/quem-somos/bloco";
-import { projetosPublicaveis } from "@/lib/projetos";
+import { buscarProjetosPublicaveis } from "@/lib/projetos-consulta";
 
 /**
- * Projetos realizados — construída inteira, no ar em zero pixels.
+ * Projetos realizados — a seção anulável de `/quem-somos`, agora servida
+ * pelo painel (PRA-121).
  *
- * A seção está pronta e não renderiza nada hoje: `projetosPublicaveis()` só
- * devolve conteúdo quando existirem três projetos reais e completos. É a forma
- * honesta de "enviar oculta" — sem markup vazio, sem título órfão, sem "em
- * breve", e sem a tentação de legendar uma imagem de referência como obra
- * entregue.
+ * ⚠️ **A SEÇÃO SÓ RENDERIZA COM TRÊS PROJETOS PUBLICÁVEIS OU MAIS.**
+ * `buscarProjetosPublicaveis()` já aplica o portão de três — menos disso, a
+ * lista vem vazia daqui, e é a forma honesta de "enviar oculta": sem markup
+ * vazio, sem título órfão, sem "em breve", e sem a tentação de legendar uma
+ * imagem de referência como obra entregue. A exclusão de fotografia mock
+ * também já aconteceu antes de chegar aqui — ver `lib/projetos.ts#projetoDoPainel`.
  *
  * Ela cabe entre 05 e 06 sem redesenhar nada, e a página em pé não tem buraco
  * sem ela: foi assim que esta direção sobreviveu ao P43.
- *
- * O dia em que os projetos chegarem, o trabalho é preencher `lib/projetos.ts`
- * — este arquivo não precisa mudar. Antes disso, conferir P47/P48/P49 (direito
- * de imagem, autorização do cliente, crédito do arquiteto).
  */
-export function ProjetosRealizados({ numero }: { numero: string }) {
-  const projetos = projetosPublicaveis();
+export async function ProjetosRealizados({ numero }: { numero: string }) {
+  const projetos = await buscarProjetosPublicaveis();
   if (projetos.length === 0) return null;
 
   return (

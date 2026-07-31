@@ -87,4 +87,13 @@ describe("tagsDaMudanca", () => {
       tagsDaMudanca({ colecao: "acabamentos", representadaSlug: "bux-garden" }),
     ).toEqual([tagDaRepresentada("bux-garden")]);
   });
+
+  test("projeto deriva só a etiqueta de /quem-somos — PRA-121, o caso sem slug de marca", () => {
+    // Diferente de peça/arquivo3D/acabamento, um projeto não pende de UMA
+    // representada — ele cita várias, e a única superfície onde aparece é a
+    // seção anulável de /quem-somos. O evento nem carrega slug: mudar
+    // qualquer projeto invalida a página inteira, porque o portão de três
+    // depende do conjunto publicado, não de um documento isolado.
+    expect(tagsDaMudanca({ colecao: "projetos" })).toEqual([TAG_QUEM_SOMOS]);
+  });
 });

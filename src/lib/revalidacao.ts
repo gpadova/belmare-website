@@ -77,6 +77,16 @@ export function tagDaRepresentada(slug: string): string {
  * para a mesma chamada em vez de ganhar etiquetas próprias. Quando a página que
  * de fato lista peças/arquivos/acabamentos existir (marca ou `/arquivos-3d`,
  * PRA-127), ela já lê essa etiqueta — nada muda aqui nesse dia.
+ *
+ * ⚠️ **PROJETO (PRA-121) É O CASO OPOSTO — UM SÓ LUGAR, MAS NÃO É O DA
+ * MARCA.** Um projeto cita representadas em vez de pender de uma só (decisão
+ * 10 da spec: nada aqui atravessa "cada coisa tem um pai", porque um projeto
+ * não tem pai nenhum na árvore), e a única superfície onde ele aparece é a
+ * seção anulável de `/quem-somos` — nunca a página da marca. Por isso a
+ * etiqueta não é `tagDaRepresentada`, e o evento nem carrega slug: mudar
+ * QUALQUER projeto invalida `/quem-somos` inteira, porque o portão de três
+ * (`lib/projetos.ts#projetosPublicaveis`) depende do CONJUNTO publicado, não
+ * de um documento isolado.
  */
 export type MudancaNoPainel =
   | { colecao: "representadas"; slug: string }
@@ -84,7 +94,8 @@ export type MudancaNoPainel =
   | {
       colecao: "pecas" | "arquivos3d" | "acabamentos";
       representadaSlug: string;
-    };
+    }
+  | { colecao: "projetos" };
 
 /**
  * Coleção e documento entram, a lista de etiquetas sai — literalmente a frase
@@ -115,6 +126,8 @@ export function tagsDaMudanca(mudanca: MudancaNoPainel): string[] {
     case "arquivos3d":
     case "acabamentos":
       return [tagDaRepresentada(mudanca.representadaSlug)];
+    case "projetos":
+      return [TAG_QUEM_SOMOS];
     default:
       return mudanca satisfies never;
   }

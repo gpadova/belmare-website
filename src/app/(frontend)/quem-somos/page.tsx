@@ -7,7 +7,7 @@ import { Nome } from "@/components/quem-somos/nome";
 import { PranchaTerritorio } from "@/components/quem-somos/prancha-territorio";
 import { ProjetosRealizados } from "@/components/quem-somos/projetos-realizados";
 import { RegistroAbertura } from "@/components/quem-somos/registro-abertura";
-import { projetosPublicaveis } from "@/lib/projetos";
+import { buscarProjetosPublicaveis } from "@/lib/projetos-consulta";
 import { EMPRESA } from "@/lib/site";
 
 /**
@@ -79,10 +79,12 @@ display; fio; h1 curto e um parágrafo. O LCP é tipográfico.
 FORM: "o arquivo" — a folha de registro, não a página "sobre nós".
 -->`;
 
-export default function QuemSomos() {
-  /* A seção de projetos ainda não vai ao ar; quando for, ela assume o 06 e o
-     interlocutor passa a 07. A numeração é a do documento, não do arquivo. */
-  const temProjetos = projetosPublicaveis().length > 0;
+export default async function QuemSomos() {
+  /* A seção de projetos só vai ao ar com três projetos publicáveis ou mais
+     (PRA-121, o portão de `lib/projetos.ts#projetosPublicaveis`, aplicado por
+     `buscarProjetosPublicaveis`). Quando vai, ela assume o 06 e o interlocutor
+     passa a 07 — a numeração é a do documento, não do arquivo. */
+  const temProjetos = (await buscarProjetosPublicaveis()).length > 0;
 
   return (
     <>
