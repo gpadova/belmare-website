@@ -42,6 +42,11 @@ export async function ProjetosRealizados({ numero }: { numero: string }) {
                 fill
                 loading="lazy"
                 sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                /* Uma obra fotografada na horizontal entra num quadro 4/3 e
+                   perde as laterais. O ponto focal que o operador clicou no
+                   painel vem em `projeto.foto.posicao` e decide o que fica —
+                   `undefined` quando ninguém clicou, e aí o corte é central. */
+                style={projeto.foto.posicao ? { objectPosition: projeto.foto.posicao } : undefined}
                 className="object-cover"
               />
             </div>

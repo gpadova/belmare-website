@@ -311,6 +311,16 @@ Página             textos de home, quem somos, arquitetos, contato
 
 Custo real: **R$ 0** até um volume muito acima do que este site vai ter.
 
+> ⚠️ **CORRIGIDO POR PRA-115: o custo não é R$ 0 — é US$ 20/mês.** O
+> que está acima segue valendo para o CMS em si (o Payload é gratuito), para o
+> banco (Neon, plano gratuito: o conteúdo são algumas centenas de linhas) e para
+> o storage — que passou a ser **Cloudflare R2**, e não Vercel Blob, porque o R2
+> não cobra egresso e este site existe para entregar arquivo pesado. O que a
+> conta de R$ 0 não previu foi a **hospedagem**: o plano Hobby da Vercel proíbe
+> uso comercial, e este é o site de uma empresa com funil de captação. **Vercel
+> Pro, US$ 20/mês**, é o piso e não sai. A conta fechada está no `README.md`, em
+> "Custo mensal".
+
 | Alternativa | Avaliação |
 |---|---|
 | **Sanity** | Menos trabalho de infraestrutura (é hospedado), editor ótimo. Mas é *plano gratuito* de um produto pago — as regras podem mudar, e há limite de banda de assets |

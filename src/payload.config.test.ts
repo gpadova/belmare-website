@@ -1,0 +1,162 @@
+import { afterAll, describe, expect, test, vi } from "vitest";
+
+/**
+ * O caminho do upload direto para o bucket, conferido na configuração montada.
+ *
+ * ⚠️ **ESTE ARQUIVO GUARDA A ÚNICA SUPOSIÇÃO QUE PODERIA INVALIDAR A ESCOLHA DE
+ * PLATAFORMA INTEIRA.** A função serverless da Vercel recusa corpo de requisição
+ * acima de 4,5 MB e os catálogos têm 24 MB: se o navegador parar de enviar
+ * direto para o bucket, o site não sobe mais catálogo nenhum — e o sintoma
+ * aparece só em produção, no dia do upload, com o arquivo grande na mão.
+ *
+ * O que se afirma aqui NÃO é que `clientUploads: true` está escrito em
+ * `payload.config.ts`. Isso seria reler a linha ao lado. O que se afirma é o que
+ * aquela linha PRODUZ na configuração montada, que são as duas peças de que o
+ * navegador depende:
+ *
+ *   1. A rota `POST /storage-s3-generate-signed-url` — é ela que o painel chama
+ *      para receber a URL assinada antes de fazer o PUT.
+ *   2. O `S3ClientUploadHandler` ligado (`enabled: true`) para cada coleção de
+ *      upload — é ele que troca o envio pelo formulário pelo PUT direto.
+ *
+ * Faltando qualquer uma, o arquivo volta a atravessar a função.
+ */
+
+/** As cinco variáveis do R2, preenchidas — o estado de produção. */
+const R2_PREENCHIDO = {
+  R2_BUCKET: "belmare",
+  R2_ACCOUNT_ID: "conta-de-teste",
+  R2_ACCESS_KEY_ID: "chave-de-teste",
+  R2_SECRET_ACCESS_KEY: "segredo-de-teste",
+  R2_PUBLIC_URL: "https://pub-teste.r2.dev",
+};
+
+/** As mesmas cinco vazias — a máquina nova, sem conta de nuvem nenhuma. */
+const R2_VAZIO = Object.fromEntries(
+  Object.keys(R2_PREENCHIDO).map((nome) => [nome, ""]),
+) as Record<keyof typeof R2_PREENCHIDO, string>;
+
+const ambienteOriginal = { ...process.env };
+
+type ConfiguracaoMontada = {
+  endpoints?: { method?: string; path?: string }[];
+  admin?: {
+    components?: {
+      providers?: { path?: string; clientProps?: Record<string, unknown> }[];
+    };
+  };
+  collections: { slug: string; upload?: Record<string, unknown> }[];
+};
+
+/**
+ * Monta a configuração com o ambiente pedido.
+ *
+ * ⚠️ `vi.resetModules()` antes do `import` não é cerimônia: `payload.config.ts`
+ * lê `process.env` no momento em que o módulo é avaliado — a mesma razão que
+ * põe a atribuição de `DATABASE_URI` num `setupFiles` em `test/ambiente.ts`.
+ * Sem o reset, o segundo caso deste arquivo leria a configuração do primeiro e
+ * passaria sem provar nada.
+ */
+async function configuracaoCom(
+  r2: Record<string, string>,
+): Promise<ConfiguracaoMontada> {
+  vi.resetModules();
+  Object.assign(process.env, r2);
+  process.env.PAYLOAD_SECRET ??= "segredo-de-teste-sem-valor-nenhum";
+
+  const modulo = await import("@payload-config");
+  return (await (modulo.default as unknown)) as ConfiguracaoMontada;
+}
+
+function rotaDeAssinatura(config: ConfiguracaoMontada) {
+  return (config.endpoints ?? []).find(
+    (rota) => rota.path === "/storage-s3-generate-signed-url",
+  );
+}
+
+function entregadoresDoNavegador(config: ConfiguracaoMontada) {
+  return (config.admin?.components?.providers ?? []).filter((provedor) =>
+    provedor.path?.includes("S3ClientUploadHandler"),
+  );
+}
+
+function upload(config: ConfiguracaoMontada, slug: string) {
+  return config.collections.find((colecao) => colecao.slug === slug)?.upload;
+}
+
+afterAll(() => {
+  process.env = ambienteOriginal;
+});
+
+describe("com o R2 configurado, o arquivo vai do navegador para o bucket", () => {
+  test("o painel expõe a rota que assina o PUT do navegador", async () => {
+    const rota = rotaDeAssinatura(await configuracaoCom(R2_PREENCHIDO));
+
+    expect(rota).toBeDefined();
+    expect(rota?.method).toBe("post");
+  });
+
+  test("as duas coleções de upload enviam pelo navegador, não pelo formulário", async () => {
+    const config = await configuracaoCom(R2_PREENCHIDO);
+    const entregadores = entregadoresDoNavegador(config);
+
+    // Imagem E arquivo: o catálogo de 24 MB é o caso que dói, mas uma
+    // fotografia em alta também passa dos 4,5 MB sem esforço nenhum.
+    expect(
+      entregadores.map((provedor) => provedor.clientProps?.collectionSlug),
+    ).toEqual(["imagens", "arquivos"]);
+
+    for (const entregador of entregadores) {
+      expect(entregador.clientProps?.enabled).toBe(true);
+      expect(entregador.clientProps?.serverHandlerPath).toBe(
+        "/storage-s3-generate-signed-url",
+      );
+    }
+  });
+
+  test("nada toca o disco da função", async () => {
+    // O contrapeso do envio direto: o arquivo não passa pela função, então a
+    // função não tem o que gravar. `disableLocalStorage` ligado é o que prova
+    // que o adaptador do R2 assumiu a coleção.
+    const config = await configuracaoCom(R2_PREENCHIDO);
+
+    expect(upload(config, "imagens")?.disableLocalStorage).toBe(true);
+    expect(upload(config, "arquivos")?.disableLocalStorage).toBe(true);
+  });
+});
+
+describe("sem o R2 configurado, o painel continua de pé", () => {
+  test("não há rota de assinatura para chamar", async () => {
+    // É o que permite rodar o projeto numa máquina nova sem conta de nuvem:
+    // sem credencial, o plugin fica desligado inteiro em vez de assinar URL
+    // para um bucket que não existe.
+    expect(rotaDeAssinatura(await configuracaoCom(R2_VAZIO))).toBeUndefined();
+  });
+
+  test("o upload cai no disco local, e o entregador do navegador fica desligado", async () => {
+    const config = await configuracaoCom(R2_VAZIO);
+
+    for (const entregador of entregadoresDoNavegador(config)) {
+      expect(entregador.clientProps?.enabled).toBe(false);
+    }
+
+    expect(upload(config, "imagens")?.disableLocalStorage).toBeFalsy();
+    expect(upload(config, "imagens")?.staticDir).toBe(".uploads/imagens");
+    expect(upload(config, "arquivos")?.staticDir).toBe(".uploads/arquivos");
+  });
+});
+
+describe("o ponto focal chega ao painel", () => {
+  test("a coleção de imagens declara o ponto focal explicitamente", async () => {
+    /* ⚠️ `focalPoint: true` EXPLÍCITO, e não a ausência do campo. O painel só
+       desenha o seletor quando `uploadConfig.focalPoint === true` ou quando há
+       `imageSizes`/`resizeOptions` — e os dois últimos estão desligados de
+       propósito, porque exigiriam que o servidor tivesse os bytes da imagem
+       para processá-la com sharp, que é exatamente o que o envio direto para o
+       bucket evita. Trocar isto por `undefined` tira o seletor da tela sem
+       quebrar teste nenhum em nenhum outro lugar. */
+    const config = await configuracaoCom(R2_PREENCHIDO);
+
+    expect(upload(config, "imagens")?.focalPoint).toBe(true);
+  });
+});
