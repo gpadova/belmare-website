@@ -44,6 +44,24 @@ const r2Configurado = Object.values(R2).every(
 );
 
 /**
+ * O endereço da API S3 do bucket.
+ *
+ * Em produção NÃO se preenche: ele é derivado do id da conta, e uma variável a
+ * menos é um jeito a menos de apontar o painel para o bucket errado.
+ *
+ * ⚠️ `R2_ENDPOINT` existe para uma coisa só, a prova local de PRA-115: o
+ * `docker-compose.yml` põe um MinIO no lugar do R2 para medir o upload de 24 MB
+ * numa máquina sem conta de nuvem nenhuma. Um armazenamento compatível com S3
+ * não tem id de conta e endereça o bucket por CAMINHO (`/bucket/arquivo`), não
+ * por subdomínio — daí o `forcePathStyle` andar junto e só quando a variável
+ * está posta. Com ela vazia nada muda: o endereço continua sendo o do R2, no
+ * estilo de subdomínio que a Cloudflare usa. Ver o README, em "A prova local do
+ * upload de 24 MB".
+ */
+const endpointDaApiS3 = process.env.R2_ENDPOINT ?? "";
+const endpointProprio = endpointDaApiS3 !== "";
+
+/**
  * A URL pública de um arquivo no bucket.
  *
  * ⚠️ O adaptador S3, sozinho, devolveria o endpoint da API
@@ -102,7 +120,10 @@ const armazenamentoR2 = s3Storage({
   config: {
     // O R2 não tem regiões; o SDK da AWS exige o campo assim mesmo.
     region: "auto",
-    endpoint: `https://${R2.contaId}.r2.cloudflarestorage.com`,
+    endpoint: endpointProprio
+      ? endpointDaApiS3
+      : `https://${R2.contaId}.r2.cloudflarestorage.com`,
+    forcePathStyle: endpointProprio,
     credentials: {
       accessKeyId: R2.chave ?? "",
       secretAccessKey: R2.segredo ?? "",

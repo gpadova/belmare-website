@@ -1,0 +1,93 @@
+# A pilha de prova local: um Postgres e um armazenamento compatível com S3.
+#
+# ⚠️ ISTO NÃO É O AMBIENTE DE DESENVOLVIMENTO. O desenvolvimento continua no
+# Postgres do `brew services` (`belmare_dev`, porta 5432) e nos uploads em
+# disco, em `.uploads/`. Esta pilha existe para UMA pergunta, a de PRA-115: o
+# catálogo de 24 MB atravessa sem passar pela função serverless?
+#
+# A resposta local vem do MinIO no lugar do Cloudflare R2. Os dois falam a mesma
+# API S3, então é o MESMO caminho de código que roda — a rota que assina a URL e
+# o PUT que o navegador faz direto no bucket. O que o MinIO NÃO prova está no
+# README, em "A prova local do upload de 24 MB"; leia essa lista antes de tratar
+# um verde daqui como verde da produção.
+#
+# Portas deslocadas de propósito: o Postgres daqui responde em 55432 para não
+# disputar o 5432 do desenvolvimento, e o banco tem nome próprio
+# (`belmare_prova`) para nunca ser confundido com `belmare_dev` nem com o
+# `belmare_teste` da suíte de integração.
+
+name: belmare-prova
+
+services:
+  postgres:
+    # Postgres 17, o mesmo da produção no Neon.
+    image: postgres:17
+    container_name: belmare-prova-postgres
+    environment:
+      POSTGRES_USER: belmare
+      POSTGRES_PASSWORD: belmare
+      POSTGRES_DB: belmare_prova
+    ports:
+      - "55432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U belmare -d belmare_prova"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  minio:
+    image: minio/minio:latest
+    container_name: belmare-prova-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: belmare
+      MINIO_ROOT_PASSWORD: belmare-segredo-local
+
+      # ⚠️ O equivalente local da política de CORS que o README manda pôr no
+      # bucket do R2. O navegador faz um preflight `OPTIONS` antes do `PUT`
+      # assinado, porque o painel está em `localhost:3000` e o bucket em
+      # `localhost:9000` — origens diferentes. Sem esta liberação o upload morre
+      # no preflight e o painel só mostra um erro de rede.
+      #
+      # ⚠️ E aqui está a primeira diferença que o MinIO NÃO reproduz: no R2 a
+      # política é por bucket, escrita em JSON no painel da Cloudflare, com as
+      # três armadilhas que o README lista (sem curinga de subdomínio, sem `"*"`
+      # em `AllowedHeaders`, origem é a do site). Aqui é uma variável de
+      # ambiente do servidor inteiro. Um upload que passa aqui não diz nada
+      # sobre a política do bucket de produção estar certa.
+      MINIO_API_CORS_ALLOW_ORIGIN: http://localhost:3000
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # Cria o bucket e o abre para leitura anônima, e então sai. É o equivalente
+  # local de "Settings → Public access" no painel da Cloudflare: o `PUT` é
+  # assinado, mas o `GET` de quem baixa o catálogo não é, e sem leitura pública
+  # o arquivo sobe e não desce.
+  bucket:
+    image: minio/mc:latest
+    container_name: belmare-prova-bucket
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint:
+      - sh
+      - -c
+      - |
+        mc alias set prova http://minio:9000 belmare belmare-segredo-local
+        mc mb --ignore-existing prova/belmare
+        mc anonymous set download prova/belmare
+        mc anonymous get prova/belmare
+
+volumes:
+  postgres:
+  minio:
