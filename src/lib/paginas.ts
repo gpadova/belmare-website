@@ -155,6 +155,31 @@ export function ehDestinoInterno(
 }
 
 /**
+ * O corpo de um bloco de texto tem alguma palavra escrita dentro?
+ *
+ * ⚠️ **UM EDITOR EM BRANCO NÃO CHEGA VAZIO — CHEGA COM UM PARÁGRAFO SEM
+ * FILHOS.** O lexical grava a raiz com um nó de parágrafo assim que o campo é
+ * tocado, e por isso contar os filhos da raiz aprova exatamente o caso que este
+ * portão existe para recusar: uma seção com título, fio de 1px e um vão onde
+ * deveria haver texto. Quem conta é o TEXTO, e a busca é recursiva porque um
+ * título ou um item de lista também é conteúdo — e nenhum dos dois é filho
+ * direto da raiz.
+ *
+ * ⚠️ **É A MESMA REGRA QUE O PAINEL JÁ APLICA AO PUBLICAR** — um campo de texto
+ * formatado obrigatório recusa "só um parágrafo vazio". Tê-la também aqui é o
+ * que faz a pré-visualização concordar com o site publicado: sob live preview o
+ * documento atravessa sem validação nenhuma, e é justamente ali que o operador
+ * está montando a página.
+ */
+function temTexto(nos: NoRico[]): boolean {
+  return nos.some((no) => {
+    if (typeof no.text === "string") return no.text.trim() !== "";
+    const filhos = no.children;
+    return Array.isArray(filhos) && temTexto(filhos as NoRico[]);
+  });
+}
+
+/**
  * Os blocos que de fato vão ao ar.
  *
  * ⚠️ **SEÇÃO ANULÁVEL, APLICADA À COMPOSIÇÃO INTEIRA.** Um bloco de caminhos
@@ -172,7 +197,7 @@ export function blocosPublicaveis(blocos: Bloco[]): Bloco[] {
   return blocos.filter((bloco) => {
     switch (bloco.tipo) {
       case "prosa":
-        return bloco.corpo.root.children.length > 0;
+        return temTexto(bloco.corpo.root.children);
       case "caminhos":
         return bloco.itens.length > 0;
       case "ficha":

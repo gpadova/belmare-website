@@ -19,7 +19,14 @@ import type { Pagina as PaginaGerada } from "@/payload-types";
  * clique em "adicionar bloco".
  */
 
-/** Um corpo de texto formatado com um parágrafo dentro. */
+/**
+ * Um corpo de texto formatado com um parágrafo ESCRITO dentro.
+ *
+ * ⚠️ O nó de texto não é enfeite do fixture: um parágrafo sem filhos é como o
+ * lexical grava um campo tocado e deixado em branco, e `blocosPublicaveis` o
+ * descarta pela mesma regra que o painel usa ao publicar. Sem o texto aqui,
+ * este fixture afirmaria "um corpo com conteúdo" sendo um corpo vazio.
+ */
 const CORPO = {
   root: {
     type: "root",
@@ -27,7 +34,13 @@ const CORPO = {
     direction: "ltr" as const,
     format: "" as const,
     indent: 0,
-    children: [{ type: "paragraph", version: 1 }],
+    children: [
+      {
+        type: "paragraph",
+        version: 1,
+        children: [{ type: "text", version: 1, text: "A Belmare é representação comercial." }],
+      },
+    ],
   },
 };
 
@@ -203,6 +216,21 @@ describe("os outros três blocos", () => {
     expect(comBlocos([{ blockType: "prosa", corpo: vazio }])?.composicao).toEqual(
       [],
     );
+  });
+
+  test("nem com o editor TOCADO e deixado em branco — que é o estado real", () => {
+    /* ⚠️ O caso acima quase não acontece: assim que o campo recebe o foco, o
+       lexical grava um parágrafo sem filhos, e é ESSE o "campo em branco" que
+       chega ao mapper. Sob live preview ele chega sem passar por validação
+       nenhuma, e desenhá-lo daria uma seção com título, fio e um vão. */
+    const tocado = {
+      root: { ...CORPO.root, children: [{ type: "paragraph", version: 1 }] },
+    };
+
+    expect(
+      comBlocos([{ blockType: "prosa", titulo: "Uma seção sem texto", corpo: tocado }])
+        ?.composicao,
+    ).toEqual([]);
   });
 
   test("um corpo que não é árvore de texto formatado não derruba a página", () => {

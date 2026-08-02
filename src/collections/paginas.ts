@@ -69,8 +69,8 @@ export const Paginas: CollectionConfig = {
     /**
      * ⚠️ **O IFRAME, E SÓ PARA ESTA COLEÇÃO.** Ele carrega a mesma
      * `/preview?...` do botão acima — o token é conferido e o modo de rascunho é
-     * ligado antes de o redirecionamento chegar na rota. Quem atualiza o quadro
-     * a cada mudança de campo é `components/paginas/atualiza-em-preview.tsx`,
+     * ligado antes de o redirecionamento chegar na rota. Quem redesenha o quadro
+     * a cada mudança de campo é `components/paginas/composicao-em-preview.tsx`,
      * renderizado pela rota apenas quando o modo de rascunho está ligado: um
      * visitante comum nunca recebe o ouvinte de mensagens.
      *

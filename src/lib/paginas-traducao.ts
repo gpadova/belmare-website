@@ -158,7 +158,7 @@ function caminhoDoPainel(
  * "campo em branco" chega aqui como uma árvore com um nó dentro. Confiar em
  * `corpo == null` deixaria passar um bloco que desenha um fio horizontal e um
  * vão — o oposto de seção anulável. Quem decide se há conteúdo é
- * `blocosPublicaveis`, sobre a contagem de filhos da raiz; esta função só
+ * `blocosPublicaveis`, sobre o texto que a árvore de fato tem; esta função só
  * confere que a forma é a esperada.
  */
 function conteudoRico(valor: unknown): ConteudoRico | undefined {

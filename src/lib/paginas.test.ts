@@ -30,8 +30,8 @@ function arquivoDaRota(href: string): string {
  * ou o site abre uma URL sem página.
  */
 
-/** Um corpo de texto formatado mínimo, na forma que o lexical grava. */
-function corpoCom(quantosNos: number): ConteudoRico {
+/** A raiz que o lexical grava, com os nós que lhe forem entregues. */
+function corpoDe(nos: Record<string, unknown>[]): ConteudoRico {
   return {
     root: {
       type: "root",
@@ -39,12 +39,32 @@ function corpoCom(quantosNos: number): ConteudoRico {
       direction: "ltr",
       format: "",
       indent: 0,
-      children: Array.from({ length: quantosNos }, () => ({
-        type: "paragraph",
-        version: 1,
-      })),
+      children: nos as ConteudoRico["root"]["children"],
     },
   };
+}
+
+/** Um parágrafo com texto dentro — a forma completa que o lexical grava. */
+function paragrafo(texto: string): Record<string, unknown> {
+  return {
+    type: "paragraph",
+    version: 1,
+    children: [{ type: "text", version: 1, text: texto }],
+  };
+}
+
+/**
+ * Um corpo de texto formatado com `quantosNos` parágrafos ESCRITOS.
+ *
+ * ⚠️ Cada parágrafo carrega um nó de texto de verdade, e não só o nó de
+ * parágrafo: um parágrafo sem filhos é como o lexical grava um campo TOCADO E
+ * EM BRANCO, e usá-lo como fixture de "tem conteúdo" faria os testes abaixo
+ * afirmarem o contrário do que dizem.
+ */
+function corpoCom(quantosNos: number): ConteudoRico {
+  return corpoDe(
+    Array.from({ length: quantosNos }, (_, i) => paragrafo(`Parágrafo ${i + 1}.`)),
+  );
 }
 
 describe("o registro de rotas livres", () => {
@@ -150,6 +170,60 @@ describe("blocosPublicaveis", () => {
     const escrito: Bloco = { tipo: "prosa", corpo: corpoCom(2) };
 
     expect(blocosPublicaveis([vazio, escrito])).toEqual([escrito]);
+  });
+
+  test("um editor TOCADO e deixado em branco também não vai ao ar", () => {
+    /* ⚠️ O caso que a contagem de filhos da raiz deixava passar, e o único
+       alcançável enquanto se monta a página: o lexical grava um nó de parágrafo
+       sem filhos assim que o campo recebe o foco. Contando a raiz, esse corpo
+       tem UM filho e atravessava — desenhando uma seção com título, fio de 1px e
+       um vão no lugar do texto, que é literalmente o que a seção anulável
+       existe para não ter. É também o que o painel recusa ao publicar; aqui a
+       pré-visualização passa a concordar com ele. */
+    const tocado: Bloco = {
+      tipo: "prosa",
+      titulo: "Uma seção sem texto",
+      corpo: corpoDe([{ type: "paragraph", version: 1 }]),
+    };
+    const comTextoVazio: Bloco = {
+      tipo: "prosa",
+      corpo: corpoDe([
+        { type: "paragraph", version: 1, children: [{ type: "text", version: 1, text: "   " }] },
+      ]),
+    };
+
+    expect(blocosPublicaveis([tocado, comTextoVazio])).toEqual([]);
+  });
+
+  test("título e item de lista contam como texto — não são filhos diretos da raiz", () => {
+    /* A busca é recursiva de propósito: uma política de privacidade colada do
+       advogado pode abrir num `h2`, e uma seção que fosse só uma lista de
+       pontos é conteúdo tanto quanto um parágrafo. Uma contagem rasa de nós de
+       texto na raiz apagaria as duas. */
+    const soTitulo: Bloco = {
+      tipo: "prosa",
+      corpo: corpoDe([
+        { type: "heading", tag: "h2", version: 1, children: [{ type: "text", version: 1, text: "Seus direitos" }] },
+      ]),
+    };
+    const soLista: Bloco = {
+      tipo: "prosa",
+      corpo: corpoDe([
+        {
+          type: "list",
+          version: 1,
+          children: [
+            {
+              type: "listitem",
+              version: 1,
+              children: [{ type: "text", version: 1, text: "a sessão do painel;" }],
+            },
+          ],
+        },
+      ]),
+    };
+
+    expect(blocosPublicaveis([soTitulo, soLista])).toEqual([soTitulo, soLista]);
   });
 
   test("um bloco de caminhos sem nenhum caminho não vai ao ar", () => {

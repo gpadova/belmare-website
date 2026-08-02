@@ -26,9 +26,9 @@ import { ehRotaLivre, enderecoDaPaginaLivre } from "@/lib/paginas";
  * O iframe do painel carrega A MESMA `/preview?...` que o botão "Visualizar"
  * abre numa aba — não existe um segundo caminho para ver rascunho, e o token
  * continua sendo conferido no mesmo lugar, uma vez. O que muda no iframe é do
- * lado do site: `components/paginas/atualiza-em-preview.tsx` pede uma
- * atualização da rota a cada mensagem do painel, e ele só é renderizado sob o
- * modo de rascunho.
+ * lado do site: `components/paginas/composicao-em-preview.tsx` redesenha a
+ * composição NO CLIENTE a cada mudança de campo do painel, sem voltar ao
+ * servidor, e ele só é renderizado sob o modo de rascunho.
  */
 
 /**
