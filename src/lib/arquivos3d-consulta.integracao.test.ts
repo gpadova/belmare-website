@@ -266,10 +266,19 @@ describe("o pacote completo, do global até a consulta", () => {
 
   test("publicado, formato e peso vêm do arquivo armazenado", async () => {
     const bytes = 62.4 * 1024 * 1024;
+
+    /* ⚠️ **O NOME NÃO PODE TERMINAR EM NÚMERO.** O banco é descartável, mas os
+       binários não são: sem R2 os uploads caem em `.uploads/` e sobrevivem a
+       uma execução interrompida (o `afterAll` é quem os apaga). Quando o nome
+       já existe em disco, o Payload não acrescenta sufixo — ele INCREMENTA o
+       número final: `pacote-belmare-2026.zip` volta como
+       `pacote-belmare-2027.zip`, e a asserção de endereço falha por faxina, não
+       por defeito. As outras deste arquivo ("cadeira-zuri", "modelo-a") passam
+       porque `-1` no fim preserva o trecho conferido. */
     const arquivo = await criarArquivo(
       payload,
       "Pacote Belmare",
-      "pacote-belmare-2026.zip",
+      "pacote-belmare-completo.zip",
       bytes,
     );
 
@@ -283,7 +292,7 @@ describe("o pacote completo, do global até a consulta", () => {
 
     expect(pacote?.formato).toBe("ZIP");
     expect(pesoEmMB(pacote?.mb ?? 0)).toBe("62,4");
-    expect(pacote?.url).toContain("pacote-belmare-2026");
+    expect(pacote?.url).toContain("pacote-belmare-completo");
   });
 
   test("pacote sem extensão legível é recusado no painel — formato nunca vira chute", async () => {

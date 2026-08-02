@@ -12,9 +12,11 @@ import { notFound } from "next/navigation";
  *
  * Este catch-all traz a URL órfã para dentro do grupo do site antes de chamar
  * `notFound()`, e aí o 404 desenhado em `not-found.tsx` volta a aparecer com a
- * página inteira em volta. Não é detalhe: hoje TODO item do menu aponta para
- * uma rota que ainda não foi construída, então esta é a segunda página mais
- * visitada do site.
+ * página inteira em volta. Não é detalhe: enquanto o menu prometia rotas que
+ * ainda não existiam, esta foi a segunda página mais visitada do site. Desde
+ * PRA-127 nenhum link interno cai aqui (`lib/paginas.test.ts` é a guarda), e o
+ * que sobra é URL digitada errada e endereço antigo vindo de fora — que é
+ * exatamente o que um 404 desenhado existe para atender.
  *
  * `/admin` e `/api` continuam com o painel: segmento fixo ganha de catch-all na
  * ordem de precedência do Next.

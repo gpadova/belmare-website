@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import {
   arquivo3DDoPainel,
+  arquivosPorFormato,
   bibliotecaPorRepresentada,
   formatoDoArquivo,
   pacoteDoPainel,
@@ -239,5 +240,61 @@ describe("a biblioteca agrupada por representada", () => {
     ).toBe(3);
 
     expect(totalDeArquivos3D([])).toBe(0);
+  });
+});
+
+/**
+ * O segundo eixo do agrupamento — por formato, DENTRO de cada fábrica.
+ *
+ * ⚠️ O que estes testes protegem é a distinção que o projeto inteiro carrega:
+ * agrupar arruma na tela o que a consulta escopada já trouxe junto; filtrar
+ * seria a consulta pedir duas fábricas de uma vez. Esta função é pura e recebe
+ * os arquivos de UMA marca — não há por onde ela virar a segunda coisa.
+ */
+describe("os arquivos de uma fábrica, agrupados por formato", () => {
+  const skp = (nome: string): Arquivo3D => ({ ...ITEM, nome, formato: "SKP" });
+  const dwg = (nome: string): Arquivo3D => ({ ...ITEM, nome, formato: "DWG" });
+
+  test("a mesma peça em dois formatos vira duas linhas em dois grupos, não duas linhas seguidas", () => {
+    // O caso que motiva o eixo: "Cadeira Zuri" existe em `.skp` e em `.dwg`, e
+    // numa lista plana as duas linhas levam o MESMO nome.
+    expect(
+      arquivosPorFormato([skp("Cadeira Zuri"), dwg("Cadeira Zuri")]),
+    ).toEqual([
+      { formato: "DWG", arquivos: [dwg("Cadeira Zuri")] },
+      { formato: "SKP", arquivos: [skp("Cadeira Zuri")] },
+    ]);
+  });
+
+  test("os formatos saem em ordem alfabética — `formato` é gerado, não há campo de ordem a respeitar", () => {
+    expect(
+      arquivosPorFormato([skp("Mesa Vitta"), dwg("Cadeira Zuri")]).map(
+        (g) => g.formato,
+      ),
+    ).toEqual(["DWG", "SKP"]);
+  });
+
+  test("dentro do formato, a ordem por nome que a consulta trouxe é preservada", () => {
+    // `sort: "nome"` em `buscarArquivos3DDaRepresentada` é quem ordena; agrupar
+    // não pode dar uma segunda opinião sobre isso.
+    expect(
+      arquivosPorFormato([
+        skp("Banqueta Ilha"),
+        skp("Cadeira Zuri"),
+        skp("Mesa Vitta"),
+      ])[0].arquivos.map((a) => a.nome),
+    ).toEqual(["Banqueta Ilha", "Cadeira Zuri", "Mesa Vitta"]);
+  });
+
+  test("uma fábrica com um formato só continua sendo um grupo — nenhum caso especial", () => {
+    expect(arquivosPorFormato([skp("Cadeira Zuri")])).toEqual([
+      { formato: "SKP", arquivos: [skp("Cadeira Zuri")] },
+    ]);
+  });
+
+  test("sem arquivo nenhum não há formato nenhum — nem um grupo vazio", () => {
+    // A fábrica sem arquivo já foi descartada por `bibliotecaPorRepresentada`
+    // antes de chegar aqui; o grupo de formato vazio não tem como nascer.
+    expect(arquivosPorFormato([])).toEqual([]);
   });
 });

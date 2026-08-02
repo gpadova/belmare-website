@@ -162,6 +162,57 @@ export function bibliotecaPorRepresentada<M>(
   return grupos.filter((grupo) => grupo.arquivos.length > 0);
 }
 
+/** Um formato e os arquivos de UMA fábrica que estão nele — o segundo eixo do
+ *  agrupamento de `/arquivos-3d`. */
+export type GrupoDeFormato = {
+  formato: string;
+  arquivos: Arquivo3D[];
+};
+
+/**
+ * Os arquivos de uma representada, agrupados por formato — o segundo eixo da
+ * biblioteca (PRA-127).
+ *
+ * ⚠️ **AGRUPAR POR FORMATO NÃO É FILTRAR POR FORMATO, E A DISTINÇÃO É A MESMA
+ * QUE `bibliotecaPorRepresentada` JÁ FAZ.** O filtro transversal do briefing
+ * ("SKETCHUP · DWG · REVIT · 3DS" no topo da página) continua não existindo, e
+ * continua morto pelas duas razões registradas em
+ * `docs/classificacao-de-texto.md`: ele exigiria uma leitura de arquivos 3D SEM
+ * pai — a porta por onde "o filtro nunca sai da marca" deixaria de valer — e
+ * ele desenharia quatro botões sobre zero arquivo. Esta função não abre nem uma
+ * coisa nem a outra: ela é pura, recebe os arquivos de UMA fábrica que a
+ * consulta escopada já devolveu, e arruma na tela o que veio junto.
+ *
+ * ⚠️ **O EIXO SÓ APARECE PORQUE A MESMA PEÇA VEM EM VÁRIOS FORMATOS.** Uma
+ * fábrica que entrega "Cadeira Zuri" em `.skp` e em `.dwg` produz duas linhas
+ * com o MESMO nome; numa lista plana elas se alternam com as outras peças e o
+ * arquiteto que só usa SketchUp lê a lista inteira duas vezes para achar
+ * metade dela. Agrupado, ele desce até o formato que abre e para de ler.
+ *
+ * ⚠️ **A ORDEM DOS FORMATOS É ALFABÉTICA, E NÃO PODIA SER OUTRA COISA.**
+ * `formato` é **gerado** da extensão (não há campo de painel a respeitar, como
+ * `Representada.ordem` é lá em cima), e a ordem de chegada dos documentos é a
+ * ordem de cadastro — arbitrária na tela. Dentro de cada formato a ordem é a
+ * que a consulta já trouxe (`sort: "nome"`), preservada aqui.
+ */
+export function arquivosPorFormato(
+  arquivos: readonly Arquivo3D[],
+): GrupoDeFormato[] {
+  const grupos = new Map<string, Arquivo3D[]>();
+
+  for (const arquivo of arquivos) {
+    const doFormato = grupos.get(arquivo.formato);
+    if (doFormato === undefined) grupos.set(arquivo.formato, [arquivo]);
+    else doFormato.push(arquivo);
+  }
+
+  // Um grupo de formato nasce de pelo menos um arquivo — não existe aqui o
+  // caso do grupo vazio que `bibliotecaPorRepresentada` precisa descartar.
+  return [...grupos]
+    .map(([formato, doFormato]) => ({ formato, arquivos: doFormato }))
+    .sort((a, b) => a.formato.localeCompare(b.formato, "pt-BR"));
+}
+
 /**
  * Quantos arquivos a biblioteca inteira tem — **gerado**, nunca digitado.
  *

@@ -9,7 +9,7 @@ import {
 } from "@/components/arquivos-3d/linha-de-arquivo";
 import { PacoteCompleto } from "@/components/arquivos-3d/pacote-completo";
 import { Seta } from "@/components/icones";
-import { totalDeArquivos3D } from "@/lib/arquivos3d";
+import { arquivosPorFormato, totalDeArquivos3D } from "@/lib/arquivos3d";
 import { buscarBiblioteca3D, buscarPacote3D } from "@/lib/arquivos3d-consulta";
 import { comInicialMaiuscula, emLista, porExtenso } from "@/lib/frase";
 
@@ -68,7 +68,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * A sequência:
  *
  *   Coluna esquerda   o que é a biblioteca, e o que ela não cobra
- *   Coluna direita    os arquivos, agrupados por fábrica
+ *   Coluna direita    os arquivos, agrupados por fábrica e por formato
  *   Seção do pacote   o único download com cadastro
  *   Fecho             o pedido pelo WhatsApp
  *
@@ -78,7 +78,14 @@ export async function generateMetadata(): Promise<Metadata> {
  * `representada.slug`, e a única coisa que atravessa as marcas é a ordem em que
  * elas aparecem na tela. Ver a nota em `lib/arquivos3d-consulta.ts`.
  *
- * ⚠️ **O FILTRO POR FORMATO NÃO EXISTE, e a ausência é decisão.**
+ * ⚠️ **O FORMATO É O SEGUNDO EIXO DO AGRUPAMENTO — dentro de cada fábrica, e
+ * nunca por cima delas.** A mesma peça vem em `.skp` e em `.dwg`, e numa lista
+ * plana as duas linhas têm o mesmo nome: quem só abre SketchUp lê tudo para
+ * achar metade. `lib/arquivos3d.ts#arquivosPorFormato` é puro e recebe os
+ * arquivos de UMA fábrica que a consulta escopada já devolveu — agrupar de novo
+ * não abre nenhuma leitura sem pai.
+ *
+ * ⚠️ **O FILTRO POR FORMATO, ESSE NÃO EXISTE, e a ausência é decisão.**
  * `briefing/prompt-paper.md` desenha "SKETCHUP · DWG · REVIT · 3DS" no topo.
  * Ele é o eixo transversal que a decisão 10 já matou uma vez para material, com
  * o mesmo argumento e o mesmo dado: **nenhuma estrutura do site deve depender
@@ -109,7 +116,7 @@ STORY: o arquiteto vê o que existe, o que custa cada clique em MB, baixa o que
 precisa sem dar nada, e decide se o conjunto vale um cadastro.
 FIRST VIEWPORT: duas colunas partidas por fio vertical — à esquerda rótulo em
 mono, h1 de duas linhas, parágrafo e saída secundária; à direita o cabeçalho de
-colunas e os arquivos agrupados por fábrica.
+colunas e os arquivos agrupados por fábrica e, dentro dela, por formato.
 FORM: "o índice de documentos" de /catalogos, herdado — a gramática é a mesma e
 o reconhecimento entre as duas rotas é o objetivo.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
@@ -221,14 +228,42 @@ export default async function Arquivos3D() {
                     {marca.nome}
                   </h2>
 
-                  <ul className="mt-4 border-t border-line">
-                    {arquivos.map((arquivo) => (
-                      <LinhaDeArquivo3D
-                        key={`${marca.slug}-${arquivo.nome}`}
-                        arquivo={arquivo}
-                      />
-                    ))}
-                  </ul>
+                  {/* ⚠️ O SEGUNDO EIXO DO AGRUPAMENTO. A mesma peça vem em
+                      `.skp` e em `.dwg`, e numa lista plana as duas linhas
+                      levam o mesmo nome, separadas por tudo que estiver entre
+                      elas no alfabeto — quem só abre SketchUp lê a lista
+                      inteira para achar metade dela. Agrupar por formato é
+                      TypeScript puro sobre o que a consulta escopada já
+                      devolveu (`lib/arquivos3d.ts#arquivosPorFormato`); o
+                      filtro transversal do briefing continua não existindo,
+                      pelas razões da nota de topo. */}
+                  {arquivosPorFormato(arquivos).map(
+                    ({ formato, arquivos: doFormato }) => (
+                      <div
+                        key={`${marca.slug}-${formato}`}
+                        className="mt-8 first:mt-4"
+                      >
+                        {/* ⚠️ Versal aqui NÃO é a violação que o `h2` acima
+                            corrigiu: a Regra da Caixa Alta reserva mono
+                            caixa-alta para medida, código, **sigla** e rótulo
+                            de campo. "Trisol" é nome próprio e fica em
+                            grotesca; "SKP" é sigla, e é o mesmo desenho da
+                            medida que ela nomeia na coluna ao lado. */}
+                        <h3 className="mono uppercase text-graphite">
+                          {formato}
+                        </h3>
+
+                        <ul className="mt-3 border-t border-line">
+                          {doFormato.map((arquivo) => (
+                            <LinhaDeArquivo3D
+                              key={`${marca.slug}-${formato}-${arquivo.nome}`}
+                              arquivo={arquivo}
+                            />
+                          ))}
+                        </ul>
+                      </div>
+                    ),
+                  )}
                 </section>
               ))}
 
