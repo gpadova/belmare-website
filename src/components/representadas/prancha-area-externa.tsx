@@ -2,19 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Seta } from "@/components/icones";
-import { presente } from "@/lib/campo-opcional";
 import { comInicialMaiuscula, porExtenso } from "@/lib/frase";
 import {
+  chamadasDesenhadas,
   linhaDaChamada,
   numeroDaChamada,
-  type Chamada,
 } from "@/lib/prancha-area-externa";
 import { pranchaDaPagina } from "@/lib/prancha-consulta";
-import { paginaDaRepresentada, type Representada } from "@/lib/representadas";
+import { paginaDaRepresentada } from "@/lib/representadas";
 import { representadasDaPagina } from "@/lib/representadas-consulta";
-
-/** Uma chamada e a marca que ela nomeia, já conferida como publicada. */
-type ChamadaComMarca = { chamada: Chamada; representada: Representada };
 
 /**
  * PRANCHA 02 — a área externa desmontada.
@@ -81,13 +77,10 @@ export async function PranchaAreaExterna() {
   ]);
 
   /* Desenho e legenda saem daqui, das duas listas cruzadas uma vez. Uma chamada
-     cuja marca não está publicada some das duas — nunca de uma só. */
-  const chamadas: ChamadaComMarca[] = prancha.chamadas
-    .map((chamada) => {
-      const representada = representadas.find((r) => r.slug === chamada.slug);
-      return representada === undefined ? undefined : { chamada, representada };
-    })
-    .filter(presente);
+     cuja marca não está publicada some das duas — nunca de uma só. O cruzamento
+     mora em `lib` para poder ser afirmado por teste com três e com cinco
+     chamadas: é ele que decide o que a prancha desenha. */
+  const chamadas = chamadasDesenhadas(prancha.chamadas, representadas);
 
   return (
     <section
@@ -152,15 +145,20 @@ export async function PranchaAreaExterna() {
                 preserveAspectRatio="none"
                 className="absolute inset-0 h-full w-full"
               >
-                {chamadas.map(({ chamada }) => {
+                {chamadas.map(({ chamada }, i) => {
                   /* ⚠️ O traço sai da MESMA função que o painel usa para
                      desenhar a pré-visualização (`lib/prancha-area-externa.ts`).
                      Duas cópias desta expressão é como o operador arrasta
                      olhando para um desenho e publica outro. */
                   const traco = linhaDaChamada(chamada);
 
+                  /* ⚠️ A chave é a POSIÇÃO, não o slug: nada no painel impede
+                     duas chamadas para a mesma fábrica (uma marca que resolve
+                     dois objetos da cena), e duas chaves iguais numa lista do
+                     React é reconciliação errada — o traço de uma chamada
+                     parado na coordenada da outra. */
                   return (
-                    <g key={chamada.slug} fill="none">
+                    <g key={i} fill="none">
                       <path
                         d={traco}
                         stroke="var(--color-paper)"
@@ -184,7 +182,7 @@ export async function PranchaAreaExterna() {
               <div aria-hidden="true" className="absolute inset-0">
                 {chamadas.map(({ chamada }, i) => (
                   <span
-                    key={chamada.slug}
+                    key={i}
                     className="mono absolute -translate-x-1/2 -translate-y-1/2 bg-paper px-1.5 py-0.5 text-ink"
                     style={{
                       left: `${chamada.rotulo.x}%`,
@@ -263,9 +261,9 @@ export async function PranchaAreaExterna() {
           <h2 className="mono uppercase mt-10 text-graphite">Legenda</h2>
 
           <ol className="mt-3 border-t border-line">
-            {chamadas.map(({ chamada, representada }, i) => {
+            {chamadas.map(({ representada }, i) => {
               return (
-                <li key={chamada.slug} className="border-b border-line">
+                <li key={i} className="border-b border-line">
                   <Link
                     href={paginaDaRepresentada(representada)}
                     className="group grid grid-cols-[2.5rem_minmax(0,1fr)_2rem] items-baseline gap-x-3 py-4 transition-colors hover:bg-surface"

@@ -1,4 +1,5 @@
 import { PRANCHA_AREA_EXTERNA } from "@/lib/acervo";
+import { presente } from "@/lib/campo-opcional";
 
 /**
  * As chamadas da PRANCHA 02 — a área externa desmontada.
@@ -198,6 +199,38 @@ export function linhaDaChamada(chamada: {
  *  e nunca digitada. Três chamadas numeram 01–03; cinco numeram 01–05. */
 export function numeroDaChamada(indice: number): string {
   return String(indice + 1).padStart(2, "0");
+}
+
+/** Uma chamada e a marca que ela nomeia, já conferida como publicada. */
+export type ChamadaComMarca<Marca> = { chamada: Chamada; representada: Marca };
+
+/**
+ * As chamadas que a página DE FATO desenha — as do painel cruzadas com as
+ * representadas publicadas, na ordem do painel.
+ *
+ * ⚠️ **UMA LISTA SÓ ALIMENTA O DESENHO E A LEGENDA, E É POR ISSO QUE ELA MORA
+ * AQUI.** Enquanto o cruzamento vivia dentro do componente, a promessa "três
+ * chamadas numeram 01–03" era uma frase num comentário: nada afirmava que a
+ * chave sobre a foto e a linha da legenda saem da MESMA lista filtrada. Uma
+ * chamada cuja marca foi despublicada tem que sumir das duas — sumir só da
+ * legenda deixa um número sobre a fotografia apontando para uma linha que não
+ * existe, e a numeração precisa FECHAR o buraco em vez de pular 02.
+ *
+ * ⚠️ Genérica na marca de propósito: o que este arquivo sabe de uma
+ * representada é que ela tem `slug`. Importar o tipo inteiro só para cruzar
+ * duas listas ataria a geometria da prancha ao cadastro, que é exatamente o que
+ * a nota do topo deste arquivo recusa.
+ */
+export function chamadasDesenhadas<Marca extends { slug: string }>(
+  chamadas: readonly Chamada[],
+  representadas: readonly Marca[],
+): ChamadaComMarca<Marca>[] {
+  return chamadas
+    .map((chamada) => {
+      const representada = representadas.find((r) => r.slug === chamada.slug);
+      return representada === undefined ? undefined : { chamada, representada };
+    })
+    .filter(presente);
 }
 
 /**

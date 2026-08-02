@@ -2,7 +2,12 @@ import config from "@payload-config";
 import { getPayload, type Payload } from "payload";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { CHAMADAS, PRANCHA_EM_CODIGO } from "@/lib/prancha-area-externa";
+import {
+  CHAMADAS,
+  PRANCHA_EM_CODIGO,
+  chamadasDesenhadas,
+  numeroDaChamada,
+} from "@/lib/prancha-area-externa";
 import { buscarPrancha, pranchaDaPagina } from "@/lib/prancha-consulta";
 import { TAG_REPRESENTADAS } from "@/lib/revalidacao";
 import {
@@ -182,6 +187,46 @@ describe("a prancha do painel", () => {
     ]);
     expect(prancha.chamadas[0]?.rotulo).toEqual({ x: 62.5, y: 18.2 });
     expect(prancha.chamadas[0]?.alvo).toEqual({ x: 74, y: 31 });
+  });
+
+  test("UMA QUINTA FÁBRICA ENTRA NA CENA SEM MUDANÇA DE CÓDIGO", async () => {
+    // A outra metade do critério: o desenho não é de quatro nem para baixo nem
+    // para cima. Uma marca que resolve algo novo pede um objeto novo na cena —
+    // e o caminho para isso é cadastrar a marca e acrescentar uma chamada, sem
+    // nenhuma linha de `src` mudando de lugar.
+    const galeria = await criarImagem(payload, "Uma luminária", "quinta-galeria.jpg");
+    const abertura = await criarImagem(payload, "Uma luminária larga", "quinta-larga.jpg");
+    const quinta = await criarRepresentadaPublicada(
+      payload,
+      representadaMinima("luz-externa", "Luz Externa", galeria, abertura),
+    );
+
+    await publicarPrancha({
+      foto: fotografia,
+      chamadas: [
+        ...chamadasDeReserva(),
+        {
+          representada: quinta.id,
+          rotuloX: 84.5,
+          rotuloY: 12,
+          alvoX: 90,
+          alvoY: 24.5,
+        },
+      ],
+    });
+
+    const prancha = await pranchaDaPagina();
+
+    expect(prancha.chamadas).toHaveLength(5);
+    expect(prancha.chamadas[4]?.slug).toBe("luz-externa");
+    expect(prancha.chamadas[4]?.rotulo).toEqual({ x: 84.5, y: 12 });
+    expect(prancha.chamadas[4]?.alvo).toEqual({ x: 90, y: 24.5 });
+
+    // A quinta linha do desenho é a quinta linha da legenda — e a numeração
+    // dela sai da posição, não de um campo digitado.
+    const representadas = prancha.chamadas.map((c) => ({ slug: c.slug }));
+    expect(chamadasDesenhadas(prancha.chamadas, representadas)).toHaveLength(5);
+    expect(numeroDaChamada(4)).toBe("05");
   });
 
   test("publicar sem chamada nenhuma é recusado, em pt-BR", async () => {

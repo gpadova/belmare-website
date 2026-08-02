@@ -6,6 +6,7 @@ import {
   PASSO,
   PASSO_LARGO,
   PRANCHA_EM_CODIGO,
+  chamadasDesenhadas,
   deslocarPonto,
   linhaDaChamada,
   numeroDaChamada,
@@ -144,6 +145,94 @@ describe("o desenho é o mesmo no painel e na página", () => {
     // o que ensina, sem texto nenhum, que são dois pinos ligados.
     expect(CHAMADA_EM_BRANCO.alvo.x).toBeGreaterThan(CHAMADA_EM_BRANCO.rotulo.x);
     expect(CHAMADA_EM_BRANCO.alvo.y).toBeGreaterThan(CHAMADA_EM_BRANCO.rotulo.y);
+  });
+});
+
+describe("o desenho aceita três ou cinco chamadas, não só quatro", () => {
+  /** Uma chamada qualquer da marca `slug` — a geometria não importa aqui. */
+  function de(slug: string) {
+    return { slug, rotulo: { x: 10, y: 10 }, alvo: { x: 20, y: 20 } };
+  }
+
+  const marca = (slug: string) => ({ slug, nome: `Marca ${slug}` });
+
+  test("três chamadas viram três linhas, numeradas 01–03", () => {
+    const desenhadas = chamadasDesenhadas(
+      [de("a"), de("b"), de("c")],
+      [marca("a"), marca("b"), marca("c"), marca("d")],
+    );
+
+    expect(desenhadas).toHaveLength(3);
+    expect(desenhadas.map((_, i) => numeroDaChamada(i))).toEqual([
+      "01",
+      "02",
+      "03",
+    ]);
+  });
+
+  test("cinco chamadas viram cinco linhas, numeradas 01–05", () => {
+    // A quinta fábrica que resolve algo novo na cena: nada no desenho é de
+    // quatro — nem a numeração, nem o cruzamento, nem a ordem.
+    const desenhadas = chamadasDesenhadas(
+      [de("a"), de("b"), de("c"), de("d"), de("e")],
+      [marca("a"), marca("b"), marca("c"), marca("d"), marca("e")],
+    );
+
+    expect(desenhadas).toHaveLength(5);
+    expect(desenhadas.map((_, i) => numeroDaChamada(i))).toEqual([
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+    ]);
+  });
+
+  test("a ordem é a do painel, e não a do cadastro de representadas", () => {
+    // É a ordem das chamadas que numera o desenho: o operador arrasta os pinos
+    // na ordem em que quer que a legenda seja lida.
+    const desenhadas = chamadasDesenhadas(
+      [de("c"), de("a"), de("b")],
+      [marca("a"), marca("b"), marca("c")],
+    );
+
+    expect(desenhadas.map(({ representada }) => representada.slug)).toEqual([
+      "c",
+      "a",
+      "b",
+    ]);
+  });
+
+  test("marca despublicada cai do desenho E da legenda, e a numeração fecha o buraco", () => {
+    // Sumir só da legenda deixaria o número 02 sobre a fotografia apontando
+    // para uma linha que não existe — uma chave sem entrada.
+    const desenhadas = chamadasDesenhadas(
+      [de("a"), de("sumiu"), de("c")],
+      [marca("a"), marca("c")],
+    );
+
+    expect(desenhadas.map(({ representada }) => representada.slug)).toEqual([
+      "a",
+      "c",
+    ]);
+    // A chamada da marca despublicada não deixa 02 vago: `c` passa a ser 02.
+    expect(numeroDaChamada(1)).toBe("02");
+  });
+
+  test("duas chamadas para a mesma fábrica atravessam as duas", () => {
+    // Uma marca que resolve dois objetos da cena. Nada no painel impede, e o
+    // desenho não pode fundir as duas numa só — são dois alvos.
+    const desenhadas = chamadasDesenhadas(
+      [de("a"), de("a")],
+      [marca("a"), marca("b")],
+    );
+
+    expect(desenhadas).toHaveLength(2);
+  });
+
+  test("sem representada publicada nenhuma, o desenho fica vazio em vez de quebrar", () => {
+    expect(chamadasDesenhadas([de("a"), de("b")], [])).toEqual([]);
+    expect(chamadasDesenhadas([], [marca("a")])).toEqual([]);
   });
 });
 
