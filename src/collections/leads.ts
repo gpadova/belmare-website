@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { estaAutenticado } from "@/collections/papeis";
 import { emailValido } from "@/lib/lead";
+import { respostaDeExportacaoDeLeads } from "@/lib/lead-exportacao";
 
 /**
  * Os leads recebidos pelo formulário do site — PRA-126.
@@ -50,6 +51,16 @@ import { emailValido } from "@/lib/lead";
  * e-mail via Resend — nessa ordem, e a ordem é o que garante que um Resend fora
  * do ar nunca perde o contato: o documento já está aqui antes de a tentativa de
  * e-mail sequer começar. Ver a nota grande no topo daquele arquivo.
+ *
+ * ⚠️ **`endpoints` ABAIXO É O "EXPORTED" DE "READ, FILTERED AND EXPORTED FROM
+ * THE PANEL".** Ler e filtrar já vêm de graça da lista padrão do painel — é
+ * `access.read` mais o que o Payload desenha sozinho. Exportar, não: sem um
+ * plugin de import/export (que este projeto não instala), o Payload não
+ * oferece CSV nenhum. `GET /api/leads/exportar`
+ * (`lib/lead-exportacao.ts#respostaDeExportacaoDeLeads`) é o mínimo que fecha
+ * o critério, e o botão em `components/painel/exportar-leads.tsx` é quem o
+ * torna alcançável sem digitar URL — registrado em `admin.components`, logo
+ * abaixo.
  */
 export const Leads: CollectionConfig = {
   slug: "leads",
@@ -61,6 +72,11 @@ export const Leads: CollectionConfig = {
     group: "Leads",
     description:
       "Os contatos recebidos pelo formulário do site — hoje só \"Quero revender\", em /contato. Todo lead chega aqui e, quando o e-mail comercial está cadastrado e o Resend está configurado, também por e-mail — mas esta lista é a cópia que sobrevive mesmo quando o e-mail falha ou nunca foi configurado.",
+    components: {
+      // O botão "Exportar CSV" acima da tabela — ver a nota sobre
+      // `endpoints`, no topo do arquivo.
+      beforeListTable: ["/components/painel/exportar-leads#ExportarLeads"],
+    },
   },
 
   access: {
@@ -74,6 +90,25 @@ export const Leads: CollectionConfig = {
   },
 
   defaultSort: "-createdAt",
+
+  /**
+   * O CSV de exportação — ver a nota grande no topo do arquivo. Vem ANTES
+   * de qualquer coisa que o Payload acrescente sozinho (`generate:types`,
+   * a leitura por id, `/count`…), porque é assim que `handleEndpoints`
+   * decide qual rota vence quando duas casam com o mesmo caminho: o
+   * primeiro `endpoint` da lista cujo padrão bate. Sem essa ordem,
+   * `GET /api/leads/exportar` cairia no `/:id` embutido do Payload, que
+   * tentaria ler um lead de id `"exportar"` em vez de rodar esta função —
+   * `lead-exportacao.integracao.test.ts` prova a ordem, não só o handler.
+   */
+  endpoints: [
+    {
+      path: "/exportar",
+      method: "get",
+      handler: (req) =>
+        respostaDeExportacaoDeLeads({ payload: req.payload, user: req.user }),
+    },
+  ],
 
   fields: [
     {

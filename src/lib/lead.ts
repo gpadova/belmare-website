@@ -123,3 +123,63 @@ export function corpoDoAvisoPorEmail(dados: DadosDoLead): string {
   ];
   return linhas.join("\n");
 }
+
+/** Uma linha do CSV de exportação — os mesmos campos do formulário, mais os
+ *  dois que só existem depois de gravado: identificador e data. */
+export type LinhaDeExportacaoDoLead = DadosDoLead & {
+  id: number | string;
+  /** Já formatada em pt-BR por quem monta a linha (`lib/lead-exportacao.ts`)
+   *  — esta função não sabe de fuso nem de locale, só de texto de célula. */
+  criadoEm: string;
+};
+
+/**
+ * O CSV que "Leads" exporta do painel — PRA-126, o critério "read, filtered
+ * and exported". `lib/lead-exportacao.ts` chama esta função depois de ler o
+ * Payload; nada aqui fala com ele, mesma tática do resto do arquivo.
+ *
+ * ⚠️ **BOM NA FRENTE, DE PROPÓSITO.** Sem o `\uFEFF` inicial, o Excel — que é
+ * quem a Belmare abre — lê o arquivo como Latin-1 e troca todo acento por
+ * caractere quebrado. Um CSV de nome e cidade sem acento certo não serve para
+ * nada.
+ *
+ * ⚠️ **QUEBRA DE LINHA É `\r\n`, A DA RFC 4180.** E uma célula só vai entre
+ * aspas quando o conteúdo dela exige — vírgula, aspas ou quebra de linha
+ * própria —, nunca por padrão: é o que mantém o arquivo legível a olho nu na
+ * imensa maioria das linhas.
+ */
+export function csvDeLeads(linhas: LinhaDeExportacaoDoLead[]): string {
+  const cabecalho = [
+    "ID",
+    "Nome",
+    "E-mail",
+    "Cidade",
+    "Empresa ou escritório",
+    "Aceita novidades por e-mail",
+    "Página de origem",
+    "Marca de origem",
+    "Criado em",
+  ];
+
+  const corpo = linhas.map((linha) =>
+    [
+      String(linha.id),
+      linha.nome,
+      linha.email,
+      linha.cidade,
+      linha.escritorio,
+      linha.consentimentoMarketing ? "sim" : "não",
+      linha.origem.pagina,
+      linha.origem.marca ?? "",
+      linha.criadoEm,
+    ]
+      .map(celulaCSV)
+      .join(","),
+  );
+
+  return `\uFEFF${[cabecalho.map(celulaCSV).join(","), ...corpo].join("\r\n")}`;
+}
+
+function celulaCSV(valor: string): string {
+  return /[",\r\n]/.test(valor) ? `"${valor.replace(/"/g, '""')}"` : valor;
+}

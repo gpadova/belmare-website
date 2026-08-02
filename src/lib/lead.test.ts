@@ -1,6 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { corpoDoAvisoPorEmail, emailValido, type DadosDoLead } from "@/lib/lead";
+import {
+  corpoDoAvisoPorEmail,
+  csvDeLeads,
+  emailValido,
+  type DadosDoLead,
+  type LinhaDeExportacaoDoLead,
+} from "@/lib/lead";
 
 /**
  * O domínio do lead, sozinho — sem Payload, sem Next, sem Resend.
@@ -68,5 +74,104 @@ describe("corpoDoAvisoPorEmail", () => {
       origem: { pagina: "representadas/trisol", marca: "trisol" },
     });
     expect(comMarca).toContain("Marca: trisol");
+  });
+});
+
+describe("csvDeLeads", () => {
+  const linha: LinhaDeExportacaoDoLead = {
+    id: 1,
+    nome: "Ana Arquiteta",
+    email: "ana@escritorio.com.br",
+    cidade: "Florianópolis",
+    escritorio: "Ana Arquitetura",
+    consentimentoMarketing: false,
+    origem: { pagina: "contato" },
+    criadoEm: "31/07/2026 15:30:00",
+  };
+
+  test("começa com o BOM, para o Excel ler o acento certo", () => {
+    expect(csvDeLeads([linha])[0]).toBe("\uFEFF");
+  });
+
+  test("o cabeçalho tem as nove colunas, nesta ordem", () => {
+    const [cabecalho] = csvDeLeads([]).slice(1).split("\r\n");
+    expect(cabecalho).toBe(
+      [
+        "ID",
+        "Nome",
+        "E-mail",
+        "Cidade",
+        "Empresa ou escritório",
+        "Aceita novidades por e-mail",
+        "Página de origem",
+        "Marca de origem",
+        "Criado em",
+      ].join(","),
+    );
+  });
+
+  test("sem leads, só o cabeçalho sai — nenhuma linha de corpo vazia", () => {
+    const csv = csvDeLeads([]);
+    expect(csv.slice(1).split("\r\n")).toHaveLength(1);
+  });
+
+  test("uma linha traz os campos na ordem do cabeçalho, sim/não para o consentimento", () => {
+    const [, corpo] = csvDeLeads([linha]).slice(1).split("\r\n");
+    expect(corpo).toBe(
+      [
+        "1",
+        "Ana Arquiteta",
+        "ana@escritorio.com.br",
+        "Florianópolis",
+        "Ana Arquitetura",
+        "não",
+        "contato",
+        "",
+        "31/07/2026 15:30:00",
+      ].join(","),
+    );
+  });
+
+  test("consentimento marcado vira \"sim\"", () => {
+    const [, corpo] = csvDeLeads([{ ...linha, consentimentoMarketing: true }])
+      .slice(1)
+      .split("\r\n");
+    expect(corpo).toContain(",sim,");
+  });
+
+  test("a marca de origem aparece quando a origem carrega uma", () => {
+    const [, corpo] = csvDeLeads([
+      { ...linha, origem: { pagina: "representadas/trisol", marca: "trisol" } },
+    ])
+      .slice(1)
+      .split("\r\n");
+    expect(corpo).toContain(",representadas/trisol,trisol,");
+  });
+
+  test("uma célula com vírgula, aspas ou quebra de linha vai entre aspas, com aspas internas dobradas", () => {
+    const [, corpo] = csvDeLeads([
+      { ...linha, escritorio: 'Ateliê "Ana", Arquitetura\ne Design' },
+    ])
+      .slice(1)
+      .split("\r\n");
+    expect(corpo).toContain('"Ateliê ""Ana"", Arquitetura\ne Design"');
+  });
+
+  test("uma célula sem vírgula, aspas ou quebra de linha não ganha aspas", () => {
+    const [, corpo] = csvDeLeads([linha]).slice(1).split("\r\n");
+    expect(corpo).not.toContain('"');
+  });
+
+  test("duas linhas viram duas linhas de corpo, na ordem dada", () => {
+    const outra: LinhaDeExportacaoDoLead = {
+      ...linha,
+      id: 2,
+      nome: "Bruno Prado",
+      email: "bruno@escritorioprado.com.br",
+    };
+    const linhas = csvDeLeads([linha, outra]).slice(1).split("\r\n");
+    expect(linhas).toHaveLength(3); // cabeçalho + duas linhas de corpo
+    expect(linhas[1]).toContain("Ana Arquiteta");
+    expect(linhas[2]).toContain("Bruno Prado");
   });
 });

@@ -102,20 +102,33 @@ export async function enviarLead(
     };
   }
 
-  await avisarPorEmail(lead);
+  try {
+    await avisarPorEmail(lead);
+  } catch (erro) {
+    /* ⚠️ **A SEGUNDA REDE DE PROTEÇÃO, NÃO REDUNDÂNCIA.** `enviarEmail`
+       (`lib/resend.ts`) nunca lança — mas `buscarEmpresa`
+       (`lib/empresa-consulta.ts`) lê o painel por baixo de `avisarPorEmail`, e
+       uma falha de banco ali (ou nos dois `import()` adiados) SOBE como
+       exceção de verdade. Sem este `catch`, essa exceção atravessaria para
+       fora do Server Action depois de o lead já estar gravado — a mesma
+       mentira inversa que a nota grande acima recusa, só que por um caminho
+       que `avisarPorEmail` sozinha não cobre. */
+    console.error(
+      "[lead] contato gravado, mas a tentativa de aviso por e-mail lançou uma exceção",
+      erro,
+    );
+  }
 
   return { status: "sucesso" };
 }
 
 /**
- * O aviso por e-mail. Nunca lança, nunca muda o que o visitante vê.
- *
- * ⚠️ **DOIS MOTIVOS DIFERENTES PARA NÃO SAIR, E OS DOIS SÃO ESPERADOS HOJE.**
- * O e-mail comercial entra vazio de propósito (PRA-122 — semear o mock seria
- * movê-lo, não tirá-lo do ar), e `RESEND_API_KEY` não existe em
- * desenvolvimento. Nos dois casos o lead já está no painel, que é a cópia que
- * sempre sobrevive. O log distingue os dois para quem for configurar não ficar
- * adivinhando qual dos dois falta.
+ * O aviso por e-mail. Não lança por `enviarEmail` (`lib/resend.ts`) falhar —
+ * essa função nunca lança, por contrato. Já `buscarEmpresa`, chamada aqui
+ * embaixo, PODE lançar (uma falha de banco, por exemplo); é por isso que quem
+ * chama esta função, `enviarLead` acima, embrulha a chamada no próprio
+ * `catch` dela, em vez de este arquivo prometer uma garantia que não é dele
+ * sozinho para dar.
  */
 async function avisarPorEmail(lead: DadosDoLead): Promise<void> {
   /* Adiados pelo mesmo motivo que o Payload acima: `empresa-consulta` lê o

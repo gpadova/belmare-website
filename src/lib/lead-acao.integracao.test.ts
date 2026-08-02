@@ -96,6 +96,7 @@ beforeAll(async () => {
 afterEach(async () => {
   await payload.delete({ collection: "leads", where: {}, overrideAccess: true });
   vi.restoreAllMocks();
+  vi.unstubAllEnvs();
 });
 
 describe("gravar primeiro, avisar depois — a ordem é a garantia do ticket", () => {
@@ -146,6 +147,80 @@ describe("gravar primeiro, avisar depois — a ordem é a garantia do ticket", (
     expect(buscaDeRede).not.toHaveBeenCalled();
     expect(espiao).toHaveBeenCalledWith(
       expect.stringContaining("aviso por e-mail não saiu"),
+    );
+  });
+
+  test("com RESEND_API_KEY configurada, a API do Resend recusando a requisição ainda grava o lead e devolve sucesso", async () => {
+    // ⚠️ Diferença do teste acima: ali `enviarEmail` devolve `false` ANTES de
+    // tentar a rede (sem chave). Aqui a chave existe, `fetch` É chamado, e é a
+    // resposta dele que falha — o caminho que `resend.test.ts` prova isolado
+    // ("a API recusando... devolve false") e que este arquivo ainda não via
+    // disparado a partir do envio do formulário de ponta a ponta.
+    await publicarEmpresa({ email: "comercial@belmare.com.br" });
+    vi.stubEnv("RESEND_API_KEY", "re_teste");
+    vi.stubEnv("RESEND_FROM_EMAIL", "contato@belmare.com.br");
+
+    const espiao = vi.spyOn(console, "error").mockImplementation(() => {});
+    const buscaDeRede = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(new Response(null, { status: 401 }));
+
+    const resultado = await enviarLead(
+      ESTADO_INICIAL_DO_FORMULARIO_DE_LEAD,
+      formularioPreenchido({ email: "resend-recusou@escritorioprado.com.br" }),
+    );
+
+    expect(resultado).toEqual({ status: "sucesso" });
+    expect(await leadPorEmail("resend-recusou@escritorioprado.com.br")).toBeTruthy();
+    expect(buscaDeRede).toHaveBeenCalled();
+    expect(espiao).toHaveBeenCalledWith(
+      expect.stringContaining("aviso por e-mail não saiu"),
+    );
+  });
+
+  test("com RESEND_API_KEY configurada, uma falha de rede do Resend (fetch rejeitando) ainda grava o lead e devolve sucesso", async () => {
+    await publicarEmpresa({ email: "comercial@belmare.com.br" });
+    vi.stubEnv("RESEND_API_KEY", "re_teste");
+    vi.stubEnv("RESEND_FROM_EMAIL", "contato@belmare.com.br");
+
+    const espiao = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("rede fora do ar"));
+
+    const resultado = await enviarLead(
+      ESTADO_INICIAL_DO_FORMULARIO_DE_LEAD,
+      formularioPreenchido({ email: "rede-fora-do-ar@escritorioprado.com.br" }),
+    );
+
+    expect(resultado).toEqual({ status: "sucesso" });
+    expect(await leadPorEmail("rede-fora-do-ar@escritorioprado.com.br")).toBeTruthy();
+    expect(espiao).toHaveBeenCalledWith(
+      expect.stringContaining("aviso por e-mail não saiu"),
+    );
+  });
+
+  test("se a própria CONSULTA da empresa lançar (falha de banco, não de Resend), o lead é gravado e o retorno continua sucesso", async () => {
+    // ⚠️ O caso que a nota grande de `lib/lead-acao.ts` (o novo `catch` em
+    // torno de `avisarPorEmail`) existe para cobrir: `enviarEmail` nunca
+    // lança, por contrato (`resend.test.ts`), mas `buscarEmpresa`
+    // (`lib/empresa-consulta.ts`) chama `payload.findGlobal` por baixo, e ISSO
+    // pode lançar de verdade. Sem aquele `catch`, esta exceção atravessaria
+    // `enviarLead` depois de o lead já estar gravado — a mesma mentira
+    // inversa que a ordem "gravar primeiro" existe para evitar.
+    await publicarEmpresa({ email: "comercial@belmare.com.br" });
+
+    const espiao = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(payload, "findGlobal").mockRejectedValue(new Error("banco indisponível"));
+
+    const resultado = await enviarLead(
+      ESTADO_INICIAL_DO_FORMULARIO_DE_LEAD,
+      formularioPreenchido({ email: "consulta-falhou@escritorioprado.com.br" }),
+    );
+
+    expect(resultado).toEqual({ status: "sucesso" });
+    expect(await leadPorEmail("consulta-falhou@escritorioprado.com.br")).toBeTruthy();
+    expect(espiao).toHaveBeenCalledWith(
+      expect.stringContaining("lançou uma exceção"),
+      expect.any(Error),
     );
   });
 });
