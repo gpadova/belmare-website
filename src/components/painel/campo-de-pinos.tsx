@@ -91,6 +91,7 @@ export function CampoDePinos() {
 
   const caixaRef = useRef<HTMLDivElement | null>(null);
   const [arrastando, setArrastando] = useState<Alvo | undefined>(undefined);
+  const [emFoco, setEmFoco] = useState<number | undefined>(undefined);
   const [aviso, setAviso] = useState("");
   const [carregada, setCarregada] = useState<Fotografia | undefined>(undefined);
   const [nomes, setNomes] = useState<Record<string, string>>({});
@@ -304,6 +305,29 @@ export function CampoDePinos() {
     [descreverPino, escrever],
   );
 
+  /** O arrasto termina FALANDO onde parou — o mesmo aviso que as setas dão.
+   *
+   *  ⚠️ Sem isto o caminho de mouse era o único mudo: o operador arrasta, vê a
+   *  fotografia mexer e não recebe confirmação de que o número foi gravado. É o
+   *  "arrastei e não sei se pegou" da nota do topo deste arquivo, e ele valia
+   *  para quem enxerga também. O valor dito é o MESMO que o `aria-label` do
+   *  botão declara nesta renderização — o aviso e o rótulo não têm como
+   *  discordar. */
+  const terminarArrasto = useCallback(
+    (indice: number, ponto: "rotulo" | "alvo", valor: Ponto) => {
+      if (arrastando === undefined) return;
+      setArrastando(undefined);
+      setAviso(descreverPino(indice, ponto, valor));
+    },
+    [arrastando, descreverPino],
+  );
+
+  /* Qual chamada está na mão do operador — a que está sendo arrastada, ou a que
+     tem o foco. Existe por causa da fotografia de verdade, não da de teste: numa
+     cena em que dois objetos ficam perto, os pinos viram marcas iguais
+     empilhadas, e o operador arrasta uma sem saber de qual linha ela é. */
+  const ativa = arrastando?.indice ?? emFoco;
+
   return (
     <div className="field-type prancha-pinos">
       <style>{ESTILO}</style>
@@ -314,11 +338,10 @@ export function CampoDePinos() {
         Cada chamada tem dois pinos: o <strong>quadrado numerado</strong> é onde
         a etiqueta pousa (área vazia — parede, deck livre) e o{" "}
         <strong>ponto redondo</strong> é onde a linha encosta no objeto.
-        Arraste-os sobre a fotografia, ou selecione um pino com Tab e mova-o com
-        as setas —{" "}
-        {comoTexto(PASSO)}% por toque, {comoTexto(PASSO_LARGO)}% com Shift. As
-        posições aparecem em porcentagem nos campos de cada chamada, logo
-        abaixo, e podem ser digitadas ali.
+        Arraste-os sobre a fotografia. Um pino clicado — ou alcançado com Tab —
+        também anda com as setas: {comoTexto(PASSO)}% por toque,{" "}
+        {comoTexto(PASSO_LARGO)}% com Shift. As posições aparecem em porcentagem
+        nos campos de cada chamada, logo abaixo, e podem ser digitadas ali.
       </p>
 
       {foto === undefined ? (
@@ -359,18 +382,24 @@ export function CampoDePinos() {
             >
               {coordenadas.map((chamada, indice) => {
                 const traco = linhaDaChamada(chamada);
+                /* O traço da chamada na mão engrossa — é o que diz QUAL das
+                   linhas o pino debaixo do dedo pertence. O encamisamento de
+                   papel cresce junto: se ficasse em 3, a orla de contraste
+                   sumiria sob o traço de tinta e a linha realçada seria a única
+                   ilegível sobre foto clara. */
+                const naMao = indice === ativa;
                 return (
                   <g key={indice} fill="none">
                     <path
                       d={traco}
                       stroke="#F5F3F0"
-                      strokeWidth={3}
+                      strokeWidth={naMao ? 5 : 3}
                       vectorEffect="non-scaling-stroke"
                     />
                     <path
                       d={traco}
                       stroke="#17171A"
-                      strokeWidth={1}
+                      strokeWidth={naMao ? 3 : 1}
                       vectorEffect="non-scaling-stroke"
                     />
                   </g>
@@ -387,18 +416,40 @@ export function CampoDePinos() {
                     key={`${indice}-${ponto}`}
                     type="button"
                     className={`prancha-pinos__pino prancha-pinos__pino--${ponto}`}
+                    data-ativa={indice === ativa ? "true" : undefined}
                     style={{ left: `${valor.x}%`, top: `${valor.y}%` }}
                     aria-label={`${descreverPino(indice, ponto, valor)}. Use as setas do teclado para mover.`}
                     title={descreverPino(indice, ponto, valor)}
                     onPointerDown={(evento) => {
+                      /* ⚠️ O `preventDefault` mata o mousedown de
+                         compatibilidade — é ele que impede o arrasto de virar
+                         seleção de texto no formulário e de acordar o arrasto
+                         nativo do navegador. Fica. Mas o foco TAMBÉM é ação
+                         padrão do mousedown, e ia junto: medido, o clique de
+                         mouse deixava o foco no `body`. Consequência para o
+                         operador, que é quem este campo existe para servir: as
+                         setas não moviam nada e o aviso falado nunca falava,
+                         até alguém descobrir sozinho que precisava chegar de
+                         Tab. Mover o foco à mão devolve os dois sem tocar no
+                         gesto — `setPointerCapture` abaixo continua sendo quem
+                         segura o arrasto.
+
+                         `preventScroll` porque o pino já está debaixo do
+                         ponteiro, logo já visível: rolar aqui seria mover a
+                         caixa medida no primeiro quadro do arrasto. */
                       evento.preventDefault();
+                      evento.currentTarget.focus({ preventScroll: true });
                       evento.currentTarget.setPointerCapture(evento.pointerId);
                       setArrastando({ indice, ponto });
                     }}
                     onPointerMove={aoMoverPonteiro}
-                    onPointerUp={() => setArrastando(undefined)}
+                    onPointerUp={() => terminarArrasto(indice, ponto, valor)}
                     onPointerCancel={() => setArrastando(undefined)}
                     onLostPointerCapture={() => setArrastando(undefined)}
+                    onFocus={() => setEmFoco(indice)}
+                    onBlur={() =>
+                      setEmFoco((atual) => (atual === indice ? undefined : atual))
+                    }
                     onKeyDown={(evento) =>
                       aoTeclar(evento, indice, ponto, valor)
                     }
@@ -489,6 +540,10 @@ const ESTILO = `
   outline: 2px solid var(--theme-elevation-800, #17171A);
   outline-offset: 2px;
 }
+/* Os dois pinos da chamada na mão sobem na pilha. Sem isto, o pino que acabou
+   de ser arrastado para cima de outro fica DEBAIXO dele — a ordem é a do DOM, e
+   a do DOM é a da lista de chamadas —, e o segundo clique pega o vizinho. */
+.prancha-pinos__pino[data-ativa="true"] { z-index: 1; }
 .prancha-pinos__pino--rotulo {
   min-width: 1.75rem;
   height: 1.25rem;
