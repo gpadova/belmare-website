@@ -4,10 +4,9 @@ import { Seta } from "@/components/icones";
 import { Bloco } from "@/components/quem-somos/bloco";
 import { Ficha, FichaLinha } from "@/components/ficha";
 import { FECHO } from "@/lib/acervo";
-import { linkDeTelefone, linkDeWhatsapp, TERRITORIO } from "@/lib/empresa";
+import { linkDeTelefone, linkDeWhatsapp } from "@/lib/empresa";
 import { buscarEmpresa } from "@/lib/empresa-consulta";
 import { buscarQuemSomos } from "@/lib/espinha-consulta";
-import { emLista } from "@/lib/frase";
 
 /**
  * 06 — O interlocutor. O fecho e a ação.
@@ -111,10 +110,21 @@ export async function Interlocutor({ numero }: { numero: string }) {
               </span>
             </FichaLinha>
           )}
-          <FichaLinha rotulo="Canal de venda">
-            Sempre através de loja. A Belmare não vende direto ao consumidor
-            final — recebe o contato e indica a loja mais próxima, em{" "}
-            {emLista(TERRITORIO)}.
+          {/* Positivo, e não na negativa. Era "A Belmare não vende direto ao
+              consumidor final" — a mesma informação escrita como recusa, na
+              linha final de uma página de contato. O que o visitante precisa
+              saber é para onde ele vai ser mandado, e a resposta é uma loja
+              perto dele.
+
+              ⚠️ A lista de estados saiu daqui, e não por espaço: `emLista`
+              devolve "Paraná, Santa Catarina e Rio Grande do Sul" sem
+              preposição, e a frase imprimia "em Paraná" — que não é português.
+              Cada estado pede a sua ("no Paraná", "em Santa Catarina", "no Rio
+              Grande do Sul"), e essa regência não cabe numa junção genérica. O
+              território já está desenhado no bloco 03 e listado no rodapé. */}
+          <FichaLinha rotulo="Como comprar">
+            A venda é sempre feita por uma loja. A Belmare recebe o contato e
+            indica a loja mais próxima dentro do território atendido.
           </FichaLinha>
         </Ficha>
       </Bloco>

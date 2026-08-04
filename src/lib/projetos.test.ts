@@ -69,7 +69,7 @@ function representada(campos: Partial<RepresentadaGerada> = {}): RepresentadaGer
     id: 1,
     nome: "Trisol",
     slug: "trisol",
-    resolve: "a sombra",
+    resolve: "Ombrelones laterais e centrais",
     parte: "Estrutura",
     fato: "Perfil extrudado de alumínio 6063-T5",
     imagem: 1,

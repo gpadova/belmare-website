@@ -32,7 +32,7 @@ function documento(campos: Partial<RepresentadaGerada> = {}): RepresentadaGerada
     id: 1,
     nome: "Trisol",
     slug: "trisol",
-    resolve: "a sombra",
+    resolve: "Ombrelones laterais e centrais",
     parte: "Sombra",
     fato: "Ferragem em inox 304, resistência a vento de 30 a 80 km/h",
     imagem: 1,

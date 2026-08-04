@@ -119,7 +119,7 @@ export const Prancha: GlobalConfig = {
           label: "Representada",
           admin: {
             description:
-              "A fábrica que resolve esta parte da cena. O texto da chamada NÃO se escreve aqui: ele é a palavra que a representada já declara em \"A parte que ela resolve\" — móvel, estrutura, estofado, sombra. Duas marcas que dividem a mesma função entram como duas chamadas apontando para o mesmo objeto.",
+              "A fábrica de onde vem esta parte da cena. O texto da chamada NÃO se escreve aqui: ele é a palavra que a representada já declara em \"A mesma linha em uma palavra\" — móvel, estrutura, estofado, sombra. Duas marcas que dividem a mesma função entram como duas chamadas apontando para o mesmo objeto.",
           },
           validate: (valor: unknown) =>
             identidadeDoRelacionamento(valor) !== undefined

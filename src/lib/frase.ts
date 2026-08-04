@@ -4,7 +4,7 @@
  *
  * ⚠️ **ESTE ARQUIVO EXISTE PORQUE CONTAGEM EM PROSA É GERADO, NÃO CAMPO.** A
  * home escreve "As quatro fábricas que a Belmare representa", `/quem-somos`
- * escreve "Quatro fábricas, quatro papéis" e a prancha escreve "para as quatro
+ * escreve "Quatro fábricas, quatro linhas" e a prancha escreve "para as quatro
  * representadas". As três eram a palavra `quatro` digitada dentro de uma frase,
  * em três arquivos diferentes — e no dia em que a quinta marca entrar pelo
  * painel, as três continuam dizendo quatro sem ninguém ficar sabendo. É a mesma
@@ -44,7 +44,7 @@ const POR_EXTENSO: Record<"f" | "m", readonly string[]> = {
  * O número escrito por extenso, para caber dentro de uma frase.
  *
  * ⚠️ O gênero é parâmetro porque só um e dois variam — "quatro fábricas" e
- * "quatro papéis" são a mesma palavra, "uma fábrica" e "um papel" não. Um
+ * "quatro modelos" são a mesma palavra, "uma fábrica" e "um modelo" não. Um
  * padrão único aqui daria "duas estados" no dia em que o território encolhesse,
  * que é justamente o dia em que ninguém estaria olhando para esta linha.
  *
@@ -61,7 +61,7 @@ export function porExtenso(quantidade: number, genero: "f" | "m" = "f"): string 
 
 /**
  * A inicial em maiúscula, para quando o número gerado ABRE a frase — "Cinco
- * atividades registradas.", "Quatro fábricas, quatro papéis."
+ * atividades registradas.", "Quatro fábricas, quatro linhas."
  *
  * ⚠️ Existe como função e não como `capitalize` do CSS porque `capitalize`
  * levanta a inicial de TODA palavra, e a alternativa (`first-letter`) muda o

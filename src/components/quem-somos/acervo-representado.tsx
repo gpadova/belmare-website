@@ -3,17 +3,27 @@ import Link from "next/link";
 import { Seta } from "@/components/icones";
 import { Bloco } from "@/components/quem-somos/bloco";
 import { buscarQuemSomos } from "@/lib/espinha-consulta";
-import { comInicialMaiuscula, porExtenso } from "@/lib/frase";
+import { porExtenso } from "@/lib/frase";
 import { paginaDaRepresentada } from "@/lib/representadas";
 import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
- * 05 — O acervo representado.
+ * 04 — O acervo representado. O "hoje" da história.
  *
  * Um ledger, não a grade de marcas da home. Lá as quatro entram com fotografia,
  * porque a home vende o conjunto; aqui elas entram como linhas de ficha —
- * nome, origem, o que resolve — porque a pergunta desta página é outra: *o que
- * exatamente está sob esta representação?*
+ * nome, origem, linha — porque a pergunta deste ponto da página é outra: o
+ * catálogo começou em móvel de jardim (bloco 01) e virou o quê?
+ *
+ * ⚠️ **A TERCEIRA CÉLULA É A LINHA DA FÁBRICA, SEM VERBO NA FRENTE.** Ela já
+ * escreveu "Resolve o móvel de autor", "Resolve a estrutura", "Resolve o
+ * conforto", "Resolve a sombra" — quatro vezes o mesmo verbo, descendo a
+ * página, cada um seguido de um substantivo abstrato. Uma lista de
+ * representadas com essa forma para de ser lista e vira manifesto, e o registro
+ * é o oposto do que os outros cinco blocos desta página fazem: eles publicam
+ * dado conferível. Uma linha de fábrica ("Ombrelones laterais e centrais") é
+ * dado; um benefício ("a sombra") é interpretação da Belmare sobre o produto de
+ * terceiro. Sem verbo a célula lê como coluna de ficha, que é o que ela é.
  *
  * ⚠️ A Trisol não declara cidade em fonte nenhuma (só o DDD 48). A célula diz
  * "não declarada", com todas as letras, em vez de um travessão que o leitor
@@ -28,7 +38,7 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  * fábrica. Numa página que passou cinco blocos publicando só o que é
  * conferível, uma linha sem lastro derruba as outras cinco.
  *
- * ⚠️ **"QUATRO FÁBRICAS, QUATRO PAPÉIS" É CONTADO, NÃO DIGITADO.** A frase abre
+ * ⚠️ **"QUATRO FÁBRICAS, QUATRO LINHAS" É CONTADO, NÃO DIGITADO.** A frase abre
  * um ledger que lista as marcas logo abaixo dela; se ela fosse texto livre, a
  * quinta representada entraria na lista e a frase três centímetros acima
  * continuaria dizendo quatro. O campo do painel é o que vem DEPOIS dessa
@@ -41,12 +51,16 @@ export async function AcervoRepresentado() {
   const quantas = porExtenso(representadas.length);
 
   return (
-    <Bloco numero="05">
+    <Bloco numero="04">
       <h2 className="text-h1 max-w-[20ch] font-normal text-balance">
-        O que está sob esta representação.
+        O que a Belmare representa hoje.
       </h2>
+      {/* Frase inteira, e não "Quatro fábricas, quatro linhas." — uma frase
+          nominal em aposto é a voz de catálogo de design; um site brasileiro
+          escreve a contagem dentro de uma oração com verbo. A contagem
+          continua gerada. */}
       <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-        {comInicialMaiuscula(quantas)} fábricas, {quantas} papéis. {acervo}
+        São {quantas} fábricas brasileiras. {acervo}
       </p>
 
       <ul className="mt-10 border-t border-line md:mt-14">
@@ -63,7 +77,7 @@ export async function AcervoRepresentado() {
                 {r.base ?? "Não declarada"}
               </span>
               <span className="text-support col-start-1 text-graphite md:col-start-3">
-                Resolve {r.resolve}
+                {r.resolve}
               </span>
               <Seta className="col-start-2 row-start-1 h-3 w-8 self-center text-graphite transition-transform duration-300 ease-out group-hover:translate-x-1.5 group-hover:text-ink motion-reduce:transition-none md:col-start-4" />
             </Link>

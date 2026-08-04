@@ -268,24 +268,39 @@ export const Representadas: CollectionConfig = {
           "Em que ordem esta marca aparece na galeria da home e nas listas do site. Menor vem primeiro. Deixe em branco e ela vai para o fim.",
       },
     },
+    /* ⚠️ **É A LINHA DA FÁBRICA, NÃO O BENEFÍCIO DELA.** Este campo já guardou
+       "a sombra", "o conforto", "a estrutura" — e o site escrevia "Resolve a
+       sombra." com eles. Quatro linhas seguidas de "Resolve …" transformavam
+       uma lista de representadas em manifesto: o arquiteto que abre esta página
+       quer saber o que cada fábrica FABRICA, e "conforto" não se especifica em
+       projeto nenhum. É o mesmo teste que o campo `parte` já tinha aprendido
+       uma vez, três campos abaixo — uma seta escrita CONFORTO sobre uma chaise
+       não ensina nada porque não nomeia objeto. Aqui valia igual, e demorou
+       mais para aparecer porque em prosa o vazio soa como posicionamento.
+
+       ⚠️ O nome da COLUNA continua `resolve`, do primeiro desenho do campo. O
+       painel, a ajuda e as três telas que leem daqui falam em linha; só o
+       identificador no banco ficou para trás, e renomeá-lo é uma migração
+       própria. Não reescreva a ajuda para casar com o nome antigo — é o nome
+       que está atrasado, não o texto. */
     {
       name: "resolve",
       type: "text",
       required: true,
-      label: "O que ela resolve",
+      label: "A linha que ela fabrica",
       admin: {
         description:
-          "O que esta fábrica resolve na área externa, em minúscula e sem ponto final — o site escreve \"Resolve a sombra.\" a partir daqui. Nomeie a coisa: \"a sombra\", \"a estrutura\", \"o móvel de autor\".",
+          "A linha desta fábrica, como se escreve numa lista de representadas — \"Ombrelones laterais e centrais\", \"Estofados com têxtil de performance\", \"Mobiliário em alumínio fundido\". Com inicial maiúscula e sem ponto final: o site põe o ponto onde precisa. Nomeie produto e matéria, nunca benefício — \"a sombra\" e \"o conforto\" dizem o que o cliente sente, e o arquiteto especifica o que a fábrica faz.",
       },
       validate: exigeTexto(
-        "Escreva o que a fábrica resolve. É a primeira frase que o arquiteto lê depois do nome dela, e é o que separa uma fábrica das outras três.",
+        "Escreva a linha da fábrica. É o que o arquiteto lê logo depois do nome dela, e é o que separa uma fábrica das outras três.",
       ),
     },
     {
       name: "parte",
       type: "text",
       required: true,
-      label: "A mesma coisa em uma palavra",
+      label: "A mesma linha em uma palavra",
       admin: {
         description:
           "A palavra que a seta da prancha aponta e que legenda a galeria — \"Sombra\", \"Estrutura\", \"Estofado\". Tem que ser algo que se enxerga na fotografia: duas setas escritas \"conforto\" e \"móvel\" sobre dois estofados não ensinam nada.",
@@ -325,7 +340,7 @@ export const Representadas: CollectionConfig = {
       label: "Fotografia da galeria",
       admin: {
         description:
-          "A imagem que representa esta marca na galeria da home e nos registros de /representadas. Mostre o que a fábrica resolve — não uma peça do catálogo dela, que o site não tem autorização para apresentar como acervo.",
+          "A imagem que representa esta marca na galeria da home e nos registros de /representadas. Mostre a linha da fábrica — não uma peça do catálogo dela, que o site não tem autorização para apresentar como acervo.",
       },
       validate: (valor: unknown) =>
         identidadeDoUpload(valor) !== undefined
@@ -361,7 +376,7 @@ export const Representadas: CollectionConfig = {
 
         return escolhida !== irma
           ? true
-          : "Esta é a mesma fotografia da galeria. Escolha outra: quem clica na galeria da home chega aqui e veria o mesmo quadro em tamanho maior, e a página da marca leria como a galeria de novo em vez de mostrar o que esta fábrica resolve.";
+          : "Esta é a mesma fotografia da galeria. Escolha outra: quem clica na galeria da home chega aqui e veria o mesmo quadro em tamanho maior, e a página da marca leria como a galeria de novo em vez de mostrar a linha desta fábrica.";
       },
     },
 

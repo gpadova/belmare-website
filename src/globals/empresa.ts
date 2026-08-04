@@ -34,11 +34,19 @@ import { cnpjFormatado, emailComercial, numeroDeWhatsapp } from "@/lib/empresa";
  * Um campo de texto deixaria o operador escrever um quarto estado que o único
  * gráfico da página não sabe desenhar.
  *
- * ⚠️ **OS CNAEs E O NOME PÚBLICO ANTERIOR FICAM EM `lib/registro.ts`, NO
- * CÓDIGO.** São transcrição do cadastro, e um campo de texto é precisamente a
- * ferramenta que convida alguém a reescrever a descrição oficial "com palavras
- * melhores" — que é a única coisa que aquela página não pode fazer. Ver o `⚠️`
- * no topo de `lib/registro.ts`, incluindo o P1 ainda em aberto.
+ * ⚠️ **O NOME PÚBLICO ANTERIOR FICA EM `lib/registro.ts`, NO CÓDIGO.** É uma
+ * citação, e um campo de texto é precisamente a ferramenta que convida alguém a
+ * reescrevê-la "com palavras melhores" — que é a única coisa que aquela página
+ * não pode fazer sem quebrar o que a citação prova. Os cinco CNAEs moravam lá
+ * ao lado dele e saíram do projeto junto com o bloco que os exibia; ver o `⚠️`
+ * no topo de `lib/registro.ts`.
+ *
+ * ⚠️ **`porte` CONTINUA SENDO CAMPO, MAS NÃO APARECE MAIS EM PÁGINA NENHUMA.**
+ * "Empresa de pequeno porte" abria `/quem-somos` numa faixa de identificação, e
+ * era o registro dizendo ao arquiteto que a empresa é pequena, no primeiro
+ * viewport de uma página que precisa vender. O dado segue no cadastro porque é
+ * verdadeiro e barato de manter; o que mudou é que ele não é mais argumento de
+ * venda.
  */
 export const Empresa: GlobalConfig = {
   slug: "empresa",

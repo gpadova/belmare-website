@@ -9,7 +9,7 @@ import {
  * 01 — A identificação. A abertura da página de marca.
  *
  * Uma fotografia sangrando de ponta a ponta e, abaixo dela, o registro: faixa
- * de identificação em mono, o nome em display, o que a marca resolve e o fato
+ * de identificação em mono, o nome em display, a linha da marca e o fato
  * que a define. A foto carrega, a tipografia mede — é a mesma divisão de
  * trabalho da abertura da home, aplicada a uma fábrica só.
  *
@@ -57,7 +57,7 @@ export function AberturaDaMarca({
             declaração mais importante da página não pode ser o texto menos
             legível dela. */}
         <figcaption className="text-support px-5 pt-3 text-graphite md:px-8">
-          Imagem de referência — ilustra o que a fábrica resolve, não uma peça do
+          Imagem de referência — ilustra a linha da fábrica, não uma peça do
           catálogo dela.
         </figcaption>
       </figure>
@@ -88,7 +88,7 @@ export function AberturaDaMarca({
             </h1>
 
             <p className="text-body mt-6 max-w-[48ch] text-pretty">
-              Resolve {representada.resolve}.
+              {representada.resolve}.
             </p>
 
             <p className="text-support mt-3 max-w-[56ch] text-pretty text-graphite">

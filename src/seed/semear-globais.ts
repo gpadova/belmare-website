@@ -60,27 +60,55 @@ const EMPRESA = {
 /** O parágrafo que estava em `components/representadas-galeria.tsx`. */
 const HOME = {
   galeria:
-    "Móvel de autor, estrutura, conforto e sombra. Juntas, resolvem uma área externa inteira — e há um único interlocutor para as quatro.",
+    "Mobiliário de autor, alumínio fundido, estofado de performance e ombrelone. Linhas que se completam numa área externa inteira, com um interlocutor só.",
 };
 
 /**
  * A prosa que estava dentro dos blocos de `/quem-somos`.
  *
  * ⚠️ `nome` e `acervo` começam na SEGUNDA frase do parágrafo. A primeira é
- * montada pelo site com dado — a razão social do cadastro no bloco 03, a
- * contagem de fábricas no bloco 05 — para que a prosa não possa discordar do
+ * montada pelo site com dado — a razão social do cadastro no bloco 02, a
+ * contagem de fábricas no bloco 04 — para que a prosa não possa discordar do
  * painel nem congelar num "quatro". Ver `globals/quem-somos.ts`.
+ *
+ * ⚠️ **A REESCRITA CONTA UMA HISTÓRIA, E ISSO NÃO AFROUXOU NENHUMA REGRA.** A
+ * versão anterior era prosa de arquivo: explicava a própria página ("esta
+ * página não narra a empresa — mostra o registro dela"), legendava uma tabela
+ * de CNAEs que já não existe, e justificava ao visitante uma decisão interna de
+ * funil. Nenhuma frase daqui narra intenção, sonho ou valor de quem fundou a
+ * empresa — o arco é feito só do que está em documento: o nome antigo lista os
+ * produtos do começo, e o cadastro de representadas lista os de hoje.
+ *
+ * ⚠️ **O REGISTRO É O DE UM SITE BRASILEIRO, NÃO O DE UM PORTFÓLIO DE DESIGN.**
+ * A primeira tentativa de reescrita caiu num terceiro estilo, pior que o
+ * original: fragmentos sem sujeito e substantivo no singular sem artigo
+ * ("móvel de jardim, ombrelone, móvel de design"), antíteses de duas frases
+ * nominais, travessão a cada parágrafo. Ninguém escreve assim em português. A
+ * referência do setor é como as próprias fábricas contam a história delas — a
+ * Butzke, de Timbó, abre com "Foi no ano de 1899 que Emil Butzke produziu as
+ * primeiras peças em madeira. Naquela época as peças mais necessárias eram
+ * baldes, barricas, bacias para cozinha e para banho, e carroças para
+ * transporte": oração com verbo, substantivo concreto no plural, cronologia
+ * simples. O polo oposto, que a lista vinculante desta página já proíbe, é o
+ * "somos mais do que uma representação comercial: somos parceiros estratégicos
+ * da indústria" que a categoria escreve.
+ *
+ * Ao editar estes campos, o teste é ler em voz alta: se soar como legenda de
+ * catálogo ou como slogan, está errado nos dois casos.
+ *
+ * ⚠️ **NENHUMA CONTAGEM EM PROSA AQUI.** "Quatro fábricas" e "três estados" são
+ * gerados pelo site (`lib/frase.ts`), e digitá-los dentro de um destes campos é
+ * como a página congela em "quatro" no dia da quinta marca.
  */
 const QUEM_SOMOS = {
   registro:
-    "Representação comercial de mobiliário de alto padrão para área externa, aberta em 22 de abril de 1999, em Florianópolis. Esta página não narra a empresa — mostra o registro dela. Cada linha daqui em diante é pública e pode ser conferida.",
-  atividades:
-    "Código e descrição como constam no cadastro nacional da pessoa jurídica. A atividade principal é a que define o ramo — representação comercial.",
+    "Na época a empresa se chamava Bello Mare e trabalhava com pouco mais que isso: ombrelones e móveis de design. O nome mudou e a linha cresceu, mas o ramo é o mesmo até hoje: mobiliário para área externa, sempre através de lojas.",
   nome:
-    "A descrição antiga lista produtos, um a um. A nova diz o que a empresa é — e o que ela faz está no registro acima.",
-  acervo: "Nenhuma delas resolve a área externa sozinha — juntas, resolvem.",
+    "O nome antigo listava os produtos um a um, que era como as lojas encontravam a empresa nos anos 1990. Belmare é mais curto, e quem quiser saber o que a empresa vende encontra tudo no catálogo de cada representada.",
+  acervo:
+    "Cada uma cobre uma parte da área externa, e juntas elas atendem um projeto completo. As linhas não se sobrepõem.",
   interlocutor:
-    "Todo contato passa pela Belmare. O e-mail comercial das fábricas não está neste site: quem responde é quem representa, e é quem aciona a fábrica depois. Quatro marcas, um interlocutor — vale para a primeira pergunta e para a assistência três anos depois.",
+    "Quem atende é quem representa as fábricas. A mesma pessoa responde à primeira dúvida de especificação, acompanha o pedido na loja e resolve a assistência três anos depois, para qualquer uma das marcas.",
 };
 
 async function semearGlobal(

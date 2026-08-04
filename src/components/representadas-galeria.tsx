@@ -13,7 +13,7 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  * diretório de fornecedor, e além disso não existe vetor autorizado das
  * fábricas. Os nomes são compostos no sistema da própria Belmare.
  *
- * ⚠️ As imagens ilustram o que cada marca RESOLVE; não são peças do catálogo
+ * ⚠️ As imagens ilustram a LINHA de cada marca; não são peças do catálogo
  * dela. Isso está dito em texto visível no pé da seção, não só no alt: um mock
  * que se passa por acervo real é o tipo de mentira que este projeto não comete.
  *
@@ -75,7 +75,7 @@ export async function RepresentadasGaleria() {
               <h3 className="text-h3 mt-5 font-normal underline decoration-line decoration-1 underline-offset-[6px] transition-colors group-hover:decoration-ink">
                 {r.nome}
               </h3>
-              <p className="text-support mt-2 text-graphite">Resolve {r.resolve}.</p>
+              <p className="text-support mt-2 text-graphite">{r.resolve}.</p>
               <p className="text-support mt-3 text-graphite">
                 {r.base ? `${r.base} · ` : ""}
                 {r.fato}
@@ -87,7 +87,7 @@ export async function RepresentadasGaleria() {
       </ul>
 
       <p className="text-support mt-12 max-w-[68ch] text-graphite">
-        Imagens de referência, para representar o que cada fábrica resolve. O
+        Imagens de referência, para representar a linha de cada fábrica. O
         acervo fotográfico das marcas entra na publicação.
       </p>
     </section>

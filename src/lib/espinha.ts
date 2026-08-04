@@ -15,7 +15,7 @@ import type { Home as HomeGerada, QuemSomos as QuemSomosGerada } from "@/payload
  *     defendido em `components/abertura.tsx` contra duas alternativas
  *     rejeitadas em 30/07/2026. Mudá-lo é reposicionamento, e reposicionamento
  *     é conversa, não edição.
- *   · os rótulos numerados de `/quem-somos` (01…06) e os títulos de cada bloco
+ *   · os rótulos numerados de `/quem-somos` (01…05) e os títulos de cada bloco
  *     — **fixo**: a sequência É o argumento da página, e ler fora de ordem é
  *     ler outra coisa.
  *   · o nome e o apoio das duas portas — **fixo** por decisão 3 da spec.
@@ -25,7 +25,7 @@ import type { Home as HomeGerada, QuemSomos as QuemSomosGerada } from "@/payload
  *   · a legenda de imagem de referência — **gerada** da marcação de mock.
  *
  * ⚠️ **DUAS FRASES SÃO METADE FIXA E METADE CAMPO, E ISSO É DELIBERADO.** O
- * parágrafo do bloco 03 abre com a razão social do cadastro e o do bloco 05
+ * parágrafo do bloco 02 abre com a razão social do cadastro e o do bloco 04
  * abre com a contagem de fábricas; se os dois fossem um campo de texto inteiro,
  * o operador poderia trocar a razão social num lugar do painel e deixar a prosa
  * nomeando a antiga, ou a quinta marca entraria e a página continuaria dizendo
@@ -45,15 +45,13 @@ export type Home = {
 
 /** A prosa dentro de cada bloco numerado de `/quem-somos`. */
 export type QuemSomos = {
-  /** 01 — o registro. */
+  /** 01 — o começo. */
   registro?: string;
-  /** 02 — o que o registro diz. */
-  atividades?: string;
-  /** 03 — o nome anterior. Continua a frase que nomeia a razão social. */
+  /** 02 — o nome anterior. Continua a frase que nomeia a razão social. */
   nome?: string;
-  /** 05 — o acervo representado. Continua a frase que conta as fábricas. */
+  /** 04 — o acervo representado. Continua a frase que conta as fábricas. */
   acervo?: string;
-  /** 06 — o interlocutor. */
+  /** 05/06 — o interlocutor. */
   interlocutor?: string;
 };
 
@@ -64,7 +62,6 @@ export function homeDoPainel(doc: HomeGerada): Home {
 export function quemSomosDoPainel(doc: QuemSomosGerada): QuemSomos {
   return {
     ...opcional("registro", texto(doc.registro)),
-    ...opcional("atividades", texto(doc.atividades)),
     ...opcional("nome", texto(doc.nome)),
     ...opcional("acervo", texto(doc.acervo)),
     ...opcional("interlocutor", texto(doc.interlocutor)),

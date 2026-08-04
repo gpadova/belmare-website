@@ -86,7 +86,7 @@ export function representadaMinima(
   return {
     slug,
     nome,
-    resolve: "o conforto",
+    resolve: "Estofados com têxtil de performance",
     parte: "Estofado",
     fato: "Têxtil de performance: repelência, proteção UVA/UVB, antimofo",
     imagem: fotoDaGaleria,

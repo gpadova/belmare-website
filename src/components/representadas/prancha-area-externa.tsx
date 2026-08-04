@@ -153,7 +153,7 @@ export async function PranchaAreaExterna() {
                   const traco = linhaDaChamada(chamada);
 
                   /* ⚠️ A chave é a POSIÇÃO, não o slug: nada no painel impede
-                     duas chamadas para a mesma fábrica (uma marca que resolve
+                     duas chamadas para a mesma fábrica (uma marca presente em
                      dois objetos da cena), e duas chaves iguais numa lista do
                      React é reconciliação errada — o traço de uma chamada
                      parado na coordenada da outra. */

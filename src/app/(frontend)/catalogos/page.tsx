@@ -13,6 +13,7 @@ import {
   documentosDeCatalogo,
   representadasSemCatalogo,
 } from "@/lib/representadas";
+import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
  * ⚠️ A DESCRIÇÃO SAI DO DADO, e a razão é que ela é o texto que o arquiteto lê
@@ -23,20 +24,27 @@ import {
  * há um peso medido no site inteiro. Prometer no resultado de busca o que a
  * própria página desmente é a pior versão de inventar dado, porque quem clica
  * chega já desmentido.
+ *
+ * ⚠️ **É `generateMetadata`, E NÃO `metadata`, PORQUE A FONTE É O PAINEL.** A
+ * descrição é derivada das marcas cadastradas, e leitura de painel é assíncrona
+ * — um `const` em escopo de módulo não consegue esperar por ela. Tê-la estática
+ * era o que amarrava esta rota ao array escrito à mão.
  */
-const documentos = documentosDeCatalogo();
-const haPublicado = documentos.some((d) => catalogoPublicado(d.catalogo));
+export async function generateMetadata(): Promise<Metadata> {
+  const documentos = documentosDeCatalogo(await representadasDaPagina());
+  const haPublicado = documentos.some((d) => catalogoPublicado(d.catalogo));
 
-export const metadata: Metadata = {
-  title: "Catálogos",
-  description: `Os catálogos das fábricas de mobiliário de área externa representadas pela Belmare: ${documentos
-    .map((d) => d.representada.nome)
-    .join(", ")}. Medida, acabamento e ficha cotada — ${
-    haPublicado
-      ? "com formato e peso declarados antes do clique."
-      : "peça o arquivo pelo WhatsApp."
-  }`,
-};
+  return {
+    title: "Catálogos",
+    description: `Os catálogos das fábricas de mobiliário de área externa representadas pela Belmare: ${documentos
+      .map((d) => d.representada.nome)
+      .join(", ")}. Medida, acabamento e ficha cotada — ${
+      haPublicado
+        ? "com formato e peso declarados antes do clique."
+        : "peça o arquivo pelo WhatsApp."
+    }`,
+  };
+}
 
 /**
  * `/catalogos` — o índice de documentos.
@@ -101,8 +109,15 @@ FORM: "o índice de documentos", comp aprovado catalogos-c-duas-colunas.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->`;
 
-export default function Catalogos() {
-  const semCatalogo = representadasSemCatalogo();
+export default async function Catalogos() {
+  /* Uma leitura de painel só, compartilhada pelas três vistas desta página: o
+     índice de documentos, o rótulo da coluna e a nota da fábrica sem catálogo.
+     `representadasDaPagina` é cacheada por etiqueta, então `generateMetadata`
+     acima não paga uma segunda ida ao banco. */
+  const representadas = await representadasDaPagina();
+  const documentos = documentosDeCatalogo(representadas);
+  const haPublicado = documentos.some((d) => catalogoPublicado(d.catalogo));
+  const semCatalogo = representadasSemCatalogo(representadas);
 
   return (
     <>

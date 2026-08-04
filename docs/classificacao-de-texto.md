@@ -62,7 +62,7 @@ mudou foi quem pode baixar o arquivo, não o que ele é.
 | `nome` | Campo | Editado pela Belmare quando a fábrica muda de nome comercial. |
 | `slug` | Campo | Decisão de endereço, não de conteúdo. **[PRA-125]** Editável só por conta com papel administrador — decisão 14 da spec: uma URL que muda quebra link já enviado, e esse risco não é do operador correr sozinho. A camada continua Campo (dado do painel, não gerado nem fixo); o que mudou foi QUEM pode gravá-lo, não o que ele é. |
 | `ordem` | Campo | Decisão de apresentação da Belmare, explícita no rótulo do campo ("Posição nas listas"). Não é derivada de nenhum outro dado. |
-| `resolve` | Campo | Prosa institucional por marca — o que a spec chama de "editar a prosa institucional de uma representada" (história 5). |
+| `resolve` | Campo | A linha que a fábrica produz, em uma frase — o que a spec chama de "editar a prosa institucional de uma representada" (história 5). ⚠️ O campo guardou benefício até esta rodada ("a sombra", "o conforto") e o site prefixava "Resolve …" nas três telas que leem daqui; a ajuda do painel agora pede produto e matéria, e o verbo saiu do código. O NOME da coluna continua `resolve`, atrasado em relação ao que ela guarda — renomeá-lo é migração própria. |
 | `parte` | Campo | O rótulo da chamada na prancha; a fábrica não o publica, é uma escolha editorial da Belmare, mas ainda assim digitada, não calculada. **[PRA-123]** É o ÚNICO lugar onde essa palavra existe: a chamada da prancha não tem campo de texto próprio, e o rótulo do desenho é lido daqui. |
 | `base` | Campo | Fato verificável, mas só existe se alguém o registrar — sem ele, ausente, nunca inventado. |
 | `fato` | Campo | Idem. |
@@ -137,13 +137,19 @@ deploy para corrigir um telefone.
 
 | Campo | Camada | Por quê |
 |---|---|---|
-| `registro` (bloco 01) | Campo | Parágrafo sob "A empresa, por extenso." |
-| `atividades` (bloco 02) | Campo | Parágrafo que explica a tabela de CNAEs. |
-| `nome` (bloco 03) | Campo **a partir da segunda frase** | A primeira frase é montada com `Empresa.razaoSocial`. Se ela fosse texto livre, trocar a razão social no painel deixaria a prosa nomeando a antiga — numa página cujo argumento é que cada linha pode ser conferida na fonte. |
-| `acervo` (bloco 05) | Campo **a partir da segunda frase** | A primeira frase conta as fábricas ("Quatro fábricas, quatro papéis.") e abre um ledger que lista as marcas logo abaixo. Texto livre ali congelaria em "quatro" no dia da quinta marca. |
-| `interlocutor` (bloco 06) | Campo | Parágrafo do fecho. |
+| `registro` (bloco 01) | Campo | Parágrafo sob "Começou com móvel de jardim." |
+| `nome` (bloco 02) | Campo **a partir da segunda frase** | A primeira frase é montada com `Empresa.razaoSocial`. Se ela fosse texto livre, trocar a razão social no painel deixaria a prosa nomeando a antiga. |
+| `acervo` (bloco 04) | Campo **a partir da segunda frase** | A primeira frase conta as fábricas ("Quatro fábricas, quatro linhas.") e abre um ledger que lista as marcas logo abaixo. Texto livre ali congelaria em "quatro" no dia da quinta marca. |
+| `interlocutor` (bloco 05) | Campo | Parágrafo do fecho. |
 
-O bloco 04 (a prancha do território) **não tem campo nenhum** — ver a tabela de gerado abaixo.
+O bloco 03 (a prancha do território) **não tem campo nenhum** — ver a tabela de gerado abaixo.
+
+O campo `atividades` **deixou de existir**, junto com o bloco 02 que ele legendava: a tabela dos
+cinco CNAEs saiu de `/quem-somos`. Os códigos não dizem nada ao arquiteto que a página precisa
+convencer — e dois deles ("consultoria em gestão empresarial", "tapeçaria, persianas e cortinas")
+fazem uma representação de móvel de autor parecer atacado genérico. A ajuda do campo chegava a
+proibir interpretá-los (P1), o que deixava na página um bloco que ninguém podia explicar. Quem
+quiser conferir o registro tem o CNPJ no rodapé.
 
 ## Global `prancha` (`src/globals/prancha.ts`) — PRA-123
 
@@ -301,7 +307,7 @@ nenhuma** — o que mudou foi quem pode baixá-lo, e a resposta passou a ser "qu
 | **[PRA-122]** O ano de fundação ("Desde 1999") | `lib/empresa.ts#anoDeFundacao` | Era `fundacao: 1999` ao lado de `abertura: "22.04.1999"` em `lib/site.ts` — dois campos para um fato só. Agora sai da data. |
 | **[PRA-122]** A data de abertura por extenso ("22.04.1999") | `lib/empresa.ts#aberturaPorExtenso` | Mesma razão: a ficha do bloco 01 imprime a transcrição do registro, e ela sai da data que o operador escolheu no calendário — não de um segundo campo de texto que poderia discordar. |
 | **[PRA-122]** O território ("Paraná, Santa Catarina e Rio Grande do Sul") | `lib/empresa.ts#TERRITORIO`, a partir de `lib/territorio.ts#ESTADOS` | **A única decisão do ticket que não segue a lista de campos do próprio ticket.** A prosa de `/quem-somos` nomeia os estados três centímetros acima do desenho que os traça — malha oficial do IBGE, fora do escopo de edição por decisão 4 da spec. Um campo de texto deixaria o operador escrever um quarto estado que a prancha não sabe desenhar, e a página passaria a contradizer o único gráfico que ela tem. Expandir território é regerar a malha, que é o mesmo deploy que o desenho novo já exigiria. |
-| **[PRA-122]** Toda contagem em prosa: "As **quatro** fábricas que a Belmare representa", "de **quatro** fábricas brasileiras", "**Quatro** fábricas, **quatro** papéis", "**Três** estados", "Ver as **quatro** representadas", "**Cinco** atividades registradas" | `lib/frase.ts#porExtenso`, sobre `representadasDaPagina()`, `TERRITORIO` e `CNAES` | Eram a palavra `quatro` digitada dentro de uma frase, em cinco arquivos. No dia da quinta marca as cinco continuariam dizendo quatro, sem calendário nenhum para denunciar — a mesma falha do tempo de casa, e mais silenciosa. |
+| **[PRA-122]** Toda contagem em prosa: "As **quatro** fábricas que a Belmare representa", "de **quatro** fábricas brasileiras", "**Quatro** fábricas, **quatro** linhas", "**Três** estados, uma conversa só", "Ver as **quatro** representadas" | `lib/frase.ts#porExtenso`, sobre `representadasDaPagina()` e `TERRITORIO` | Eram a palavra `quatro` digitada dentro de uma frase, em cinco arquivos. No dia da quinta marca as cinco continuariam dizendo quatro, sem calendário nenhum para denunciar — a mesma falha do tempo de casa, e mais silenciosa. ("**Cinco** atividades registradas" saiu da lista junto com o bloco de CNAEs.) |
 | **[PRA-122]** A junção "A, B, C **e** D" | `lib/frase.ts#emLista` | Existia inline em `abertura.tsx` e numa segunda escrita (`join(", ").replace(...)`) em mais três lugares. Quatro cópias da mesma pontuação é como a lista de marcas da home e a de estados do rodapé passam a ser escritas de dois jeitos na mesma tela. |
 
 ## Fixo — no código, por ser o argumento do desenho
@@ -312,7 +318,7 @@ coleções existe para tornar o próprio dado editável. Os dois exemplos fixos 
 
 | Texto | Onde mora | Por quê |
 |---|---|---|
-| "Imagem de referência — ilustra o que a fábrica resolve, não uma peça do catálogo dela." | `components/marca/abertura.tsx` (figcaption) | Legenda visível obrigatória por decisão de desenho — não muda por marca, não é campo de nenhuma representada. |
+| "Imagem de referência — ilustra a linha da fábrica, não uma peça do catálogo dela." | `components/marca/abertura.tsx` (figcaption) | Legenda visível obrigatória por decisão de desenho — não muda por marca, não é campo de nenhuma representada. |
 | Os rótulos das seções ("O que declara", "Quem assina", "Vocabulário", "Para levar", "Falar") | `lib/representadas.ts#secoesDaRepresentada` | São o argumento da página, não conteúdo de uma marca — mudam por reposicionamento de desenho, não por edição de operador. |
 
 ### Fixo — o que PRA-122 recusou a transformar em campo
@@ -323,13 +329,12 @@ ao alcance de um global e ficou no código de propósito.
 | Texto | Onde mora | Por que não é campo |
 |---|---|---|
 | O h1 da home — "Sofá, mesa, espreguiçadeira e ombrelone." | `components/abertura.tsx` | O argumento do desenho, não conteúdo dentro dele. Já foi "Quatro fábricas. Um interlocutor." (jargão de organograma) e "Móveis para área externa" (descreve uma fábrica, e a Belmare é representação); as duas caíram em 30/07/2026. Um campo de texto é o caminho de volta para uma delas numa tarde em que ninguém lembra por que caíram. Trocá-lo é reposicionar a empresa, e reposicionamento é conversa, não edição. |
-| Os rótulos numerados de `/quem-somos` (`01`…`06`) e os títulos de cada bloco | `components/quem-somos/bloco.tsx` e cada bloco | A sequência É o argumento da página: ler fora de ordem é ler outra coisa. Não há array de blocos, não há campo de título, não há campo de número. |
+| Os rótulos numerados de `/quem-somos` (`01`…`05`) e os títulos de cada bloco | `components/quem-somos/bloco.tsx` e cada bloco | A sequência É o argumento da página: ler fora de ordem é ler outra coisa. Não há array de blocos, não há campo de título, não há campo de número. |
 | O nome e o texto de apoio das duas portas | `components/portas.tsx` | Decisão 3 da spec. As duas têm que ter peso igual, e a simetria "eu especifico / eu compro" é o argumento — um campo por porta é como uma delas fica maior que a outra. |
 | A linha de apoio da abertura da home, fora das partes contadas | `components/abertura.tsx` | Ela existe para carregar dado (marcas, território, tempo de casa) sem virar slogan; o que não é dado nela é a moldura desse dado. |
-| O aviso "Imagens de referência, para representar o que cada fábrica resolve…" | `components/representadas-galeria.tsx` | Marcação de mock exigida por desenho, não prosa de marketing sobre as fábricas. Mesma razão do figcaption de `components/marca/abertura.tsx`, já listado acima. |
-| O parágrafo do bloco 04 de `/quem-somos` (a prancha do território) | `components/quem-somos/prancha-territorio.tsx` | O único dos seis blocos sem campo. Ele nomeia os três estados, conta as representadas e nomeia a cidade da sede — e as três coisas saem do dado que desenha a prancha ao lado ou do cadastro. Texto livre ali é como a prosa passa a dizer "quatro estados" ao lado de um desenho com três. |
-| Os cinco CNAEs (código e descrição) | `lib/registro.ts#CNAES` | Transcrição do cadastro nacional. Um campo de texto é precisamente a ferramenta que convida alguém a reescrever uma descrição oficial "com palavras melhores" — a única coisa que essa página não pode fazer sem perder a autoridade inteira. E o P1 continua aberto: os códigos de atacado ao lado do de representação sugerem uma conclusão que o cliente não confirmou, e um campo editável é por onde essa conclusão entraria em texto visível. |
-| O nome público anterior e a fonte dele | `lib/registro.ts#NOME_PUBLICO_ANTERIOR` | Citação com fonte declarada. Reescrevê-la em melhores palavras quebraria exatamente o que ela prova. |
+| O aviso "Imagens de referência, para representar a linha de cada fábrica…" | `components/representadas-galeria.tsx` | Marcação de mock exigida por desenho, não prosa de marketing sobre as fábricas. Mesma razão do figcaption de `components/marca/abertura.tsx`, já listado acima. |
+| O parágrafo do bloco 03 de `/quem-somos` (a prancha do território) | `components/quem-somos/prancha-territorio.tsx` | O único dos cinco blocos sem campo. Ele nomeia os três estados, conta as representadas e nomeia a cidade da sede — e as três coisas saem do dado que desenha a prancha ao lado ou do cadastro. Texto livre ali é como a prosa passa a dizer "quatro estados" ao lado de um desenho com três. |
+| O nome público anterior | `lib/registro.ts#NOME_PUBLICO_ANTERIOR` | Citação. Reescrevê-la em melhores palavras quebraria exatamente o que ela prova. A **fonte** ("Fonte · Facebook · /belmarerepresentacoes") saía impressa sob a citação e saiu da tela: era a empresa fazendo due diligence sobre si mesma na própria página institucional, e transformava duas colunas legíveis em verbete. |
 | A navegação do site (os quatro itens do menu) | `lib/site.ts#NAVEGACAO` | Não é conteúdo dentro do desenho: é quais rotas existem. Uma rota nova exige uma página nova, que é código — um item de menu editável só serviria para apontar para um 404 que o operador não tem como criar. **[PRA-124]** A mesma regra passou a valer do outro lado: o endereço de uma página livre é escolhido dentro de `ROTAS_LIVRES`, nunca digitado. |
 | A descrição de SEO do layout e o `title` padrão | `app/(frontend)/layout.tsx` | Só `openGraph.siteName` passou a ler o painel, porque é o nome público da empresa. O resto é a mesma prosa fixa da home. |
 | A prancha do território (a malha do IBGE) | `lib/territorio.ts` | Fora de escopo por decisão 4 da spec: é dado regerado da fonte, não desenho a editar. |

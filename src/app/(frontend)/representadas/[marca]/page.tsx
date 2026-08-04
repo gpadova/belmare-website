@@ -109,7 +109,7 @@ template rígido que finge que as quatro fábricas têm o mesmo material.
 OWN-WORLD: o mundo do site, inalterado. Papel #F5F3F0, tinta #17171A, fio
 #C9C6C0, raio 0, sombra 0, cor 0. Faixa de sumário em mono sob o cabeçalho,
 seções abertas por fio com número na margem, ficha de rótulo e valor.
-STORY: o arquiteto vê o que esta fábrica resolve, confere o que ela declara,
+STORY: o arquiteto vê a linha desta fábrica, confere o que ela declara,
 sabe quem assina, lê o vocabulário dela e fala com a Belmare.
 FIRST VIEWPORT: faixa de sumário com contagens sob o cabeçalho; fotografia
 sangrando de ponta a ponta com legenda visível; identificação em mono e o nome

@@ -7,12 +7,12 @@ import {
   SEDE,
 } from "@/lib/territorio";
 import { buscarEmpresa } from "@/lib/empresa-consulta";
-import { comInicialMaiuscula, emLista, porExtenso } from "@/lib/frase";
+import { emLista, porExtenso } from "@/lib/frase";
 import { TERRITORIO } from "@/lib/empresa";
 import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
- * 04 — PRANCHA 01. O território.
+ * 03 — PRANCHA 01. O território.
  *
  * O único gráfico da página, e o momento que fica na cabeça de quem sai. Não é
  * um mapa ilustrado: é a malha oficial do IBGE reprojetada em Mercator e
@@ -105,7 +105,7 @@ export async function PranchaTerritorio() {
   const { endereco } = await buscarEmpresa();
 
   return (
-    <Bloco numero="04">
+    <Bloco numero="03">
       {/* No telefone a ordem é título → argumento → prancha → legenda: a
           prancha é o momento da página e não pode chegar depois de 500px de
           prosa que já fez o argumento. No desktop ela ocupa a coluna da
@@ -113,13 +113,12 @@ export async function PranchaTerritorio() {
       <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_30rem] md:grid-rows-[auto_auto] md:gap-x-12 lg:gap-x-16">
         <div className="order-1 md:col-start-1 md:row-start-1">
           <h2 className="text-h1 max-w-[18ch] font-normal text-balance">
-            {comInicialMaiuscula(porExtenso(TERRITORIO.length, "m"))} estados.
-            Um interlocutor.
+            A Belmare atende {porExtenso(TERRITORIO.length, "m")} estados.
           </h2>
           <p className="text-body mt-6 max-w-[52ch] text-pretty text-graphite">
-            {emLista(TERRITORIO)} — o mesmo território para as{" "}
-            {porExtenso(representadas.length)} representadas, sem recorte por
-            marca.
+            As {porExtenso(representadas.length)} fábricas representadas atendem
+            o mesmo território: {emLista(TERRITORIO)}. Não há divisão de região
+            por marca.
             {endereco?.cidade !== undefined
               ? ` A sede fica em ${endereco.cidade}.`
               : ""}
@@ -150,9 +149,16 @@ export async function PranchaTerritorio() {
             </div>
           </dl>
 
+          {/* A regra do desenho, dita como fato e não como metodologia. A
+              versão anterior explicava a decisão editorial ao leitor ("a
+              prancha nomeia estados, não cidades") — a página falando da
+              própria construção, que é metade do que fazia esta rota soar a
+              robô. O fato que importa é que o atendimento não tem recorte
+              municipal. */}
           <p className="text-support mt-6 max-w-[52ch] text-graphite">
-            A prancha nomeia estados, não cidades: a Belmare atende os três por
-            inteiro, e não há praça declarada além da sede.
+            O atendimento cobre os {porExtenso(TERRITORIO.length, "m")} estados
+            por inteiro. {SEDE.cidade} aparece no mapa porque é onde fica a
+            sede.
           </p>
         </div>
 

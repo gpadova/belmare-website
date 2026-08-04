@@ -137,9 +137,13 @@ export function pesoEmMB(mb: number): string {
 export type Representada = {
   slug: string;
   nome: string;
-  /** O que ela resolve na área externa. Confirmado. */
+  /** A linha que a fábrica produz, em uma frase — produto e matéria, nunca
+   *  benefício. Já guardou "a sombra" e "o conforto", e o site escrevia
+   *  "Resolve a sombra." com eles; ver a nota do campo em
+   *  `collections/representadas.ts`, que também explica por que o nome
+   *  continua `resolve`. Confirmado. */
   resolve: string;
-  /** A mesma coisa em uma palavra, para a chamada da prancha e a legenda. */
+  /** A mesma linha em uma palavra, para a chamada da prancha e a legenda. */
   parte: string;
   /** Cidade e UF da fábrica, quando conhecidos. */
   base?: string;
@@ -166,7 +170,9 @@ export const REPRESENTADAS: Representada[] = [
   {
     slug: "mare-mobilia",
     nome: "Marê Mobília",
-    resolve: "o móvel de autor",
+    /* A linha nas palavras da própria Marê: a declaração de posicionamento logo
+       abaixo diz "Mobiliário externo, em coleções assinadas". */
+    resolve: "Mobiliário externo em coleções assinadas",
     parte: "Móvel",
     base: "Cambé · PR",
     fato: "Mais de 30 coleções, 8 designers assinantes",
@@ -251,7 +257,11 @@ export const REPRESENTADAS: Representada[] = [
   {
     slug: "gda-moveis",
     nome: "GDA Móveis",
-    resolve: "a estrutura",
+    /* Não "a estrutura": a GDA fabrica móvel inteiro — sofá, poltrona, cadeira,
+       mesa, espreguiçadeira, externo e interno, como o vocabulário dela lista
+       aqui embaixo. O que a separa da Marê é a matéria, e é a matéria que a
+       linha nomeia. */
+    resolve: "Mobiliário em alumínio fundido",
     parte: "Estrutura",
     base: "Cláudio · MG",
     /* "Até 30 dias" — é o que a fábrica publica, e é o que a declaração logo
@@ -307,13 +317,16 @@ export const REPRESENTADAS: Representada[] = [
   {
     slug: "bux-garden",
     nome: "Bux Garden",
-    resolve: "o conforto",
+    /* Era "o conforto", e o ledger escrevia "Resolve o conforto" — benefício,
+       não linha. O têxtil de performance é o que a fábrica declara como
+       diferencial e o que ela de fato vende. */
+    resolve: "Estofados com têxtil de performance",
     /* `parte` é o rótulo da chamada na prancha, e ele precisa apontar para algo
-       que se enxerga na foto. "Conforto" é o que a Bux resolve — e continua
-       sendo, na prosa e no ledger — mas uma seta escrita CONFORTO sobre uma
-       chaise, ao lado de outra escrita MÓVEL sobre um sofá, não ensina nada:
-       são dois estofados. "Estofado" é o que a fábrica declara como diferencial
-       (têxtil de performance) e é o que a seta de fato indica. */
+       que se enxerga na foto. Uma seta escrita CONFORTO sobre uma chaise, ao
+       lado de outra escrita MÓVEL sobre um sofá, não ensina nada: são dois
+       estofados. "Estofado" é o que a seta de fato indica — e foi esta linha,
+       decidida em PRA-123 para o desenho, que acabou corrigindo a prosa
+       inteira quatro campos acima. */
     parte: "Estofado",
     base: "Birigui · SP",
     fato: "Têxtil de performance: repelência, proteção UVA/UVB, antimofo",
@@ -347,7 +360,9 @@ export const REPRESENTADAS: Representada[] = [
   {
     slug: "trisol",
     nome: "Trisol",
-    resolve: "a sombra",
+    /* Os dois grupos do vocabulário da própria Trisol — haste lateral e haste
+       central — são a linha inteira dela, e cabem numa frase. */
+    resolve: "Ombrelones laterais e centrais",
     parte: "Sombra",
     fato: "Ferragem em inox 304, resistência a vento de 30 a 80 km/h",
     /* A especificação mais completa do portfólio inteiro, e por isso a marca
@@ -560,10 +575,17 @@ export type DocumentoDeCatalogo = {
  * Publicado antes de a pedir — o que se baixa agora vem primeiro, sempre. Dentro
  * de cada bloco, edição mais recente primeiro, e edição desconhecida por último,
  * porque um documento sem ano é o que menos ajuda a decidir. Empate mantém a
- * ordem de `REPRESENTADAS`, que é estável e não depende de dado ausente.
+ * ordem em que as marcas CHEGARAM, que é a do painel (campo `ordem`) e não
+ * depende de dado ausente.
+ *
+ * ⚠️ A lista entra por parâmetro em vez de ser lida aqui dentro, e é isso que
+ * mantém esta função pura enquanto a fonte passou a ser o painel. Quem decide de
+ * onde vêm as marcas é a rota — `representadasDaPagina()` —, não este módulo.
  */
-export function documentosDeCatalogo(): DocumentoDeCatalogo[] {
-  const documentos = REPRESENTADAS.flatMap((representada) =>
+export function documentosDeCatalogo(
+  representadas: Representada[],
+): DocumentoDeCatalogo[] {
+  const documentos = representadas.flatMap((representada) =>
     (representada.catalogos ?? []).map((catalogo) => ({
       catalogo,
       representada,
@@ -598,6 +620,8 @@ export function documentosDeCatalogo(): DocumentoDeCatalogo[] {
  * esta página repara na fábrica que faltou, e a resposta honesta é dizer qual é
  * e por quê.
  */
-export function representadasSemCatalogo(): Representada[] {
-  return REPRESENTADAS.filter((r) => !r.catalogos?.length);
+export function representadasSemCatalogo(
+  representadas: Representada[],
+): Representada[] {
+  return representadas.filter((r) => !r.catalogos?.length);
 }

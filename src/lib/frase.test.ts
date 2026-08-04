@@ -38,8 +38,8 @@ describe("a lista em prosa", () => {
 
 describe("o número por extenso", () => {
   test("escreve a contagem como prosa, no gênero certo", () => {
-    // Só um e dois variam — "quatro fábricas" e "quatro papéis" são a mesma
-    // palavra, "uma fábrica" e "um papel" não.
+    // Só um e dois variam — "quatro fábricas" e "quatro modelos" são a mesma
+    // palavra, "uma fábrica" e "um modelo" não.
     expect(porExtenso(4)).toBe("quatro");
     expect(porExtenso(1)).toBe("uma");
     expect(porExtenso(2)).toBe("duas");

@@ -166,7 +166,7 @@ export interface Representada {
    */
   ordem?: number | null;
   /**
-   * O que esta fábrica resolve na área externa, em minúscula e sem ponto final — o site escreve "Resolve a sombra." a partir daqui. Nomeie a coisa: "a sombra", "a estrutura", "o móvel de autor".
+   * A linha desta fábrica, como se escreve numa lista de representadas — "Ombrelones laterais e centrais", "Estofados com têxtil de performance", "Mobiliário em alumínio fundido". Com inicial maiúscula e sem ponto final: o site põe o ponto onde precisa. Nomeie produto e matéria, nunca benefício — "a sombra" e "o conforto" dizem o que o cliente sente, e o arquiteto especifica o que a fábrica faz.
    */
   resolve: string;
   /**
@@ -182,7 +182,7 @@ export interface Representada {
    */
   fato: string;
   /**
-   * A imagem que representa esta marca na galeria da home e nos registros de /representadas. Mostre o que a fábrica resolve — não uma peça do catálogo dela, que o site não tem autorização para apresentar como acervo.
+   * A imagem que representa esta marca na galeria da home e nos registros de /representadas. Mostre a linha da fábrica — não uma peça do catálogo dela, que o site não tem autorização para apresentar como acervo.
    */
   imagem: number | Imagen;
   /**
@@ -1201,23 +1201,19 @@ export interface Home {
 export interface QuemSomos {
   id: number;
   /**
-   * Sob o título "A empresa, por extenso." A ficha com razão social, CNPJ, abertura e porte fica logo acima e sai do cadastro — não a repita aqui em prosa.
+   * Sob o título "Começou com móvel de jardim." O ano, a cidade e o tempo de casa aparecem logo acima e saem do cadastro — não os repita aqui. Este parágrafo conta o que a empresa vendia no começo e o que ela vende hoje; nada de missão, valores ou superlativo.
    */
   registro?: string | null;
   /**
-   * Sob o título "Cinco atividades registradas." Explica o que a tabela de CNAEs abaixo dele é. ⚠️ Não interprete os códigos: publicar o código é abrir o registro, publicar a conclusão é escrever um "sobre nós".
-   */
-  atividades?: string | null;
-  /**
-   * ⚠️ A primeira frase deste parágrafo é montada pelo site — "No registro, a razão social continua …" — com a razão social do cadastro, para que ela nunca discorde do painel. Escreva aqui o que vem DEPOIS dela.
+   * ⚠️ A primeira frase deste parágrafo é montada pelo site — "No papel, a empresa continua sendo …" — com a razão social do cadastro, para que ela nunca discorde do painel. Escreva aqui o que vem DEPOIS dela.
    */
   nome?: string | null;
   /**
-   * ⚠️ A primeira frase é montada pelo site contando as fábricas cadastradas — "Quatro fábricas, quatro papéis." — e vira sozinha quando uma marca entra ou sai. Escreva aqui o que vem DEPOIS dela.
+   * ⚠️ A primeira frase é montada pelo site contando as fábricas cadastradas — "Quatro fábricas, quatro linhas." — e vira sozinha quando uma marca entra ou sai. Escreva aqui o que vem DEPOIS dela.
    */
   acervo?: string | null;
   /**
-   * Sob o título "Fale com quem representa." ⚠️ Nenhum e-mail de fábrica entra neste site, em lugar nenhum: um representante que se desintermedia do próprio funil está construindo o site do concorrente.
+   * Sob o título "Fale com quem representa." Diga o que acontece quando alguém chama. ⚠️ Nenhum e-mail de fábrica entra neste site, em lugar nenhum: um representante que se desintermedia do próprio funil está construindo o site do concorrente. Mas isso é regra de bastidor — não a explique ao visitante dentro do parágrafo.
    */
   interlocutor?: string | null;
   _status?: ('draft' | 'published') | null;
@@ -1242,7 +1238,7 @@ export interface Prancha {
   chamadas?:
     | {
         /**
-         * A fábrica que resolve esta parte da cena. O texto da chamada NÃO se escreve aqui: ele é a palavra que a representada já declara em "A parte que ela resolve" — móvel, estrutura, estofado, sombra. Duas marcas que dividem a mesma função entram como duas chamadas apontando para o mesmo objeto.
+         * A fábrica de onde vem esta parte da cena. O texto da chamada NÃO se escreve aqui: ele é a palavra que a representada já declara em "A mesma linha em uma palavra" — móvel, estrutura, estofado, sombra. Duas marcas que dividem a mesma função entram como duas chamadas apontando para o mesmo objeto.
          */
         representada: number | Representada;
         /**
@@ -1334,7 +1330,6 @@ export interface HomeSelect<T extends boolean = true> {
  */
 export interface QuemSomosSelect<T extends boolean = true> {
   registro?: T;
-  atividades?: T;
   nome?: T;
   acervo?: T;
   interlocutor?: T;
