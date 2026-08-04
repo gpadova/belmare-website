@@ -4,7 +4,7 @@ import { comCache } from "@/lib/cache-do-painel";
 import { getPayload } from "payload";
 
 import { representadaDoPainel } from "@/lib/representadas-traducao";
-import { REPRESENTADAS, representadaPorSlug, type Representada } from "@/lib/representadas";
+import { type Representada } from "@/lib/representadas";
 import {
   TAG_CATALOGOS,
   TAG_HOME,
@@ -149,50 +149,38 @@ export async function representadaEmRascunho(
 /**
  * A marca que a rota `/representadas/[marca]` renderiza.
  *
- * ⚠️ **O PAINEL PRIMEIRO, O CÓDIGO ENQUANTO A MIGRAÇÃO NÃO PASSOU.** As quatro
- * marcas ainda vivem escritas à mão em `lib/representadas.ts`, e passá-las para
- * o painel é PRA-119. Até lá as duas fontes coexistem — e é isso que permite
- * cadastrar UMA marca no painel para provar o caminho inteiro sem que as outras
- * três virem 404 no meio do caminho. Quando o array sair, o `??` sai com ele e
- * esta função vira `buscarRepresentadaPorSlug`.
+ * ⚠️ **O PAINEL É A ÚNICA FONTE.** Não há mais reserva em código: uma marca que
+ * não está publicada no painel não existe no site, e esta função devolve
+ * `undefined` — a rota vira 404. Era o `??` para `representadaPorSlug` que
+ * impedia exatamente isso: enquanto ele existiu, despublicar uma marca não a
+ * tirava do ar, porque o array de `lib/representadas.ts` a devolvia de volta.
  */
 export async function representadaDaPagina(
   slug: string,
 ): Promise<Representada | undefined> {
-  return (await buscarRepresentadaPorSlug(slug)) ?? representadaPorSlug(slug);
+  return buscarRepresentadaPorSlug(slug);
 }
 
 /**
  * As marcas que as LISTAS do site renderizam — galeria da home, ledger de
  * `/quem-somos`, rodapé.
  *
- * ⚠️ **MESMO `??` DE `representadaDaPagina`, E PELO MESMO MOTIVO.** As quatro
- * marcas continuam escritas à mão em `lib/representadas.ts` e já foram semeadas
- * no painel (PRA-119); enquanto as duas fontes coexistem, um banco vazio — uma
- * máquina recém-clonada, um build antes do seed — não pode devolver uma home
- * sem nenhuma fábrica. Painel primeiro; o array só quando o painel não tem
- * nada. Quando o array sair, esta função vira `buscarRepresentadas`.
+ * ⚠️ **O PAINEL É A ÚNICA FONTE — E ISSO INCLUI A LISTA VAZIA.** O `??` para o
+ * array de `lib/representadas.ts` saiu daqui: banco vazio agora devolve site
+ * vazio, em vez de devolver as quatro marcas escritas à mão. É o preço de o
+ * painel poder tirar uma marca do ar, e o preço é deliberado — enquanto a
+ * reserva existiu, despublicar as quatro no painel ressuscitava as quatro no
+ * código.
  *
- * ⚠️ Lista VAZIA, e não lista curta, é o gatilho. Uma marca despublicada de
- * propósito tem que sumir do site — se o critério fosse "menos que quatro", o
- * painel perderia o poder de tirar uma marca do ar.
+ * ⚠️ A contrapartida operacional é que o banco de produção precisa estar
+ * semeado ANTES do primeiro build, ou a home sobe sem fábrica nenhuma. Ver
+ * `pnpm db:seed` e a nota do README sobre a primeira subida.
  */
 export async function representadasDaPagina(): Promise<Representada[]> {
-  const doPainel = await buscarRepresentadas();
-  return doPainel.length > 0 ? doPainel : REPRESENTADAS;
+  return buscarRepresentadas();
 }
 
-/**
- * Os endereços que a rota gera no build — a união das duas fontes, sem repetir
- * quem já está no painel.
- */
+/** Os endereços que a rota gera no build — os do painel, e mais nenhum. */
 export async function slugsDeRepresentadas(): Promise<string[]> {
-  const doPainel = await buscarRepresentadas();
-
-  return [
-    ...new Set([
-      ...doPainel.map((r) => r.slug),
-      ...REPRESENTADAS.map((r) => r.slug),
-    ]),
-  ];
+  return (await buscarRepresentadas()).map((r) => r.slug);
 }

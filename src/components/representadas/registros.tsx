@@ -3,10 +3,10 @@ import Link from "next/link";
 
 import { Seta } from "@/components/icones";
 import {
-  REPRESENTADAS,
   imagemDaRepresentada,
   paginaDaRepresentada,
 } from "@/lib/representadas";
+import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
  * Os registros — uma entrada por representada, na ordem da prancha.
@@ -24,7 +24,9 @@ import {
  * cresce — e uma grade de quatro quebra com três ou cinco. Em duas, qualquer N
  * fecha.
  */
-export function RegistrosDasRepresentadas() {
+export async function RegistrosDasRepresentadas() {
+  const representadas = await representadasDaPagina();
+
   return (
     <section
       aria-labelledby="registros"
@@ -35,7 +37,7 @@ export function RegistrosDasRepresentadas() {
       </h2>
 
       <ul className="mt-6 grid border-t border-line md:grid-cols-2 md:gap-x-8 lg:gap-x-12">
-        {REPRESENTADAS.map((r, i) => {
+        {representadas.map((r, i) => {
           const imagem = imagemDaRepresentada(r);
 
           return (
@@ -87,7 +89,7 @@ export function RegistrosDasRepresentadas() {
           grave o bastante para legendar. Deixar o meio do caminho sem
           tratamento seria proteger as duas pontas e mentir no miolo. */}
       <p className="text-support mt-10 max-w-[68ch] text-pretty text-graphite">
-        Imagens de referência, para representar o que cada fábrica resolve. Não
+        Imagens de referência, para representar a linha de cada fábrica. Não
         são peças do catálogo delas — o acervo fotográfico das marcas entra na
         publicação.
       </p>

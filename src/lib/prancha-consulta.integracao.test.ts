@@ -96,11 +96,12 @@ afterAll(async () => {
 });
 
 describe("a prancha do painel", () => {
-  test("antes de publicar qualquer coisa, a página desenha a reserva do código", async () => {
-    // Máquina recém-clonada, build antes do seed: /representadas não pode
-    // abrir sem prancha, que é a página inteira.
+  test("sem prancha publicada, a página recusa em vez de desenhar a do código", async () => {
+    // O painel é a única fonte. Uma prancha nunca publicada — ou despublicada
+    // de propósito — tem que derrubar /representadas, não deixá-la no ar com a
+    // versão antiga, que é como uma publicação quebrada passa despercebida.
     expect(await buscarPrancha()).toBeUndefined();
-    expect(await pranchaDaPagina()).toEqual(PRANCHA_EM_CODIGO);
+    await expect(pranchaDaPagina()).rejects.toThrow(/não está publicada/);
   });
 
   test("publicada, a fotografia e as chamadas do painel substituem as do código", async () => {

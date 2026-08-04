@@ -3,7 +3,6 @@ import { getPayload } from "payload";
 
 import { comCache } from "@/lib/cache-do-painel";
 import {
-  PRANCHA_EM_CODIGO,
   type PranchaAreaExterna,
 } from "@/lib/prancha-area-externa";
 import { pranchaDoPainel } from "@/lib/prancha-traducao";
@@ -49,13 +48,20 @@ export async function buscarPrancha(): Promise<PranchaAreaExterna | undefined> {
 /**
  * A prancha que a rota desenha.
  *
- * ⚠️ **PAINEL PRIMEIRO, CÓDIGO COMO RESERVA — mesmo `??` de
- * `representadasDaPagina`, e pelo mesmo motivo.** Um banco vazio (máquina
- * recém-clonada, build antes do seed) não pode devolver `/representadas` sem a
- * prancha, que é a página inteira. A reserva não é uma segunda fonte de
- * verdade: é o que o site desenhava antes deste ticket, coerente consigo mesma,
- * e ela só aparece quando o painel não tem NADA publicável.
+ * ⚠️ **O PAINEL É A ÚNICA FONTE.** O `??` para `PRANCHA_EM_CODIGO` saiu: sem
+ * prancha publicada no painel, `/representadas` não tem o que desenhar e a
+ * chamada estoura em vez de mentir com a prancha antiga. Uma reserva silenciosa
+ * aqui era pior do que a falta: ela fazia uma prancha despublicada continuar no
+ * ar, e ninguém descobria que a publicação nunca tinha funcionado.
  */
 export async function pranchaDaPagina(): Promise<PranchaAreaExterna> {
-  return (await buscarPrancha()) ?? PRANCHA_EM_CODIGO;
+  const doPainel = await buscarPrancha();
+
+  if (!doPainel) {
+    throw new Error(
+      "A prancha de /representadas não está publicada no painel. Publique-a em “O site › Prancha”, ou rode `pnpm db:seed` num banco recém-migrado.",
+    );
+  }
+
+  return doPainel;
 }

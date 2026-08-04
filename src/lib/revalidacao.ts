@@ -25,12 +25,12 @@
  *   6. o rodapé            `Rodape`, no layout — portanto em TODA rota do
  *                          site, inclusive a 404
  *
- * Hoje só a própria página lê o painel (`representadas-consulta.ts`); as
- * outras cinco ainda leem o array `REPRESENTADAS` escrito à mão — a migração
- * é PRA-119. As cinco etiquetas de lista já existem aqui porque a única leitura
- * de painel que existe é tagueada com todas elas: no dia em que cada uma
- * dessas cinco passar a consultar o painel, a etiqueta já está certa e ninguém
- * precisa lembrar de acrescentá-la.
+ * ⚠️ **AS SEIS LEEM O PAINEL.** Não há mais fonte dupla: o array `REPRESENTADAS`
+ * de `lib/representadas.ts` continua existindo, mas só como ENTRADA DO SEED
+ * (`seed/semear-representadas.ts`) — nenhuma superfície o lê para renderizar. As
+ * cinco etiquetas de lista já estavam aqui de antes, previstas para este dia, e
+ * é por isso que a migração das seis não precisou acrescentar nenhuma: a única
+ * leitura de painel que existe (`buscarRepresentadas`) é tagueada com todas.
  *
  * A identidade da empresa é o segundo caso da decisão 7: ela mora no rodapé e,
  * por natureza, em qualquer canto do site — não há "seis rotas" quando a

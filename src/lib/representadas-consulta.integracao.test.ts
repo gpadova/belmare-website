@@ -84,7 +84,7 @@ function marcaMinima(slug: string, nome: string) {
   return {
     slug,
     nome,
-    resolve: "o conforto",
+    resolve: "Estofados com têxtil de performance",
     parte: "Estofado",
     fato: "Têxtil de performance: repelência, proteção UVA/UVB, antimofo",
     imagem: fotoDaGaleria,
@@ -398,10 +398,12 @@ describe("o painel recusa, e explica em português", () => {
   });
 });
 
-describe("a travessia entre o código e o painel", () => {
-  test("a rota prefere o painel e não perde quem ainda não migrou", async () => {
-    /* Enquanto PRA-119 não passa, as quatro marcas escritas à mão continuam no
-       ar. Cadastrar uma no painel não pode derrubar as outras três. */
+describe("o painel como única fonte", () => {
+  test("uma marca fora do painel não existe no site, mesmo escrita em código", async () => {
+    /* `bux-garden` continua no array de `lib/representadas.ts`, e continua
+       sendo a ENTRADA DO SEED — não uma segunda fonte de leitura. Fora do
+       painel, a rota dela é 404, e é isso que dá ao painel o poder de tirar
+       uma marca do ar. */
     await criarRepresentadaPublicada({
       ...marcaMinima("trisol", "Trisol"),
       fato: "Fato vindo do painel",
@@ -410,16 +412,10 @@ describe("a travessia entre o código e o painel", () => {
     expect((await representadaDaPagina("trisol"))?.fato).toBe(
       "Fato vindo do painel",
     );
-    expect((await representadaDaPagina("bux-garden"))?.fato).toBe(
-      representadaPorSlug("bux-garden")!.fato,
-    );
+    expect(await representadaDaPagina("bux-garden")).toBeUndefined();
     expect(await representadaDaPagina("fabrica-que-nao-existe")).toBeUndefined();
 
-    const slugs = await slugsDeRepresentadas();
-    expect(slugs).toContain("trisol");
-    expect(slugs).toContain("bux-garden");
-    // Cadastrada e escrita à mão são a mesma marca, não duas rotas.
-    expect(slugs.filter((s) => s === "trisol")).toHaveLength(1);
+    expect(await slugsDeRepresentadas()).toEqual(["trisol"]);
   });
 
   test("a lista do painel sai na ordem que a Belmare escolheu", async () => {
