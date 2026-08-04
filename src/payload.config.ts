@@ -147,6 +147,15 @@ export default buildConfig({
     meta: {
       titleSuffix: " — Painel Belmare",
     },
+    /* A marca da Belmare no lugar da do Payload — na barra do painel e na tela
+       de login. Ver `components/painel/marca-do-painel.tsx` para por que as
+       duas são o símbolo, e não o lockup com a palavra. */
+    components: {
+      graphics: {
+        Icon: "/components/painel/marca-do-painel#MarcaIcone",
+        Logo: "/components/painel/marca-do-painel#MarcaLogo",
+      },
+    },
   },
 
   /**

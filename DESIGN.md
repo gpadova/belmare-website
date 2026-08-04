@@ -140,12 +140,12 @@ O sistema é uma folha técnica, não uma peça de campanha. Fundo de papel off-
 
 A densidade é de amostrário: alinhamento visível e sem exceção, números de bloco na margem, fichas de rótulo e valor, tabelas regradas, um ledger de quatro linhas e uma prancha de território desenhada sobre malha oficial do IBGE. O que dá identidade é a grade, não a decoração. O teste que o projeto aplica em si mesmo: tire tudo menos tipografia, fio e foto — o site ainda tem que ficar de pé.
 
-O sistema recusa, em código e não só em intenção: raio, sombra, gradiente (exceto o véu de legibilidade sobre foto), matiz, terceira família tipográfica, textura de fundo, movimento por rolagem, botão. Cinco superfícies existem hoje — `/`, `/quem-somos`, `/representadas`, o template `/representadas/[marca]` e `/catalogos`. A segunda introduziu os padrões de composição de arquivo; a terceira os estendeu para a prancha chaveada sobre fotografia; a quarta acrescentou o único elemento fixo do sistema além do cabeçalho, a faixa de índice, mais o padrão de **seção anulável com numeração calculada** — a seção some quando o dado não existe, e a numeração fecha sem buraco; e a quinta acrescentou a **linha de documento**, primeira linha do sistema com duas escritas dentro de um markup só.
+O sistema recusa, em código e não só em intenção: raio, sombra, gradiente (exceto o véu de legibilidade sobre foto), matiz fora do logotipo, terceira família tipográfica, textura de fundo, movimento por rolagem, botão. Cinco superfícies existem hoje — `/`, `/quem-somos`, `/representadas`, o template `/representadas/[marca]` e `/catalogos`. A segunda introduziu os padrões de composição de arquivo; a terceira os estendeu para a prancha chaveada sobre fotografia; a quarta acrescentou o único elemento fixo do sistema além do cabeçalho, a faixa de índice, mais o padrão de **seção anulável com numeração calculada** — a seção some quando o dado não existe, e a numeração fecha sem buraco; e a quinta acrescentou a **linha de documento**, primeira linha do sistema com duas escritas dentro de um markup só.
 
 `/catalogos` é a primeira superfície **sem uma única imagem**, e isso é direção, não falta de acervo: numa rota em que o visitante veio buscar um arquivo, fotografia de ambiente é ruído entre ele e o arquivo. O teste que o parágrafo acima declara passa a ter uma página que o cumpre com dois dos três elementos — ela fica de pé só com tipografia e fio, sem foto, sem prancha e sem gráfico: duas colunas partidas por um fio vertical de altura total, cabeçalho de colunas em mono e linhas regradas com a medida à direita. Não é licença para o resto do site. Onde há fotografia, ela continua sendo a única cor.
 
 **Key Characteristics:**
-- Acromático absoluto: cinco valores neutros, zero matiz
+- Acromático na interface: cinco valores neutros; o matiz existe em um objeto só, o logotipo
 - Fio de 1px `#C9C6C0` como único ornamento, e estrutural
 - Raio 0 e sombra 0 impostos por deleção de namespace, não por convenção
 - Duas famílias: grotesca para fala, mono para medida
@@ -153,17 +153,17 @@ O sistema recusa, em código e não só em intenção: raio, sombra, gradiente (
 - Vocabulário de movimento fechado em quatro gestos, todos por ponteiro
 - Toda ação é link; não existe botão no sistema
 - Dado ausente é declarado por extenso, nunca inventado nem travessão
-- A fotografia é a única cor — e não é requisito: `/catalogos` fica de pé sem nenhuma
+- A fotografia é a única cor das superfícies — e não é requisito: `/catalogos` fica de pé sem nenhuma
 - Formato, peso e edição declarados antes do clique, formatados por uma função só
 
 ## Colors
 
-Paleta acromática de cinco valores. Nenhum acento, nenhum matiz, nenhuma cor de estado.
+Paleta acromática de cinco valores. Nenhum acento, nenhuma cor de estado. O único matiz do projeto está dentro do logotipo, e não sai dele — ver **Logotipo** em Elementos gráficos.
 
 ### Neutral
 
 - **Papel** (`{colors.paper}`): o fundo de todo o site — `body`, cabeçalho fixo, faixa de índice, rodapé e blocos. Nunca branco puro: branco endurece a fotografia e cansa em navegação longa. Também é a cor do recorte que abre a linha sob os rótulos da prancha e do trilho da barra de rolagem, e do **encamisamento de 3px sob a linha de chamada** na PRANCHA 02.
-- **Tinta** (`{colors.ink}`): texto principal, contorno dos estados na prancha, linha de chamada sobre fotografia, traço da seta, hachura do logotipo, fundo do skip link, fundo de todo contêiner que espera imagem (`bg-ink` atrás de `next/image`, para não haver flash claro), e a borda da ação de fecho. É também o fundo de `::selection`.
+- **Tinta** (`{colors.ink}`): texto principal, contorno dos estados na prancha, linha de chamada sobre fotografia, traço da seta, a palavra dentro do logotipo, fundo do skip link, fundo de todo contêiner que espera imagem (`bg-ink` atrás de `next/image`, para não haver flash claro), e a borda da ação de fecho. É também o fundo de `::selection`.
 - **Grafite** (`{colors.graphite}`): UI secundária — texto de apoio, rótulo em mono, número de bloco, itens de navegação em repouso, polegar da barra de rolagem e a escala gráfica da prancha. É o cinza que lê como instrumento sem competir com a tinta.
 - **Fio** (`{colors.line}`): divisores, bordas de tabela e de ficha, moldura e graticula da prancha, sublinhado em repouso dos links de título, e o polegar da barra fina. Único ornamento do sistema.
 - **Superfície** (`{colors.surface}`): branco puro, usado com parcimônia e só como elevação — fundo de linha de ledger e da ação de fecho no `hover`. Nunca como fundo de página.
@@ -267,7 +267,7 @@ O vocabulário de forma é retangular e ortogonal:
 - **Fio de 1px.** Reto, sem raio, sempre em `{colors.line}` — exceto a borda da ação de fecho, que é o único fio em `{colors.ink}` do sistema, e é assim que aquele link ganha peso de ação primária sem virar botão.
 - **Ícone.** Um só: a seta, em `viewBox 0 0 32 12`, traço de 1px com `vector-effect="non-scaling-stroke"`, ponta reta, sem preenchimento. Mesma espessura do fio. Glifo tipográfico fazendo papel de ícone está fora.
 - **Registro de sede.** Círculo com quatro braços de cruz, traço de 1,5 na legenda e de 1px na prancha — a marca de registro de desenho técnico.
-- **Hachura.** Um `<pattern>` SVG de 5×5 unidades, três linhas diagonais de 0,9 de espessura em tinta, declarado uma vez no layout. **Ele não sai do logotipo.** Não é textura de seção, não é padrão de fundo, não representa material e não tem irmãs.
+- **Logotipo.** O vetor original da Belmare, em dois lockups servidos de `public/marca/`: horizontal (proporção 5,379 — símbolo à esquerda, palavra e descritor à direita) no cabeçalho, a 24px no telefone e 32px a partir de `md`; e vertical (proporção 0,969) a 112px no rodapé e no bloco 02 de `/quem-somos`. É **o único objeto com matiz do projeto** — azul `#00339A`, verde `#009A34` e vermelho `#FE0100` —, e o matiz não sai dele: não vira acento, nem estado, nem fio, nem fundo. O símbolo sozinho (`public/marca/simbolo.svg`) só aparece no favicon e nas marcas do painel. **O "b" é vazado, não pintado:** quem dá a cor da letra é o que estiver atrás do SVG, então a marca não vai sobre fundo escuro sem uma versão própria — e é por isso que a cópia do símbolo leva um disco de papel embutido. Substituiu, em 04/08/2026, a imitação tipográfica que compunha BELMARE em Söhne com uma faixa de hachura no lugar do símbolo; a hachura saiu junto, porque só existia para ela.
 - **Registro de canto.** Uma cruz simples de 1px em `{colors.line}`, centrada nas quatro quinas da moldura de uma prancha. É a marca de esquadro de folha desenhada, e é irmã do registro de sede — mesma família, sem o círculo, porque marca de esquadro não é ponto de coordenada. Só entra em moldura de prancha.
 - **Barra de rolagem.** Também é do sistema: calha de 12px, trilho em papel com fio de 1px à esquerda, polegar de grafite reduzido a 4px visíveis por uma borda de 4px em cor de papel, e tinta no `hover`. Duas variantes utilitárias existem — `barra-fio` (3px, cor de fio, sem trilho, grafite no `hover`, para bandeja de rolagem horizontal que precisa ser descoberta) e `sem-barra` (oculta, para a navegação de 40px do telefone, onde qualquer barra comeria a linha).
 
@@ -384,13 +384,18 @@ O padrão que sustenta as páginas de marca, e a razão de nenhuma delas precisa
 
 ### Logotipo
 
-Três elementos exatamente na mesma largura: wordmark, faixa de hachura, descritor. É o alinhamento que segura o lockup.
+O vetor original da Belmare, em três aplicações. Símbolo, palavra e descritor são desenho, não composição tipográfica: o site não remonta mais o lockup em Söhne.
 
-- **Compacta** (cabeçalho): `1.375rem` / `sm:1.5rem`, peso 500, tracking −0.045em, faixa de `0.4em` de altura; descritor só em `sr-only`.
-- **Vertical** (rodapé e bloco 03): `2.25rem`, peso 500, faixa de `0.55em`, descritor em mono distribuído letra a letra entre as duas pontas com `justify-between` — em mono e na largura exata do wordmark, "REPRESENTAÇÕES" lê como classificação técnica e para de diminuir a marca. O descritor leva `role="img"` com `aria-label`, porque com cada letra em `aria-hidden` ele seria anunciado como nada.
-- **Construção:** a faixa vai em posição absoluta dentro de um trilho de altura fixa. Um SVG no fluxo tem largura intrínseca de 300px e passaria a mandar na largura do lockup inteiro.
+- **Compacta** (`MarcaCompacta`, cabeçalho): lockup horizontal, `h-6` no telefone e `md:h-8` — 129px e 172px de largura.
+- **Vertical** (`MarcaVertical`, rodapé e bloco 02 de `/quem-somos`): lockup vertical a `h-28` (112px). A altura é do componente, não de quem chama; `className` ali é para espaçamento.
+- **Símbolo** (`public/marca/simbolo.svg`): quadrado, só no favicon e nas duas marcas do painel.
 
-> ⚠️ Divergência com `briefing/marca.md` §2. O briefing lista três aplicações, incluindo um **Símbolo** (a faixa sozinha em 72/32/16px, para favicon e etiqueta). No código existem duas: `MarcaCompacta` e `MarcaVertical`. O `favicon.ico` é o do scaffold do Next, não a faixa.
+- **Construção:** os dois lockups são **arquivo, não SVG em linha**. Juntos são ~10 KB comprimidos e moram no layout, ou seja saem em toda rota — em linha, esse peso entraria no HTML e outra vez na carga do RSC, a cada navegação. O preço é que a palavra não herda `currentColor`: ela está gravada em `{colors.ink}` dentro do arquivo. `width` e `height` são a proporção intrínseca, não o tamanho na tela — sem eles o cabeçalho salta na primeira pintura.
+- **Acessibilidade:** o lockup do cabeçalho vai com `alt=""` porque o link que o embrulha já tem `aria-label`; o vertical carrega o nome no `alt`.
+
+> ⚠️ **O "b" do símbolo é vazado.** No traço original ele é um buraco no disco azul, não um caminho pintado — quem dá a cor da letra é o que estiver atrás do SVG. Sobre papel isso é o desejado; sobre fundo escuro a letra some dentro do azul. Por isso a marca não vai em superfície escura sem uma versão própria, e por isso a cópia usada no favicon e no painel leva um disco de papel embutido atrás do azul.
+
+> ⚠️ Divergência com `briefing/marca.md` §2 resolvida em 04/08/2026: as três aplicações do briefing agora existem, e o favicon deixou de ser o do scaffold do Next. `favicon.ico` (16/32/48), `icon.svg` e `apple-icon.png` saem todos do mesmo símbolo. **`favicon.ico` só vale na raiz de `app/`** — dentro de `app/(frontend)/` o Next o ignora em silêncio, que é onde ele estava e por que o site passou a existência inteira sem favicon.
 
 ### Prancha técnica (componente de assinatura)
 
@@ -474,7 +479,7 @@ O vocabulário é fechado em quatro gestos, e todos disparam por ponteiro:
 - **Don't** reabrir `--radius-*`, `--shadow-*` ou `--drop-shadow-*`. Eles estão em `initial` de propósito: as utilidades não existem, e essa impossibilidade é o sistema.
 - **Don't** introduzir matiz. Sem cor primária, sem cor de acento, sem verde de sucesso, sem vermelho de erro. O namespace de cor padrão do Tailwind continua compilando — a disciplina é sua.
 - **Don't** usar branco puro como fundo de página, nem papel como superfície elevada.
-- **Don't** tirar a hachura do logotipo. Ela não vira padrão de fundo, não vira textura de seção, não representa material e não tem irmãs.
+- **Don't** tirar as cores de dentro do logotipo. O azul, o verde e o vermelho da marca são do desenho, e só dele: não viram acento, estado, fio nem fundo. Um matiz da marca aparecendo fora do lockup é o sistema quebrado, não estendido.
 - **Don't** acrescentar uma terceira família tipográfica, nem substituir a pilha de fonte: Söhne já é a primeira da pilha, e Geist entra como fallback dentro dela.
 - **Don't** criar movimento disparado por rolagem, parallax, scroll-jacking, loader longo ou contador animado.
 - **Don't** desenhar botão preenchido. Toda ação é link.

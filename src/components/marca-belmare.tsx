@@ -1,86 +1,71 @@
-import { FaixaDeHachura } from "@/components/hachura";
-
 /**
- * O logotipo.
+ * O logotipo — o desenho de verdade.
  *
- * Um desenho fixo, sempre o mesmo. A versão anterior era uma marca-sistema —
- * sem símbolo fixo, com a faixa vestindo a matéria de cada contexto. Caiu em
- * 30/07/2026: a regra dependia de saber a matéria de cada página, e o acervo
- * das fábricas só tem esse dado em 4 de 32 casos. Identidade generativa que não
- * sabe o que vestir na maioria das telas é buraco, não sistema.
+ * Até aqui a marca era uma imitação tipográfica: a palavra BELMARE composta em
+ * Söhne, uma faixa de hachura no lugar do símbolo e o descritor distribuído à
+ * mão letra por letra. Era o que dava para fazer sem o vetor. O vetor chegou, e
+ * estes dois arquivos em `public/marca/` são o traço original da Belmare —
+ * símbolo, palavra e descritor como foram desenhados, não como o site os
+ * remontava.
  *
- * Os três elementos — wordmark, faixa, descritor — dividem exatamente a mesma
- * largura. É o que segura o lockup: sem o alinhamento, vira três coisas
- * empilhadas.
+ * ⚠️ **O "B" DO SÍMBOLO É VAZADO, NÃO PINTADO.** No traço original ele é um
+ * buraco no disco azul; quem der a cor da letra é o que estiver ATRÁS do SVG.
+ * Sobre o papel do site isso é exatamente o desejado. Sobre qualquer superfície
+ * escura a letra desaparece dentro do azul — então a marca não vai em fundo
+ * escuro sem uma versão própria. É a mesma razão de `icon.svg` levar um disco de
+ * papel embutido: na aba do navegador não há como saber qual é o fundo.
  *
- * ⚠️ A faixa vai em posição absoluta dentro de um trilho de altura fixa. Um SVG
- * no fluxo tem largura intrínseca de 300px e passa a mandar na largura do
- * lockup inteiro, esticando a faixa muito além do wordmark. Fora do fluxo, quem
- * define a largura é a palavra — que é a regra.
+ * ⚠️ **OS DOIS LOCKUPS SÃO ARQUIVO, NÃO SVG EM LINHA.** Juntos são ~10 KB
+ * comprimidos, e cabeçalho e rodapé moram no layout — ou seja, saem em TODA
+ * rota. Em linha, esse peso entraria no HTML e outra vez na carga do RSC, a cada
+ * navegação. Como arquivo, o navegador busca uma vez e reusa no site inteiro.
+ * O preço é que a palavra não herda `currentColor`; ela está gravada na tinta do
+ * sistema (#17171A) dentro do próprio SVG.
+ *
+ * ⚠️ **`width` E `height` SÃO A PROPORÇÃO INTRÍNSECA, NÃO O TAMANHO NA TELA.**
+ * São as unidades do viewBox. Quem manda no tamanho é a classe de altura; os
+ * atributos existem para o navegador reservar a caixa antes do SVG chegar, e sem
+ * eles o cabeçalho salta na primeira pintura de toda visita.
+ *
+ * Os arquivos são gerados a partir do vetor original: recorte rente ao desenho,
+ * coordenadas em uma casa decimal e as três cores da marca normalizadas (o traço
+ * veio com #00339A e #00349A, #009A34 e #019B35, #FE0100 e #FE0000 — ruído de
+ * vetorização, não decisão). O mesmo símbolo alimenta `icon.svg`,
+ * `apple-icon.png` e `favicon.ico`, em `app/(frontend)/`.
  */
 
-function Trilho({
-  altura,
-  children,
-}: {
-  altura: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <span className="relative block w-full" style={{ height: altura }}>
-      {children}
-    </span>
-  );
-}
+/* eslint-disable @next/next/no-img-element --
+   `next/image` não tem o que otimizar num SVG estático da própria origem: não há
+   formato melhor para converter nem variante responsiva para gerar, e o
+   otimizador recusa SVG por padrão. O que ele acrescentaria aqui é uma volta por
+   `/_next/image` e um `unoptimized` para desligá-la. */
 
-/** Versão compacta — topo do site. Wordmark e faixa fina, sem descritor. */
+/** Horizontal — o cabeçalho. Símbolo à esquerda, palavra e descritor à direita. */
 export function MarcaCompacta() {
   return (
-    <span className="inline-block w-fit">
-      <span className="block text-[1.375rem] leading-none font-medium tracking-[-0.045em] sm:text-[1.5rem]">
-        BELMARE
-      </span>
-      <span className="mt-[0.3em] block">
-        <Trilho altura="0.4em">
-          <FaixaDeHachura className="absolute inset-0 h-full w-full" />
-        </Trilho>
-      </span>
-      <span className="sr-only">Representações</span>
-    </span>
+    <img
+      src="/marca/horizontal.svg"
+      width={1625}
+      height={302}
+      /* Vazio de propósito: o único uso é dentro do link do cabeçalho, que já
+         carrega `aria-label`. Nome aqui seria o mesmo nome duas vezes. */
+      alt=""
+      className="h-6 w-auto md:h-8"
+    />
   );
 }
 
-/** Versão vertical — principal. Wordmark, faixa, descritor. */
+/** Vertical — rodapé e `/quem-somos`. Símbolo em cima, palavra e descritor embaixo. */
 export function MarcaVertical({ className }: { className?: string }) {
-  const descritor = "REPRESENTAÇÕES".split("");
-
   return (
-    <span className={`inline-block w-fit ${className ?? ""}`}>
-      <span className="block text-[2.25rem] leading-none font-medium tracking-[-0.045em]">
-        BELMARE
-      </span>
-      <span className="mt-[0.3em] block">
-        <Trilho altura="0.55em">
-          <FaixaDeHachura className="absolute inset-0 h-full w-full" />
-        </Trilho>
-      </span>
-      {/* O descritor é distribuído até as duas pontas, não centralizado: em mono
-          e na largura exata do wordmark ele lê como classificação técnica, e é
-          assim que "Representações" deixa de diminuir a marca. */}
-      {/* `role="img"` junto do rótulo: em `span` genérico o `aria-label` não é
-          exposto de forma confiável, e com cada letra escondida o descritor
-          seria anunciado como nada. */}
-      <span
-        role="img"
-        aria-label="Representações"
-        className="mono mt-[0.34em] flex w-full justify-between text-ink"
-      >
-        {descritor.map((letra, i) => (
-          <span key={`${letra}-${i}`} aria-hidden="true">
-            {letra}
-          </span>
-        ))}
-      </span>
-    </span>
+    <img
+      src="/marca/vertical.svg"
+      width={1256}
+      height={1295}
+      alt="Belmare Representações"
+      /* A altura é do componente, não de quem chama: a marca tem um tamanho no
+         site, e `className` aqui é para espaçamento. */
+      className={`h-28 w-auto ${className ?? ""}`}
+    />
   );
 }

@@ -11,6 +11,8 @@ import { HeadingFeatureClient as HeadingFeatureClient_e70f5e05f09f93e00b997edb1e
 import { ParagraphFeatureClient as ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ExportarLeads as ExportarLeads_027b0086f164030b58fca1b634baad3c } from '../../../components/painel/exportar-leads'
 import { CampoDePinos as CampoDePinos_adc400dbc6011a5c0004bac1321e2e5a } from '../../../components/painel/campo-de-pinos'
+import { MarcaIcone as MarcaIcone_3ce2c9c77e3041b8acf78e88b340e42f } from '../../../components/painel/marca-do-painel'
+import { MarcaLogo as MarcaLogo_3ce2c9c77e3041b8acf78e88b340e42f } from '../../../components/painel/marca-do-painel'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
@@ -29,6 +31,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ParagraphFeatureClient": ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/painel/exportar-leads#ExportarLeads": ExportarLeads_027b0086f164030b58fca1b634baad3c,
   "/components/painel/campo-de-pinos#CampoDePinos": CampoDePinos_adc400dbc6011a5c0004bac1321e2e5a,
+  "/components/painel/marca-do-painel#MarcaIcone": MarcaIcone_3ce2c9c77e3041b8acf78e88b340e42f,
+  "/components/painel/marca-do-painel#MarcaLogo": MarcaLogo_3ce2c9c77e3041b8acf78e88b340e42f,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
 
 import { Cabecalho } from "@/components/cabecalho";
-import { DefinicaoDeHachura } from "@/components/hachura";
 import { FaixaDeRascunho } from "@/components/faixa-de-rascunho";
 import { Rodape } from "@/components/rodape";
 import { buscarEmpresa } from "@/lib/empresa-consulta";
@@ -61,10 +60,12 @@ THESIS: A primeira linha nomeia OBJETOS, não o organograma. Recusa o herói de
 categoria ("móveis para área externa"), o grid de logos e — desde 30/07/2026 —
 o jargão de contar fábricas e interlocutores, que descreve como a empresa se
 organiza para quem não perguntou.
-OWN-WORLD: Papel #F5F3F0, tinta #17171A, grafite #3D3D40, fio #C9C6C0. Zero
-cor de marca, raio 0, sombra 0. A interface é invisível: a fotografia carrega
-a página. A mono é rótulo, não linguagem. Nenhuma textura, nenhum padrão de
-fundo — a identidade é tipografia, grade e o fio de 1px.
+OWN-WORLD: Papel #F5F3F0, tinta #17171A, grafite #3D3D40, fio #C9C6C0. Raio 0,
+sombra 0. A interface é acromática; o matiz existe em um único objeto, o
+logotipo (azul #00339A, verde #009A34, vermelho #FE0100), e não sai dele —
+não vira acento, nem estado, nem fio, nem fundo. A interface é invisível: a
+fotografia carrega a página. A mono é rótulo, não linguagem. Nenhuma textura,
+nenhum padrão de fundo — a identidade é tipografia, grade e o fio de 1px.
 STORY: O visitante vê nomeadas as peças que resolvem uma área externa, descobre
 que uma só empresa dá conta das quatro, e escolhe uma das duas portas.
 FIRST VIEWPORT: cabeçalho 72px em papel; fotografia sangrando na altura da
@@ -91,7 +92,6 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <div hidden dangerouslySetInnerHTML={{ __html: CONTRATO_DE_DIRECAO }} />
-        <DefinicaoDeHachura />
         <a
           href="#conteudo"
           className="mono sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-ink focus:px-3 focus:py-2 focus:text-paper"
