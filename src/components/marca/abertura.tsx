@@ -57,8 +57,8 @@ export function AberturaDaMarca({
             declaração mais importante da página não pode ser o texto menos
             legível dela. */}
         <figcaption className="text-support px-5 pt-3 text-graphite md:px-8">
-          Imagem de referência — ilustra a linha da fábrica, não uma peça do
-          catálogo dela.
+          Imagem de referência. Ela ilustra a linha da fábrica e não é uma peça
+          do catálogo dela.
         </figcaption>
       </figure>
 

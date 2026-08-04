@@ -485,7 +485,7 @@ export function secoesDaRepresentada(r: Representada): Secao[] {
   if (r.declaracoes?.length) {
     secoes.push({
       id: "declara",
-      rotulo: "O que declara",
+      rotulo: "O que informa",
       contagem: String(r.declaracoes.length),
     });
   }
@@ -535,7 +535,7 @@ export function secoesDaRepresentada(r: Representada): Secao[] {
     const publicados = r.catalogos.filter(catalogoPublicado);
     secoes.push({
       id: "levar",
-      rotulo: "Para levar",
+      rotulo: "Catálogo",
       contagem:
         publicados.length === 1
           ? `PDF ${pesoEmMB(publicados[0].mb)} MB`

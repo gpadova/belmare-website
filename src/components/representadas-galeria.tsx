@@ -87,8 +87,8 @@ export async function RepresentadasGaleria() {
       </ul>
 
       <p className="text-support mt-12 max-w-[68ch] text-graphite">
-        Imagens de referência, para representar a linha de cada fábrica. O
-        acervo fotográfico das marcas entra na publicação.
+        Imagens de referência, para mostrar a linha de cada fábrica. As
+        fotografias das marcas entram no lugar delas assim que chegarem.
       </p>
     </section>
   );

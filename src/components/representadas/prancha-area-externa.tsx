@@ -208,9 +208,9 @@ export async function PranchaAreaExterna() {
               peças das quatro marcas. É a única mentira grave que esta rota
               poderia contar, e quem enxerga não lê `alt`. */}
           <figcaption className="text-support mt-5 max-w-[68ch] text-graphite">
-            Imagem de referência. Não é obra entregue, e nenhuma peça do quadro é
-            produto de catálogo das representadas — as chamadas identificam o
-            que cada fábrica resolve na cena, não modelos.
+            Imagem de referência. Não é uma obra entregue pela Belmare, e
+            nenhuma peça da cena é produto de catálogo das representadas. As
+            chamadas mostram de que fábrica viria cada parte, e não modelos.
           </figcaption>
         </figure>
 
@@ -239,9 +239,9 @@ export async function PranchaAreaExterna() {
               cinco chamadas, um "Quatro" cravado aqui passaria a discordar do
               desenho logo ao lado, em silêncio. */}
           <p className="text-body mt-5 max-w-[46ch] text-pretty text-graphite">
-            {comInicialMaiuscula(porExtenso(chamadas.length))} fábricas para uma
-            área externa. A prancha identifica cada uma na cena; a legenda diz
-            quem resolve, e leva à página dela.
+            {comInicialMaiuscula(porExtenso(chamadas.length))} fábricas montam
+            uma área externa inteira. A prancha marca onde entra cada uma, e a
+            legenda leva para a página da fábrica.
           </p>
 
           {/* h2, não h3: promover o título da página a h1 abriu um salto de

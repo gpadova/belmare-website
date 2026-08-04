@@ -84,10 +84,16 @@ export async function Abertura() {
         >
           Sofá, mesa, espreguiçadeira e ombrelone.
         </h1>
+        {/* ⚠️ "Atende {territorio}", e não "no {territorio}": `emLista`
+            devolve "Paraná, Santa Catarina e Rio Grande do Sul" sem
+            preposição, e cada estado pede a sua — "no Paraná", "em Santa
+            Catarina", "no Rio Grande do Sul". A frase antiga imprimia "no
+            Paraná, Santa Catarina e Rio Grande do Sul", que não é português.
+            "Atender" é transitivo direto e resolve a regência sozinho. */}
         <p className="text-body mt-5 max-w-[62ch] text-pretty text-white/85">
-          A área externa inteira, de {quantas} fábricas brasileiras de alto
-          padrão. A Belmare representa {nomeadas} no {territorio}
-          {anos !== undefined ? `, há ${anos} anos` : ""}.
+          A Belmare representa {nomeadas}, {quantas} fábricas brasileiras de
+          mobiliário de alto padrão para área externa. Atende {territorio}
+          {anos !== undefined ? ` há ${anos} anos` : ""}.
         </p>
       </div>
     </section>

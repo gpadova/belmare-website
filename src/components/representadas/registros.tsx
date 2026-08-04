@@ -89,9 +89,9 @@ export async function RegistrosDasRepresentadas() {
           grave o bastante para legendar. Deixar o meio do caminho sem
           tratamento seria proteger as duas pontas e mentir no miolo. */}
       <p className="text-support mt-10 max-w-[68ch] text-pretty text-graphite">
-        Imagens de referência, para representar a linha de cada fábrica. Não
-        são peças do catálogo delas — o acervo fotográfico das marcas entra na
-        publicação.
+        Imagens de referência, para mostrar a linha de cada fábrica. Não são
+        peças do catálogo delas. As fotografias das marcas entram no lugar
+        delas assim que chegarem.
       </p>
     </section>
   );

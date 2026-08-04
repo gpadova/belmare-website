@@ -34,7 +34,7 @@ export function DeclaracoesDaMarca({
     <SecaoDaMarca
       id="declara"
       numero={numero}
-      titulo="O que a fábrica declara."
+      titulo="O que a fábrica informa."
     >
       <Ficha className="mt-8 md:mt-10">
         {representada.declaracoes.map((declaracao) => (
@@ -45,8 +45,8 @@ export function DeclaracoesDaMarca({
       </Ficha>
 
       <p className="text-support mt-6 max-w-[60ch] text-pretty text-graphite">
-        Publicado pela própria fábrica. O detalhamento — medida, acabamento,
-        ficha cotada — vive no catálogo dela.
+        Dados publicados pela própria fábrica. As medidas, os acabamentos e a
+        ficha cotada estão no catálogo dela.
       </p>
     </SecaoDaMarca>
   );

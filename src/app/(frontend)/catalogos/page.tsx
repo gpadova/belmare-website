@@ -145,12 +145,14 @@ export default async function Catalogos() {
             Medida, acabamento e ficha cotada.
           </h1>
 
+          {/* ⚠️ "O que já está em disco abre daqui" saiu: "em disco" é jargão de
+              quem construiu o site, não palavra de quem usa. O visitante não
+              sabe nem precisa saber onde o arquivo mora — ele quer saber se
+              abre agora ou se alguém manda depois. */}
           <p className="text-body mt-6 max-w-[44ch] text-pretty text-graphite">
-            {/* "abre daqui", e não "baixa daqui": `arquivo` é URL de storage, e
-                em outra origem o clique abre o PDF em vez de baixar. A frase
-                descreve o que de fato acontece nas duas situações. */}
-            Cada fábrica publica o próprio catálogo, e quem entrega o arquivo é a
-            Belmare. O que já está em disco abre daqui; o resto ela manda.
+            Cada fábrica publica o próprio catálogo, e quem entrega o arquivo é
+            a Belmare. Os que já estão aqui abrem na hora. Os outros, ela manda
+            para você.
           </p>
 
           {/* No telefone ele é o último item da seção — a saída só aparece
@@ -161,8 +163,8 @@ export default async function Catalogos() {
               fio, é distância. */}
           <div className="order-last mt-16 md:order-none md:mt-auto md:pt-16">
             <p className="text-support max-w-[40ch] text-pretty text-graphite">
-              O que não vem no catálogo — quem assina cada coleção e o vocabulário
-              de categorias de cada fábrica — está na página da representada.
+              Quem assina cada coleção e as categorias de cada fábrica não vêm
+              no catálogo. Essas duas coisas estão na página da representada.
             </p>
             <Link
               href="/representadas"
@@ -222,8 +224,10 @@ export default async function Catalogos() {
           {semCatalogo.length > 0 && (
             <p className="text-support mt-6 max-w-[52ch] text-pretty text-graphite">
               {semCatalogo.map((r) => r.nome).join(", ")}{" "}
-              {semCatalogo.length === 1 ? "não declara" : "não declaram"} catálogo
-              em fonte pública. A Belmare pergunta à fábrica.
+              {semCatalogo.length === 1
+                ? "ainda não publicou o catálogo dela"
+                : "ainda não publicaram os catálogos delas"}
+              . A Belmare pede direto à fábrica.
             </p>
           )}
         </div>

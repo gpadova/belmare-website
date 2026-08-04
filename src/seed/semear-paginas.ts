@@ -144,16 +144,16 @@ const ARQUITETOS = {
   slug: "arquitetos",
   titulo: "Catálogos, arquivos 3D e cartas de acabamento.",
   resumo:
-    "O material que a Belmare entrega a quem especifica mobiliário de área externa: catálogos das fábricas representadas, blocos 3D, cartas de tecido e pintura, e uma pessoa do outro lado para responder medida e prazo.",
+    "O material que a Belmare entrega a quem especifica mobiliário de área externa: os catálogos das fábricas representadas, os blocos 3D, as cartas de tecido e pintura, e uma pessoa do outro lado para responder medida e prazo.",
   composicao: [
     {
       blockType: "prosa",
       corpo: documento([
         paragrafo(
-          "A Belmare representa fábricas de mobiliário de área externa e atende quem especifica: medida, acabamento, prazo e ficha cotada saem daqui, não de um formulário. O que a fábrica publica está na página dela; o que ela não publica, a Belmare pergunta.",
+          "A Belmare representa fábricas de mobiliário de área externa e atende quem especifica. Medida, acabamento, prazo e ficha cotada você pede direto aqui, e recebe de uma pessoa. Tudo o que a fábrica já publicou está na página dela; o que ela não publicou, a Belmare pergunta.",
         ),
         paragrafo(
-          "Nenhum pedido passa pela fábrica sem passar por quem representa — o que significa que a resposta sobre um projeto específico vem de quem conhece as quatro linhas ao mesmo tempo.",
+          "Como a mesma pessoa atende todas as marcas, ela consegue comparar as linhas entre si e responder pelo projeto inteiro, e não por uma fábrica de cada vez.",
         ),
       ]),
     },
@@ -164,21 +164,21 @@ const ARQUITETOS = {
         {
           rotulo: "Os catálogos das representadas",
           apoio:
-            "Um documento por fábrica, com edição declarada antes do clique — e com o peso do arquivo, quando ele já está em disco.",
+            "Um catálogo por fábrica. A edição de cada um aparece antes de você abrir, e o peso do arquivo também, quando ele já está publicado aqui.",
           destino: "rota",
           rota: "/catalogos",
         },
         {
-          rotulo: "O que cada fábrica resolve",
+          rotulo: "A linha de cada fábrica",
           apoio:
-            "Quem assina cada coleção, o vocabulário de categorias da própria fábrica e a ficha técnica que ela publica.",
+            "Quem assina cada coleção, as categorias com os nomes que a própria fábrica usa e a ficha técnica que ela publica.",
           destino: "rota",
           rota: "/representadas",
         },
         {
           rotulo: "Os arquivos 3D das representadas",
           apoio:
-            "Cada bloco com formato e peso declarados antes do clique, e sem cadastro para baixar. Só o pacote com as quatro fábricas juntas pede seus dados.",
+            "O formato e o peso de cada bloco aparecem antes de você baixar, e não é preciso fazer cadastro. Só o pacote com todas as fábricas juntas pede os seus dados.",
           destino: "rota",
           rota: "/arquivos-3d",
         },

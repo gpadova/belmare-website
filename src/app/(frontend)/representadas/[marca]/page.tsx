@@ -162,13 +162,16 @@ export default async function PaginaDaMarca({
       <SecaoDaMarca
         id="falar"
         numero={numero("falar")}
-        titulo={`Uma pergunta sobre a ${representada.nome}.`}
+        titulo={`Fale sobre a ${representada.nome}.`}
       >
+        {/* ⚠️ "é quem aciona a fábrica depois" saiu: é a mecânica interna do
+            funil contada a quem só quer saber com quem vai falar. A regra
+            continua valendo — nenhum e-mail de fábrica entra neste site —, só
+            deixou de ser explicada em texto visível. */}
         <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-          Quem responde é quem representa, e é quem aciona a fábrica depois. O
-          atendimento cobre{" "}
-          {emLista(TERRITORIO)} — o
-          mesmo território para todas as representadas.
+          Quem responde é a Belmare, e não a fábrica. O atendimento cobre{" "}
+          {emLista(TERRITORIO)}, o mesmo território para todas as
+          representadas.
         </p>
 
         {/* O contexto vai pré-preenchido na mensagem: quem clica aqui chega

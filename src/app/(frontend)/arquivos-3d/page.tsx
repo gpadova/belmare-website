@@ -149,19 +149,23 @@ export default async function Arquivos3D() {
             id="arquivos-3d"
             className="text-h1 mt-5 max-w-[16ch] font-normal text-balance"
           >
-            O bloco entra no projeto hoje.
+            Blocos para usar no projeto hoje.
           </h1>
 
+          {/* ⚠️ A segunda frase era "quem está em obra decide se o toque cabe
+              no sinal que tem" — uma imagem bonita que não diz nada a quem
+              chegou procurando um bloco. O que interessa é que o formato e o
+              peso aparecem antes de baixar e que não há cadastro. */}
           <p className="text-body mt-6 max-w-[44ch] text-pretty text-graphite">
             {total === 0
-              ? "A Belmare está reunindo os arquivos das quatro fábricas. Enquanto eles não estão aqui, ela manda o bloco no formato que o seu projeto pede."
-              : "Formato e peso antes do clique, e nenhum formulário no caminho: quem está em obra decide se o toque cabe no sinal que tem."}
+              ? "A Belmare ainda está reunindo os arquivos das fábricas. Até eles chegarem aqui, ela manda o bloco no formato que o seu projeto usa."
+              : "O formato e o peso de cada arquivo aparecem antes de você baixar, e não é preciso fazer cadastro."}
           </p>
 
           <div className="order-last mt-16 md:order-none md:mt-auto md:pt-16">
             <p className="text-support max-w-[40ch] text-pretty text-graphite">
-              A ficha cotada e o acabamento não vêm no bloco — eles estão no
-              catálogo de cada fábrica.
+              O bloco não traz a ficha cotada nem o acabamento. Essas duas
+              coisas estão no catálogo de cada fábrica.
             </p>
             <Link
               href="/catalogos"
@@ -182,9 +186,9 @@ export default async function Arquivos3D() {
                canal é dito por extenso. O fecho da página, logo abaixo, é o
                gesto; este parágrafo é a explicação. */
             <p className="text-body max-w-[52ch] text-pretty text-graphite">
-              Nenhum arquivo está em disco ainda. As quatro fábricas
-              disponibilizam blocos, e a Belmare pede o que faltar direto a
-              elas — diga a peça e o formato que o seu projeto usa.
+              Ainda não há arquivo publicado aqui. As fábricas disponibilizam
+              blocos, e a Belmare pede o que faltar direto a elas. Diga qual é
+              a peça e em que formato o seu projeto usa.
             </p>
           ) : (
             <>

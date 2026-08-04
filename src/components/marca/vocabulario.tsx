@@ -56,10 +56,15 @@ export function VocabularioDaMarca({
       numero={numero}
       titulo="O vocabulário da fábrica."
     >
+      {/* ⚠️ "O site não normaliza o vocabulário de nenhuma das representadas"
+          saiu: é a decisão de engenharia contada ao visitante, com o verbo da
+          decisão dentro dela. A informação que importa para quem lê é que os
+          nomes são os da fábrica, e não os da Belmare — isso a primeira frase
+          já diz. */}
       <p className="text-body mt-6 max-w-[60ch] text-pretty text-graphite">
-        {vocabulario ? "As categorias" : "As coleções"} como a{" "}
-        {representada.nome} as nomeia. O site não normaliza o vocabulário de
-        nenhuma das representadas.
+        {vocabulario ? "As categorias" : "As coleções"} com os nomes que a{" "}
+        {representada.nome} usa. A Belmare não renomeia nada para deixar as
+        fábricas parecidas entre si.
       </p>
 
       {/* As coleções, quando a fábrica publica os nomes. Elas ficam aqui e não

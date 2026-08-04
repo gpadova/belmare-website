@@ -40,10 +40,14 @@ export function ParaLevarDaMarca({
   if (!catalogos?.length) return null;
 
   return (
-    <SecaoDaMarca id="levar" numero={numero} titulo="Para levar.">
+    <SecaoDaMarca id="levar" numero={numero} titulo="O catálogo da fábrica.">
+      {/* ⚠️ "O site distribui, não reescreve — e é por isso que nenhuma medida
+          desta página tenta substituí-lo" saiu inteiro: era a página
+          justificando ao visitante uma regra editorial que ele nunca
+          questionou. O que ele precisa saber é o que tem dentro do arquivo. */}
       <p className="text-body mt-6 max-w-[60ch] text-pretty text-graphite">
-        O detalhamento da fábrica vem no arquivo. O site distribui, não reescreve
-        — e é por isso que nenhuma medida desta página tenta substituí-lo.
+        É o documento da própria fábrica, com o detalhamento que não cabe nesta
+        página. A Belmare envia para você.
       </p>
 
       <ul className={`mt-8 border-t border-line md:mt-10 ${TETO_DA_LISTA}`}>

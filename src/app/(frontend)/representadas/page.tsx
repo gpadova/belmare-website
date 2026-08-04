@@ -72,17 +72,22 @@ export default async function Representadas() {
         className="border-t border-line px-5 py-14 md:px-8 md:py-20"
       >
         <h2 id="fecho" className="text-h1 max-w-[20ch] font-normal text-balance">
-          Uma pergunta sobre qualquer uma delas.
+          Ficou com alguma dúvida?
         </h2>
         {/* Sem contador em prosa: `REPRESENTADAS.length` interpolado no meio de
             uma frase sai como "para as 4", e algarismo em texto corrido lê como
             erro de revisão. O contador vive onde ele é medida — na mono da
             legenda da prancha. */}
+        {/* ⚠️ A regra de funil saiu do texto visível. "Todo contato passa pela
+            Belmare, e é ela quem aciona a fábrica depois" explica ao visitante
+            uma decisão comercial interna que ele não perguntou — e explicar
+            soa defensivo. O que ele quer saber é quem responde e onde. A regra
+            continua valendo e continua escrita no código que a aplica
+            (`components/quem-somos/interlocutor.tsx`). */}
         <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-          Todo contato passa pela Belmare, e é ela quem aciona a fábrica depois.
-          O atendimento cobre{" "}
-          {emLista(TERRITORIO)} — o mesmo território para todas, sem recorte
-          por marca.
+          Quem responde é a Belmare, para qualquer uma das marcas. O
+          atendimento cobre {emLista(TERRITORIO)}, sem divisão de região por
+          marca.
         </p>
 
         <AcaoDeFecho

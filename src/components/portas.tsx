@@ -21,14 +21,14 @@ const PORTAS = [
     href: "/arquitetos",
     rotulo: "Sou arquiteto ou designer",
     apoio:
-      "Catálogos das quatro marcas, arquivos 3D, cartas de acabamento e o canal direto com quem representa.",
+      "Catálogos, arquivos 3D e cartas de acabamento das representadas. O que não estiver aqui, a Belmare pergunta à fábrica.",
     imagem: IMAGEM_DA_PORTA.arquitetos,
   },
   {
     href: "/contato",
     rotulo: "Quero comprar ou revender",
     apoio:
-      "A Belmare nunca vende direto: ela indica a loja mais próxima, ou recebe sua proposta de revenda.",
+      "A Belmare indica a loja mais próxima de você. Se você tem uma loja, é por aqui que manda a proposta de revenda.",
     imagem: IMAGEM_DA_PORTA.contato,
   },
 ] as const;
