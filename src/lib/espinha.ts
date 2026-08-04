@@ -11,10 +11,10 @@ import type { Home as HomeGerada, QuemSomos as QuemSomosGerada } from "@/payload
  * campo como custo. Ficaram fora, e a classificação completa está em
  * `docs/classificacao-de-texto.md`:
  *
- *   · o h1 da home ("Sofá, mesa, espreguiçadeira e ombrelone.") — **fixo**, e
- *     defendido em `components/abertura.tsx` contra duas alternativas
- *     rejeitadas em 30/07/2026. Mudá-lo é reposicionamento, e reposicionamento
- *     é conversa, não edição.
+ *   · o h1 da home ("A área externa inteira, para quem especifica e para quem
+ *     revende.") — **fixo**, e defendido em `components/abertura.tsx` contra
+ *     três alternativas rejeitadas entre 30/07 e 04/08/2026. Mudá-lo é
+ *     reposicionamento, e reposicionamento é conversa, não edição.
  *   · os rótulos numerados de `/quem-somos` (01…05) e os títulos de cada bloco
  *     — **fixo**: a sequência É o argumento da página, e ler fora de ordem é
  *     ler outra coisa.

@@ -15,12 +15,14 @@ import { aoPublicarGlobal, VERSOES_DO_GLOBAL } from "@/globals/apoio";
  *
  * ⚠️ **O QUE NÃO ENTRA AQUI, E POR QUÊ:**
  *
- *   · **o h1 "Sofá, mesa, espreguiçadeira e ombrelone."** — fixo. Ele já foi
- *     "Quatro fábricas. Um interlocutor." e caiu em 30/07/2026 por ser jargão
- *     de organograma; a versão "Móveis para área externa" caiu por descrever
- *     uma fábrica, e a Belmare é representação. Um campo de texto aqui é um
- *     convite para uma das duas voltar numa tarde de edição. Trocar esse título
- *     é reposicionar a empresa, e reposicionamento é conversa, não edição.
+ *   · **o h1 "A área externa inteira, para quem especifica e para quem
+ *     revende."** — fixo. Três versões já caíram: "Quatro fábricas. Um
+ *     interlocutor." (jargão de organograma, 30/07/2026), "Móveis para área
+ *     externa" (descreve uma fábrica, e a Belmare é representação) e "Sofá,
+ *     mesa, espreguiçadeira e ombrelone." (prometia varejo numa empresa que
+ *     não vende direto, 04/08/2026). Um campo de texto aqui é um convite para
+ *     uma das três voltar numa tarde de edição. Trocar esse título é
+ *     reposicionar a empresa, e reposicionamento é conversa, não edição.
  *   · **a linha de apoio da abertura** — ela é feita de dado: a lista das
  *     marcas, o território e o tempo de casa saem do painel e do calendário,
  *     não de um campo (`components/abertura.tsx`).

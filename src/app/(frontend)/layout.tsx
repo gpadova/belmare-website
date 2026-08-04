@@ -41,12 +41,26 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: {
+      /* ⚠️ "conforto e sombra" saiu: é benefício, e benefício é a linguagem que
+         `resolve` já teve de desaprender no ledger das representadas. O título
+         nomeia o que a empresa É para quem compra dela — representação, para
+         loja e para projeto. */
       default:
-        "Belmare Representações — móveis, estrutura, conforto e sombra para a área externa",
+        "Belmare Representações — mobiliário de área externa para lojas e arquitetos",
       template: "%s — Belmare Representações",
     },
+    /* ⚠️ Duas correções nesta linha, e as duas valem para o site inteiro.
+       Primeira: cada estado pede a sua preposição ("no Paraná", "em Santa
+       Catarina", "no Rio Grande do Sul") — a forma antiga, "no Paraná, Santa
+       Catarina e Rio Grande do Sul", não era português. Aqui eles vão escritos
+       à mão, um a um, porque é a linha que o buscador mostra; na home visível a
+       frase diz "no Sul do país" e evita a regência.
+
+       Segunda: a descrição nomeia o PÚBLICO (lojas e escritórios), e não uma
+       lista de peças. O cliente de uma representação comercial não é o
+       consumidor final — ver a nota longa em `components/abertura.tsx`. */
     description:
-      "Sofá, mesa, espreguiçadeira e ombrelone para área externa de alto padrão. A Belmare representa Marê Mobília, GDA Móveis, Bux Garden e Trisol no Paraná, Santa Catarina e Rio Grande do Sul, desde 1999.",
+      "Representação comercial de mobiliário de área externa de alto padrão. A Belmare representa Marê Mobília, GDA Móveis, Bux Garden e Trisol, e atende lojas e escritórios de arquitetura no Paraná, em Santa Catarina e no Rio Grande do Sul desde 1999.",
     openGraph: {
       type: "website",
       locale: "pt_BR",
@@ -66,12 +80,14 @@ logotipo (azul #00339A, verde #009A34, vermelho #FE0100), e não sai dele —
 não vira acento, nem estado, nem fio, nem fundo. A interface é invisível: a
 fotografia carrega a página. A mono é rótulo, não linguagem. Nenhuma textura,
 nenhum padrão de fundo — a identidade é tipografia, grade e o fio de 1px.
-STORY: O visitante vê nomeadas as peças que resolvem uma área externa, descobre
-que uma só empresa dá conta das quatro, e escolhe uma das duas portas.
+STORY: O visitante se reconhece — especifica ou revende —, descobre que uma só
+empresa responde pelas quatro fábricas que montam a área externa inteira, e
+escolhe uma das duas portas. O site fala com loja e com escritório, nunca com
+consumidor final.
 FIRST VIEWPORT: cabeçalho 72px em papel; fotografia sangrando na altura da
-tela; sobre o pé da imagem, "Sofá, mesa, espreguiçadeira e ombrelone." e a
-linha que nomeia Marê, GDA, Bux e Trisol, o território e o tempo de casa.
-WhatsApp persistente no topo.
+tela; sobre o pé da imagem, "A área externa inteira, para quem especifica e
+para quem revende." e a linha que nomeia Marê, GDA, Bux e Trisol, o público, o
+território e o tempo de casa. WhatsApp persistente no topo.
 FORM: Direção A — editorial/arquivo. Revisado em 30/07/2026: o eixo de
 material foi cancelado por falta de dado (4 de 32 células), e com ele saíram a
 marca-sistema generativa e a anatomia de etiqueta. Ver briefing/estrutura.md §4.

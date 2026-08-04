@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { ABERTURA } from "@/lib/acervo";
-import { anosDeMercado, TERRITORIO } from "@/lib/empresa";
+import { anosDeMercado } from "@/lib/empresa";
 import { buscarEmpresa } from "@/lib/empresa-consulta";
 import { emLista, porExtenso } from "@/lib/frase";
 import { representadasDaPagina } from "@/lib/representadas-consulta";
@@ -17,22 +17,36 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  *    É também o que sobrou de pé quando o sistema de textura caiu — a direção
  *    editorial não precisava dele, e a foto ficou maior sem ele.
  *
- * 2. O TÍTULO NOMEIA AS PEÇAS. Ele já foi "Quatro fábricas. Um interlocutor." e
- *    isso foi rejeitado em 30/07/2026, com razão: é jargão de dentro da empresa.
- *    Contar fábricas e contar interlocutores descreve o ORGANOGRAMA da Belmare,
- *    e quem chega não veio saber como ela se organiza. É abstrato — não dá
- *    imagem, não dá objeto, não responde nada.
+ * 2. O TÍTULO NOMEIA O PÚBLICO, E OS OBJETOS DESCERAM PARA A LINHA DE APOIO.
+ *    Três versões já caíram, e o motivo de cada uma continua valendo:
  *
- *    O arquiteto chega procurando a peça que resolve um vão. Então a primeira
- *    linha entrega objetos: sofá, mesa, espreguiçadeira, ombrelone. É a coisa
- *    menos abstrata que cabe num título, cumpre "dado antes de adjetivo" logo
- *    na abertura, e as quatro palavras cobrem por acaso — e por verdade — o que
- *    cada uma das quatro representadas resolve.
+ *    · "Quatro fábricas. Um interlocutor." — rejeitado em 30/07/2026. Contar
+ *      fábricas e contar interlocutores descreve o ORGANOGRAMA da Belmare, e
+ *      quem chega não veio saber como ela se organiza.
+ *    · "Móveis para área externa" — a categoria pura descreve uma FÁBRICA, e a
+ *      Belmare é representação.
+ *    · "Sofá, mesa, espreguiçadeira e ombrelone." — durou de 30/07 a 04/08/2026
+ *      e caiu por um defeito que só aparece lendo a página inteira: **ele
+ *      descreve uma loja.** Quem cai de busca entende que compra um sofá ali,
+ *      desce a página e descobre que a Belmare não vende direto — o h1 montava
+ *      a expectativa que o resto do site passa o tempo desmontando, inclusive
+ *      na porta "Quero comprar ou revender". E os quatro substantivos não eram
+ *      as quatro linhas: sofá, mesa e espreguiçadeira saem todos do móvel, e a
+ *      estrutura em alumínio e o estofado não apareciam.
  *
- *    ⚠️ O título também NÃO é a categoria pura ("Móveis para área externa"):
- *    isso descreve uma fábrica, e a Belmare é representação. Quem faz esse
- *    trabalho é a linha de apoio, nomeando as marcas, o território e o tempo
- *    de casa — onde o fato cabe sem virar slogan.
+ *    O título de agora nomeia as duas pessoas que de fato compram — quem
+ *    especifica e quem revende —, que são exatamente as duas portas no pé da
+ *    home.
+ *
+ *    ⚠️ **A ENUMERAÇÃO DE PRODUTO NÃO VOLTA, NEM REBAIXADA PARA A LINHA DE
+ *    APOIO.** Foi a primeira tentativa de conserto, em 04/08/2026, e ela erra
+ *    o ICP: o cliente de uma representação comercial é o LOJISTA e o ESCRITÓRIO
+ *    DE ARQUITETURA, nunca o consumidor final. Um comprador de loja não precisa
+ *    que lhe expliquem que móvel de área externa inclui sofá e espreguiçadeira
+ *    — ele já vende isso. Listar peça a peça é escrever para quem vai mobiliar
+ *    a própria varanda, e é o mesmo erro do h1 antigo com outra roupa. A linha
+ *    de apoio nomeia as FÁBRICAS, o público e o território, que é o que decide
+ *    uma conversa comercial.
  *
  * ⚠️ **O H1 NÃO TEM CAMPO NO PAINEL, E NÃO PODE PASSAR A TER.** Ele é o
  * argumento do desenho, não conteúdo dentro dele: um campo de texto aqui é o
@@ -53,7 +67,6 @@ export async function Abertura() {
 
   const nomeadas = emLista(representadas.map((r) => r.nome));
   const quantas = porExtenso(representadas.length);
-  const territorio = emLista(TERRITORIO);
   const anos = anosDeMercado(abertura);
 
   return (
@@ -82,18 +95,20 @@ export async function Abertura() {
           id="promessa"
           className="text-display max-w-[18ch] font-normal text-balance text-white"
         >
-          Sofá, mesa, espreguiçadeira e ombrelone.
+          A área externa inteira, para quem especifica e para quem revende.
         </h1>
-        {/* ⚠️ "Atende {territorio}", e não "no {territorio}": `emLista`
-            devolve "Paraná, Santa Catarina e Rio Grande do Sul" sem
-            preposição, e cada estado pede a sua — "no Paraná", "em Santa
-            Catarina", "no Rio Grande do Sul". A frase antiga imprimia "no
-            Paraná, Santa Catarina e Rio Grande do Sul", que não é português.
-            "Atender" é transitivo direto e resolve a regência sozinho. */}
+        {/* ⚠️ "no Sul do país", e não a lista de estados: `emLista` devolve
+            "Paraná, Santa Catarina e Rio Grande do Sul" sem preposição, e cada
+            estado pede a sua — "no Paraná", "em Santa Catarina", "no Rio Grande
+            do Sul". A frase antiga imprimia "no Paraná, Santa Catarina e Rio
+            Grande do Sul", que não é português, e essa regência não cabe numa
+            junção genérica. Os três estados continuam nomeados por extenso na
+            descrição de SEO do layout, no rodapé, em `/quem-somos` e em
+            `/representadas` — a home não é o único lugar onde eles aparecem. */}
         <p className="text-body mt-5 max-w-[62ch] text-pretty text-white/85">
           A Belmare representa {nomeadas}, {quantas} fábricas brasileiras de
-          mobiliário de alto padrão para área externa. Atende {territorio}
-          {anos !== undefined ? ` há ${anos} anos` : ""}.
+          mobiliário de área externa. Atende lojas e escritórios de arquitetura
+          no Sul do país{anos !== undefined ? ` há ${anos} anos` : ""}.
         </p>
       </div>
     </section>
