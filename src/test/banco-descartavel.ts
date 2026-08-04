@@ -20,14 +20,21 @@ const NOME = "belmare_teste";
 /**
  * O endereço do banco descartável.
  *
- * Herda servidor, porta e usuário de `DATABASE_URI` quando ela existe — é o que
- * faz o teste funcionar numa máquina cujo Postgres não está no padrão — e troca
- * só o nome do banco. Sem ela, cai no mesmo padrão do `.env.example`: Postgres
- * local, usuário do sistema.
+ * ⚠️ **NÃO LÊ `DATABASE_URI`, E ESSA É A GARANTIA.** O nome constante acima
+ * protegia metade: o teste nunca apagava `belmare_dev` nem `neondb`, porque
+ * trocava o nome. Mas herdava SERVIDOR de `DATABASE_URI` — então, com o Neon
+ * ali, o `dropdb --force` abaixo saía contra o servidor de produção, mirando
+ * um banco que por acaso não existe lá. Um `createdb` antes dele, e passaria a
+ * existir. Este projeto roda o MESMO banco em produção e em desenvolvimento
+ * (decisão de 04/08/2026), então `DATABASE_URI` é uma URI de produção por
+ * padrão, e ela não pode chegar aqui de jeito nenhum.
+ *
+ * Máquina com Postgres fora do padrão continua atendida — por `TEST_DATABASE_URI`,
+ * que é de teste pelo nome e não se confunde com a de produção ao ser copiada.
  */
 export function uriDoBancoDescartavel(): string {
   const modelo =
-    process.env.DATABASE_URI ??
+    process.env.TEST_DATABASE_URI ??
     `postgres://${process.env.USER ?? "postgres"}@localhost:5432/belmare_dev`;
 
   const endereco = new URL(modelo);
