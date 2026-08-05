@@ -141,7 +141,7 @@ O teste é direto: **tire tudo menos tipografia, fio e foto — o site ainda tem
 
 ### Consequência para a fotografia
 
-Não há mais macro de matéria no escopo. As oito diárias de amostra saem da lista, e o orçamento de fotografia vai **inteiro** para o que carrega a página: **móvel em ambiente** e **projeto entregue** — `acervo/inventario.md` §2 e §6.
+Não há mais macro de matéria no escopo. As oito diárias de amostra saem da lista, e o orçamento de fotografia vai **inteiro** para o que carrega a página: **móvel em ambiente** e **projeto entregue** — ver `PRODUCT.md`, "O teto fotográfico".
 
 ---
 

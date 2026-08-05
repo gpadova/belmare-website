@@ -25,7 +25,7 @@ Não é o desenvolvimento. É **conteúdo** — nesta ordem:
 | ~~Identificar a Trisol~~ | ✅ resolvido 30/07 | — |
 | ~~Matriz produto × material × medida~~ | ✅ eliminado pela decisão "somente PDFs" | — |
 
-> A lista encurtou bastante com as decisões de 30/07. **Sobrou fotografia** — que continua sendo o que separa um bom site de um site premiado. Ver `acervo/inventario.md` §2 e §6.
+> A lista encurtou bastante com as decisões de 30/07. **Sobrou fotografia** — que continua sendo o que separa um bom site de um site premiado. Ver `PRODUCT.md`, "O teto fotográfico".
 
 ---
 
@@ -38,7 +38,7 @@ Itens que costumam ficar fora da conta inicial e não deveriam:
 
 | Item | Ordem de grandeza 🟡 | Observação |
 |---|---|---|
-| Ensaio fotográfico | R$ 8–25k | **maior alavanca de qualidade do projeto** — ver `acervo/inventario.md` §2 |
+| Ensaio fotográfico | R$ 8–25k | **maior alavanca de qualidade do projeto** — ver `PRODUCT.md`, "O teto fotográfico" |
 | Rebranding Belmare | R$ 15–60k | ✅ decidido: acontece **antes** das telas |
 | Produção de conteúdo | ✅ muito reduzido | Sem fichas técnicas. Sobra ~20 peças em destaque por marca, lojas e projetos |
 | Redação institucional | médio | as fábricas não publicam história utilizável |

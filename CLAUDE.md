@@ -1,5 +1,23 @@
 # Belmare — site institucional
 
+## Documentação
+
+Quatro arquivos governam, e só eles. Onde qualquer outro documento divergir de um
+destes, ou destes divergir do código, **o construído vence**:
+
+- **`CONTEXT.md`** — o glossário. Os termos são vinculantes.
+- **`PRODUCT.md`** — verdade de produto: público, território, canal, escopo.
+- **`DESIGN.md`** — o sistema de design. Tokens no frontmatter, componentes na prosa.
+- **`README.md`** — como rodar, e o índice do resto.
+
+`docs/` guarda o que é procedimento (subir um bucket, criar as contas do painel) ou
+registro exigido por um ticket. `briefing/` é arquivo histórico de 30/07/2026 e não
+governa nada — está versionado porque comentários em `src/` apontam para ele.
+
+Antes de criar documento novo: estado que envelhece (o que já chegou do cliente, o que
+falta fazer) não mora em Markdown — mora no Linear ou no painel. Documento se estende,
+não se recomeça.
+
 ## Agent skills
 
 ### Issue tracker

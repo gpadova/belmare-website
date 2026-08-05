@@ -101,7 +101,7 @@ O briefing é explícito: **"banner, as quatro marcas em destaque com logo, e du
 └──────────────────────────────────────────────┘
 ```
 
-- **Banner** — a peça que define o site. Depende inteiramente da fotografia (ver `acervo/inventario.md` §2). Se houver material em alta, é aqui que ele vai
+- **Banner** — a peça que define o site. Depende inteiramente da fotografia (ver `PRODUCT.md`, "O teto fotográfico"). Se houver material em alta, é aqui que ele vai
 - **As quatro marcas** — logos monocromáticos, tamanho óptico equalizado. Cada um leva a `/representadas/[marca]`
 - **As duas portas** — a promessa precisa ser cumprida: o que está atrás de cada uma tem que ser realmente diferente
 
@@ -141,7 +141,7 @@ Objetivo: dar lastro. 26 anos, três estados, quatro marcas.
 - Sobre a fábrica, designers que assinam, materiais e tecnologia **quando a fábrica declara** — é texto institucional, não campo estruturado
 - **Grid de peças em destaque** com filtro **de categoria, dentro da marca** (ver §4)
 - **Download do catálogo em PDF** — ação principal, sempre visível
-- Alternador de densidade do grid (varrer muitas peças / olhar uma de perto) — padrão da In Common With, ver `referencias.md`
+- Alternador de densidade do grid (varrer muitas peças / olhar uma de perto) — padrão da In Common With
 - Sem página de produto individual ✅
 - ~~E-mail comercial direto~~ → ✅ **substituído por WhatsApp + formulário da Belmare**
 
@@ -181,7 +181,7 @@ Biblioteca por formato (SketchUp, DWG, Revit, 3ds), organizada por marca. Mais a
 
 **É o ativo que prende o arquiteto** — e o gatilho natural de captura de lead.
 
-Modelo: lista por marca, cada arquivo com **formato e tamanho declarados antes do clique** ("SKP · 8,4 MB") — padrão SIGMA, ver `referencias.md`. Respeito com quem está em obra com internet ruim.
+Modelo: lista por marca, cada arquivo com **formato e tamanho declarados antes do clique** ("SKP · 8,4 MB") — padrão SIGMA. Respeito com quem está em obra com internet ruim.
 
 > ⚠️ A **GDA já está na Casoca**, plataforma gratuita e dominante. A biblioteca da Belmare só se justifica se entregar o que a Casoca não entrega: **as quatro marcas juntas, com acabamentos e tecidos, e uma pessoa do outro lado**. Ver `audiencias.md` §2.
 
@@ -210,7 +210,7 @@ Mais o básico: endereço em Florianópolis, telefones, território (PR · SC ·
 
 > **Cada coisa no site tem exatamente um pai. Nada atravessa.**
 
-Esta decisão substitui o eixo transversal de material, que estruturava as versões anteriores deste documento, de `marca.md` e de `referencias.md`. **O eixo de material está cancelado** — como taxonomia, como filtro, como navegação e como sistema de identidade.
+Esta decisão substitui o eixo transversal de material, que estruturava as versões anteriores deste documento, de `marca.md`. **O eixo de material está cancelado** — como taxonomia, como filtro, como navegação e como sistema de identidade.
 
 ### Por que ele caiu
 
@@ -409,5 +409,5 @@ Registrado para não voltar como surpresa:
 | ~~P15~~ | ~~Lojas~~ | ✅ fase 2 |
 | ~~P67~~ | ~~Qual CMS~~ | ✅ Payload |
 | ~~P21/P26/P66~~ | ~~Material por peça, matriz da GDA, lonas no filtro~~ | ✅ **mortas com o eixo de material** — §4 |
-| ~~Linha de design~~ | ~~qual das três direções~~ | ✅ **A — editorial/arquivo**, `referencias.md` §6 |
+| ~~Linha de design~~ | ~~qual das três direções~~ | ✅ **A — editorial/arquivo** |
 | ~~P6b~~ | ~~WhatsApp e e-mail~~ | ✅ mockados |
