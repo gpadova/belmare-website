@@ -49,7 +49,7 @@ let trocados = 0;
 
 function trocar<T>(valor: T): T {
   if (typeof valor === "string") {
-    let saida = valor;
+    let saida: string = valor;
     for (const [de, para] of TROCAS) {
       if (saida.includes(de)) {
         saida = saida.split(de).join(para);
@@ -74,7 +74,7 @@ for (const collection of ["paginas", "representadas"] as const) {
 
   for (const doc of docs) {
     const antes = trocados;
-    const corrigido = trocar(doc as Record<string, unknown>);
+    const corrigido = trocar(doc);
     if (trocados === antes) continue;
 
     try {
