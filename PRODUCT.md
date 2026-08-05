@@ -37,7 +37,9 @@ Quer uma linha inteira, decide por rentabilidade, pergunta margem, pedido mínim
 ⚠️ Consumidor e lojista têm economias **opostas** e não podem ser atendidos pelo mesmo conteúdo. A home mantém duas portas ("eu especifico" / "eu compro"); a segunda **bifurca no clique**, uma camada abaixo.
 
 ### Terciário — as próprias fábricas ✅
-Público real e não citado no briefing original: as quatro representadas e as próximas. Uma fábrica escolhe representante por percepção de profissionalismo. A página de representadas é, na prática, a peça de vendas da Belmare **para conquistar e reter marcas**. Custo marginal disso é quase zero — basta tratamento editorial em vez de logo num grid.
+Público real e não citado no briefing original: as quatro representadas e as próximas. Uma fábrica escolhe representante por percepção de profissionalismo. A página de representadas é, na prática, a peça de vendas da Belmare **para conquistar e reter marcas**. Custo marginal disso é quase zero — basta tratamento editorial.
+
+> ⚠️ **Revisado em 05/08/2026.** Esta frase terminava em "basta tratamento editorial **em vez de logo num grid**", e a segunda metade caiu por decisão de produto: o logotipo da fábrica passou a ser campo do painel (`Representada.logotipo`, coleção `Logotipos`) e encabeça o cartão dela na galeria da home e a ficha dela nos registros de `/representadas`. **O que a frase de fato protegia continua de pé, e é o grid, não o logo:** uma fileira de marcas soltas é diretório de fornecedor e não diz o que fábrica nenhuma faz. Aqui a marca sempre encabeça um objeto que diz — a fotografia da linha, a frase do `resolve`, o fato técnico. Três regras vinculantes nasceram com a reversão: o site **não transforma a marca de terceiro** (sem recolorir, sem filtro, sem recorte); a marca **nunca encosta no nome escrito** da fábrica; e o vetor é publicado por `<img>`, nunca em linha. Ver `DESIGN.md → Logotipo` e `collections/logotipos.ts`.
 
 ## Product Purpose
 

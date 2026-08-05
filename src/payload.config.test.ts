@@ -84,6 +84,23 @@ function upload(config: ConfiguracaoMontada, slug: string) {
   return config.collections.find((colecao) => colecao.slug === slug)?.upload;
 }
 
+/**
+ * Toda coleção que guarda arquivo, lida da própria configuração.
+ *
+ * ⚠️ **DERIVADA, E NÃO ESCRITA À MÃO — É ISSO QUE FAZ O TESTE VALER.** A lista
+ * era literal (`["imagens", "arquivos"]`) e o modo de falha era silencioso: uma
+ * coleção de upload nova que ficasse fora do mapa do R2 em `payload.config.ts`
+ * passaria por todos os testes e gravaria no disco da função — que na Vercel é
+ * efêmero, então o arquivo sobreviveria até o próximo deploy e sumiria sem
+ * ninguém mexer em nada. Com a lista derivada, esquecer o mapa quebra o teste
+ * no mesmo commit em que a coleção nasce. Foi assim que `logotipos` entrou.
+ */
+function colecoesDeUpload(config: ConfiguracaoMontada): string[] {
+  return config.collections
+    .filter((colecao) => colecao.upload)
+    .map((colecao) => colecao.slug);
+}
+
 afterAll(() => {
   process.env = ambienteOriginal;
 });
@@ -96,15 +113,27 @@ describe("com o R2 configurado, o arquivo vai do navegador para o bucket", () =>
     expect(rota?.method).toBe("post");
   });
 
-  test("as duas coleções de upload enviam pelo navegador, não pelo formulário", async () => {
+  test("toda coleção de upload envia pelo navegador, não pelo formulário", async () => {
     const config = await configuracaoCom(R2_PREENCHIDO);
     const entregadores = entregadoresDoNavegador(config);
 
-    // Imagem E arquivo: o catálogo de 24 MB é o caso que dói, mas uma
-    // fotografia em alta também passa dos 4,5 MB sem esforço nenhum.
+    /* Imagem E arquivo: o catálogo de 24 MB é o caso que dói, mas uma
+       fotografia em alta também passa dos 4,5 MB sem esforço nenhum.
+
+       ⚠️ `logotipos` entra por outro motivo, e o teste é o mesmo. Um logotipo
+       tem alguns kilobytes e caberia folgado no corpo da requisição — o que ele
+       não pode é cair no disco da função, que é efêmero. A pergunta que este
+       teste faz não é "o arquivo é grande?", é "o R2 assumiu a coleção?", e a
+       resposta precisa ser sim para todas. */
+    /* Ordenados dos dois lados: a ordem do mapa do R2 em `payload.config.ts` e
+       a ordem do array `collections` são independentes uma da outra, e nenhuma
+       das duas é promessa nenhuma. O que este teste afirma é que os dois
+       conjuntos têm exatamente os mesmos membros. */
     expect(
-      entregadores.map((provedor) => provedor.clientProps?.collectionSlug),
-    ).toEqual(["imagens", "arquivos"]);
+      entregadores
+        .map((provedor) => provedor.clientProps?.collectionSlug)
+        .sort(),
+    ).toEqual(colecoesDeUpload(config).sort());
 
     for (const entregador of entregadores) {
       expect(entregador.clientProps?.enabled).toBe(true);
@@ -120,8 +149,9 @@ describe("com o R2 configurado, o arquivo vai do navegador para o bucket", () =>
     // que o adaptador do R2 assumiu a coleção.
     const config = await configuracaoCom(R2_PREENCHIDO);
 
-    expect(upload(config, "imagens")?.disableLocalStorage).toBe(true);
-    expect(upload(config, "arquivos")?.disableLocalStorage).toBe(true);
+    for (const slug of colecoesDeUpload(config)) {
+      expect(upload(config, slug)?.disableLocalStorage).toBe(true);
+    }
   });
 });
 
@@ -143,6 +173,7 @@ describe("sem o R2 configurado, o painel continua de pé", () => {
     expect(upload(config, "imagens")?.disableLocalStorage).toBeFalsy();
     expect(upload(config, "imagens")?.staticDir).toBe(".uploads/imagens");
     expect(upload(config, "arquivos")?.staticDir).toBe(".uploads/arquivos");
+    expect(upload(config, "logotipos")?.staticDir).toBe(".uploads/logotipos");
   });
 });
 

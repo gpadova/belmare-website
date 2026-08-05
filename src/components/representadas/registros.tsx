@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Seta } from "@/components/icones";
+import { Logotipo } from "@/components/logotipo";
 import {
   imagemDaRepresentada,
   paginaDaRepresentada,
@@ -26,6 +27,12 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  */
 export async function RegistrosDasRepresentadas() {
   const representadas = await representadasDaPagina();
+
+  /* Mesma regra da galeria da home, e pela mesma razão: com duas colunas lado a
+     lado, uma linha que abre com marca ao lado de outra que abre com o número
+     desalinha as duas fichas inteiras. A faixa é decidida uma vez, para a
+     seção. Ver `representadas-galeria.tsx`. */
+  const temFaixaDeMarca = representadas.some((r) => r.logotipo !== undefined);
 
   return (
     <section
@@ -58,6 +65,24 @@ export async function RegistrosDasRepresentadas() {
                 </div>
 
                 <div className="min-w-0 flex-1">
+                  {/* A marca entra por cima do número, e não no lugar da
+                      miniatura: a coluna da esquerda é fotografia nas quatro
+                      linhas, e trocá-la por marca em algumas faria a lista
+                      alternar entre dois tipos de objeto na mesma coluna. Aqui
+                      ela abre a ficha, que é a mesma gramática do cartão da
+                      home — marca em cima, assunto embaixo. Menor que lá: nesta
+                      rota a marca identifica uma linha de lista, não encabeça
+                      um cartão. */}
+                  {temFaixaDeMarca && (
+                    <div className="mb-2 flex h-7 items-end">
+                      {r.logotipo && (
+                        <Logotipo
+                          src={r.logotipo}
+                          className="max-h-7 max-w-[7rem]"
+                        />
+                      )}
+                    </div>
+                  )}
                   <p className="mono uppercase text-graphite">
                     {String(i + 1).padStart(2, "0")} · {r.parte}
                   </p>

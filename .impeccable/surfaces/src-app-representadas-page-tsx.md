@@ -43,7 +43,7 @@ Nome, origem e um fato verificado por marca, de `lib/representadas.ts`. Territó
 
 **Duas legendas visíveis de mock**, e as duas existem por posição: a da prancha, porque a cena mostra uma área externa inteira resolvida logo abaixo de um título que fala em fábricas; a dos registros, porque uma poltrona de corda encostada em "Marê Mobília · Cambé · PR" é lida como peça da Marê. `alt` não resolve — quem enxerga não lê `alt`.
 
-**Anti-metas:** grade de quatro colunas · tabela comparativa marca × atributo, que é o eixo de material voltando pela porta dos fundos · repetir a galeria da home · logo das fábricas · chamada de recrutamento de novas marcas, que é oferta comercial que ninguém confirmou · véu escuro sobre a prancha · movimento por rolagem.
+**Anti-metas:** grade de quatro colunas · tabela comparativa marca × atributo, que é o eixo de material voltando pela porta dos fundos · repetir a galeria da home · **grade de logos** — em 05/08/2026 o item era "logo das fábricas" e passou a ser só a grade: o logotipo encabeça a ficha de cada registro, uma marca por linha, e a miniatura fotográfica continua sendo a coluna da esquerda em todas elas · chamada de recrutamento de novas marcas, que é oferta comercial que ninguém confirmou · véu escuro sobre a prancha · movimento por rolagem.
 
 ## Estados e faixas
 

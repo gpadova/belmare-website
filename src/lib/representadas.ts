@@ -139,6 +139,14 @@ export type Representada = {
   base?: string;
   /** Um fato técnico verificável. Sem superlativo. */
   fato: string;
+  /** A marca da fábrica, quando o vetor já subiu no painel.
+   *
+   *  ⚠️ Só o endereço do arquivo — não há `alt` aqui, e a falta é a decisão.
+   *  A marca é publicada com `alt=""` porque o nome da fábrica está escrito ao
+   *  lado dela em toda superfície onde ela aparece; ver `components/logotipo.tsx`
+   *  e a nota de `collections/logotipos.ts`. Ausente enquanto o vetor não
+   *  chegar, e ausente é o estado normal hoje: nenhuma das quatro respondeu. */
+  logotipo?: string;
   /** A fotografia da galeria e a vista larga que abre a página, quando vêm do
    *  painel. São OUTRAS uma da outra por desenho, e o painel recusa a mesma nas
    *  duas — ver `collections/representadas.ts`. Opcionais porque as quatro

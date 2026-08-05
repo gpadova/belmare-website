@@ -36,10 +36,17 @@ export async function generateMetadata(): Promise<Metadata> {
  *
  * ⚠️ O QUE NÃO ENTRA, e a lista é vinculante: grade de quatro colunas · tabela
  * comparativa marca × atributo, que é o eixo de material voltando pela porta
- * dos fundos · repetir a galeria da home · logo das fábricas, de que não existe
- * vetor autorizado · território por marca, porque a promessa é "Sul do Brasil"
- * igual para as quatro · qualquer chamada de recrutamento de novas marcas, que
- * é oferta comercial que ninguém confirmou.
+ * dos fundos · repetir a galeria da home · território por marca, porque a
+ * promessa é "Sul do Brasil" igual para as quatro · qualquer chamada de
+ * recrutamento de novas marcas, que é oferta comercial que ninguém confirmou.
+ *
+ * ⚠️ **"LOGO DAS FÁBRICAS" SAIU DESSA LISTA EM 05/08/2026.** Ela dizia "logo
+ * das fábricas, de que não existe vetor autorizado", e o item caiu por decisão
+ * de produto. O que a lista de fato protegia — e continua protegendo — é a
+ * GRADE de logos: o que entrou é uma marca por linha de ficha, encabeçando os
+ * registros, na mesma gramática do cartão da home. A miniatura fotográfica
+ * continua sendo a coluna da esquerda em todas as linhas, e a lista segue em
+ * duas colunas.
  */
 /* O contrato de direção desta rota, no HTML construído para poder ser auditado
    depois do build. Só decisão de design entra aqui; o rastro de processo vive
@@ -47,11 +54,15 @@ export async function generateMetadata(): Promise<Metadata> {
 const CONTRATO_DE_DIRECAO = `<!--
 THESIS: O índice não lista as marcas outra vez — ele desmonta uma área externa
 e mostra qual fábrica resolve cada parte. Recusa a grade de logos, a grade de
-quatro colunas e a tabela comparativa marca × atributo.
+quatro colunas e a tabela comparativa marca × atributo. O logotipo da fábrica
+encabeça a ficha dela nos registros, uma por linha — o que a tese recusa é a
+grade, não a marca.
 OWN-WORLD: o mundo do site, inalterado. Papel #F5F3F0, tinta #17171A, fio
-#C9C6C0, raio 0, sombra 0, cor 0. Aqui ele vira folha desenhada: moldura com
-registro de canto, chamada numerada recortada em papel sobre a foto, carimbo no
-pé e legenda regrada.
+#C9C6C0, raio 0, sombra 0. Cor existe apenas dentro de uma marca — a da Belmare
+e a das fábricas representadas, publicadas como o arquivo original —, e nunca na
+interface: não vira acento, estado, fio nem fundo. Aqui o mundo vira folha
+desenhada: moldura com registro de canto, chamada numerada recortada em papel
+sobre a foto, carimbo no pé e legenda regrada.
 STORY: quatro partes, quatro fábricas; o visitante conclui a cobertura sozinho e
 desce para a marca que resolve o vão dele.
 FIRST VIEWPORT: prancha à esquerda com quatro chamadas, fio vertical, e à

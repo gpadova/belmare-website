@@ -50,22 +50,22 @@ As quatro marcas são **linhas, não grid de quatro colunas** — P18 está aber
 | Véu de legibilidade no pé da foto | CSS gradient | Só onde o texto cai; não escurece a imagem inteira |
 | Display 96/88 light, duas linhas | HTML/CSS | Söhne com fallback Geist na mesma pilha |
 | Prova em mono (território, 1999) | HTML/CSS | Numerais tabulares |
-| As 4 marcas em linhas regradas | HTML/CSS + raster | Lockup tipográfico Belmare. **Não desenhar logos das fábricas**. Cada linha com uma foto de referência, declarada como tal |
+| As 4 marcas em linhas regradas | HTML/CSS + raster | Cada linha com uma foto de referência, declarada como tal. **O logotipo da fábrica encabeça o cartão** quando o arquivo existe — ver a nota abaixo |
 | As 2 portas | HTML/CSS | Dois campos de igual peso — não um botão e um link |
 | Rodapé | HTML/CSS | CNPJ, endereço, telefones, território, marcas, Instagram, política |
 
-**Compromissos de composição:** header 72px · abertura sangra até a altura da tela · hairline como único ornamento · raio 0, sombra 0, gradiente 0 (exceto o véu), cor 0.
+**Compromissos de composição:** header 72px · abertura sangra até a altura da tela · hairline como único ornamento · raio 0, sombra 0, gradiente 0 (exceto o véu). **Cor 0 na interface** — desde 05/08/2026 o matiz existe dentro de uma marca (a da Belmare e a das fábricas representadas, publicadas como o arquivo original) e em nenhum outro lugar: não vira acento, nem estado, nem fio, nem fundo.
 
 **Mobile:** display ~48px, foto recortada com `object-position` deslocado para preservar o assunto, marcas empilhadas em linhas. Nunca escondida atrás de menu.
 
 ## Restrições que o builder não pode inventar
 
 - Söhne construída desde já via `@font-face` com Geist como fallback na mesma pilha; `.woff2` ausente cai para Geist sem quebrar build. Na licença, migrar para `next/font/local` e calibrar `size-adjust`.
-- Nenhum logo vetorial das representadas existe. Lockup tipográfico, decisão confirmada.
+- **O logotipo da fábrica é campo do painel, e o site não o transforma.** Revertida em 05/08/2026 a decisão que dizia "nenhum logo vetorial das representadas existe, lockup tipográfico, decisão confirmada" — ativo que não chegou é razão para o campo existir, não para ele não existir. O que segue vinculante: a marca **encabeça o cartão** e a fotografia continua abaixo dela, porque o h2 pergunta o que cada fábrica FAZ e quatro logotipos não respondem isso; a marca **nunca encosta no nome** — a fotografia separa os dois, e o `h3` segue carregando o link e o nome acessível, com a marca em `alt=""`; nada de recolorir, filtrar ou recortar o arquivo de terceiro; nada de SVG em linha, `<object>` ou `<embed>`, porque o vetor chega ao bucket sem passar por função nossa e só dentro de `<img>` ele não executa script. A faixa é decidida **pela seção**, não pelo cartão: com uma marca no ar os quatro cartões abrem a faixa, e sem nenhuma ela não existe — senão a grade sai desalinhada durante os meses em que uma fábrica respondeu e três não.
 - WhatsApp e e-mail mockados, num único arquivo de config.
 - Toda imagem é mock fal.ai, centralizada e trocável num só lugar (`src/lib/acervo.ts`), `alt` honesto, nunca legendada como foto de produto.
 - LCP < 2,5s em 4G · CLS < 0,1 · INP < 200ms. A foto de abertura é o LCP.
-- Anti-metas: carrossel, depoimento, newsletter, contador animado, "nossos parceiros", scroll-jacking, parallax, loader, sombra, gradiente, raio, terceira família tipográfica, qualquer cor, **qualquer padrão de textura**.
+- Anti-metas: carrossel, depoimento, newsletter, contador animado, **"nossos parceiros" — a faixa de logos soltos, que continua fora: a marca da fábrica só existe encabeçando o cartão que diz o que ela faz, nunca numa fileira de logotipos que não diz nada**, scroll-jacking, parallax, loader, sombra, gradiente, raio, terceira família tipográfica, qualquer cor, **qualquer padrão de textura**.
 
 ## Decisões em aberto
 

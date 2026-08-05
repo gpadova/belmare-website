@@ -74,6 +74,7 @@ export interface Config {
     projetos: Projeto;
     paginas: Pagina;
     imagens: Imagen;
+    logotipos: Logotipo;
     arquivos: Arquivo;
     leads: Lead;
     usuarios: Usuario;
@@ -91,6 +92,7 @@ export interface Config {
     projetos: ProjetosSelect<false> | ProjetosSelect<true>;
     paginas: PaginasSelect<false> | PaginasSelect<true>;
     imagens: ImagensSelect<false> | ImagensSelect<true>;
+    logotipos: LogotiposSelect<false> | LogotiposSelect<true>;
     arquivos: ArquivosSelect<false> | ArquivosSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
     usuarios: UsuariosSelect<false> | UsuariosSelect<true>;
@@ -181,6 +183,10 @@ export interface Representada {
    * Um dado que qualquer um pode conferir na fonte da própria fábrica — "Ferragem em inox 304, resistência a vento de 30 a 80 km/h". Sem superlativo e sem adjetivo: "a melhor", "referência no mercado" e "alta qualidade" não são fatos e derrubam a autoridade de tudo o mais que a página diz.
    */
   fato: string;
+  /**
+   * A marca da fábrica, do jeito que ela mesma desenhou. Prefira o SVG; PNG só com fundo transparente e pelo menos o dobro do tamanho que aparece na tela. O site publica o arquivo como ele é — não recolore nem recorta —, então peça à fábrica o vetor original e a autorização de uso. Sem arquivo, a marca simplesmente não aparece e o cartão começa pela fotografia.
+   */
+  logotipo?: (number | null) | Logotipo;
   /**
    * A imagem que representa esta marca na galeria da home e nos registros de /representadas. Mostre a linha da fábrica — não uma peça do catálogo dela, que o site não tem autorização para apresentar como acervo.
    */
@@ -293,6 +299,24 @@ export interface Representada {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * As marcas das fábricas representadas, como a própria fábrica as desenhou. O site publica o arquivo exatamente como ele sobe — não recolore, não recorta e não redesenha. Peça sempre o vetor e a autorização de uso junto.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "logotipos".
+ */
+export interface Logotipo {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
 }
 /**
  * As fotografias do site. Toda imagem precisa de descrição, e toda imagem que ainda não é fotografia real precisa estar marcada como referência.
@@ -745,6 +769,10 @@ export interface PayloadLockedDocument {
         value: number | Imagen;
       } | null)
     | ({
+        relationTo: 'logotipos';
+        value: number | Logotipo;
+      } | null)
+    | ({
         relationTo: 'arquivos';
         value: number | Arquivo;
       } | null)
@@ -810,6 +838,7 @@ export interface RepresentadasSelect<T extends boolean = true> {
   parte?: T;
   base?: T;
   fato?: T;
+  logotipo?: T;
   imagem?: T;
   imagemLarga?: T;
   declaracoes?:
@@ -1002,6 +1031,21 @@ export interface ImagensSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "logotipos_select".
+ */
+export interface LogotiposSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

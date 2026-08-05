@@ -67,12 +67,19 @@ mudou foi quem pode baixar o arquivo, não o que ele é.
 | `base` | Campo | Fato verificável, mas só existe se alguém o registrar — sem ele, ausente, nunca inventado. |
 | `fato` | Campo | Idem. |
 | `imagem`, `imagemLarga` | Campo (upload) | O operador escolhe o upload; a validação (recusa de repetição, formato) é editor UX, não geração. |
+| `logotipo` | Campo (upload) | A marca da fábrica, quando o vetor chega. Opcional: nenhuma das quatro respondeu, e obrigatório trancaria o painel inteiro. ⚠️ **O `alt` dele NÃO é campo, e não é gerado — é vazio.** Nas duas superfícies onde a marca aparece o nome da fábrica está escrito em `h3` ao lado dela, então a imagem é decorativa pela WCAG e um `alt` faria o leitor de tela repetir o nome. É a única razão pela qual a coleção `logotipos` não tem campo de texto nenhum: o único dado que um logotipo carrega é o próprio arquivo. |
 | `declaracoes[].rotulo`, `declaracoes[].valor` | Campo | Ficha técnica nas palavras da própria fábrica — não existe fonte automática. |
 | `designers[].nome`, `.colecoes`, `.nota` | Campo | Atribuição pública da fábrica, digitada uma vez. |
 | `colecoes` (sem atribuição) | Campo | Mesmo caso, sem designer ligado. |
 | `vocabulario.eixo`, `.grupos[].nome`, `.grupos[].slug`, `.grupos[].itens[].nome`, `.itens[].nota` | Campo | Vocabulário da própria fábrica; o eixo em si é dado, não fixo — mas **decide** se um filtro existe (ver "gerado" abaixo). |
 | `catalogos[].titulo`, `.ano` | Campo | Título e edição só existem quando a fábrica os declara. |
 | `catalogos[].arquivo` | Campo (upload) | O PDF em si, quando em mãos. Nenhuma das quatro marcas tem um anexado hoje — a seed não cria este relacionamento. |
+
+## Coleção `logotipos` (`src/collections/logotipos.ts`)
+
+| Campo | Camada | Por quê |
+|---|---|---|
+| — nenhum | — | **A ausência é a classificação.** A coleção guarda arquivo e nada mais. O nome da fábrica já é `Representada.nome`, e `CONTEXT.md` o classifica como **Gerado** onde ele aparece derivado — digitá-lo outra vez aqui criaria uma segunda fonte para o mesmo dado, que é como o site passa a mentir sozinho. Descrição de imagem, marcação de mock e ponto focal, os três campos de `imagens`, não existem aqui de propósito: um logotipo publicado com o sufixo "imagem de referência" apresentaria a marca registrada de outra empresa como geração de IA. |
 
 ## Coleção `imagens` (`src/collections/imagens.ts`)
 

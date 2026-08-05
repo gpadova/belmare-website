@@ -336,3 +336,44 @@ describe("a fotografia que o painel entrega", () => {
     expect(representadaDoPainel(documento({ imagem: 3 })).imagem).toBeUndefined();
   });
 });
+
+describe("o logotipo da fábrica", () => {
+  test("o vetor que subiu chega à página como endereço, e nada além", () => {
+    /* ⚠️ O contraste com a fotografia é a afirmação deste teste: `imagem` vira
+       um objeto com `alt` composto e ponto focal, e `logotipo` vira uma string.
+       A marca de outra empresa não recebe descrição gerada nem recorte — ela é
+       publicada como o arquivo é. Ver `collections/logotipos.ts`. */
+    const representada = representadaDoPainel(
+      documento({
+        logotipo: {
+          id: 9,
+          url: "/api/logotipos/file/trisol.svg",
+          updatedAt: AGORA,
+          createdAt: AGORA,
+        },
+      }),
+    );
+
+    expect(representada.logotipo).toBe("/api/logotipos/file/trisol.svg");
+  });
+
+  test("fábrica que ainda não mandou o vetor chega sem marca, não com marca vazia", () => {
+    /* É o estado de hoje nas quatro, e vai durar meses: `PRODUCT.md` põe "logos
+       vetoriais + autorização de uso" como o terceiro pedido da ordem de coleta,
+       e ele segue em aberto. Ausente precisa ser `undefined` porque é
+       `undefined` que faz a faixa da marca não ser desenhada — string vazia
+       viraria um `<img src="">`, que o navegador resolve para a própria página e
+       desenha como ícone quebrado. */
+    expect(representadaDoPainel(documento()).logotipo).toBeUndefined();
+    expect(
+      representadaDoPainel(documento({ logotipo: null })).logotipo,
+    ).toBeUndefined();
+  });
+
+  test("logotipo que veio só como referência não vira marca quebrada", () => {
+    // Profundidade 0: o upload volta como identificador, igual à fotografia.
+    expect(
+      representadaDoPainel(documento({ logotipo: 9 })).logotipo,
+    ).toBeUndefined();
+  });
+});

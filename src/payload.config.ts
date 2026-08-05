@@ -13,6 +13,7 @@ import { Arquivos } from "@/collections/arquivos";
 import { Arquivos3d } from "@/collections/arquivos3d";
 import { Imagens } from "@/collections/imagens";
 import { Leads } from "@/collections/leads";
+import { Logotipos } from "@/collections/logotipos";
 import { Paginas } from "@/collections/paginas";
 import { Pecas } from "@/collections/pecas";
 import { Projetos } from "@/collections/projetos";
@@ -112,6 +113,24 @@ const armazenamentoR2 = s3Storage({
       disablePayloadAccessControl: true,
       generateFileURL: urlPublicaDoArquivo,
     },
+
+    /* ⚠️ Um logotipo tem alguns kilobytes e passaria folgado pela função — ele
+       não está aqui pelo limite de 4,5 MB, e sim porque `disableLocalStorage`
+       vale por coleção. Fora deste mapa o arquivo cairia em `.uploads/` do
+       disco da Vercel, que é efêmero: o logotipo sobreviveria até o próximo
+       deploy e sumiria da home sem ninguém mexer em nada.
+
+       ⚠️ E é `clientUploads: true` (abaixo, valendo para o plugin inteiro) que
+       decide onde o SVG pode ser inspecionado: o arquivo vai do navegador
+       direto para o bucket, então nenhum hook de servidor chega a ver os bytes
+       para higienizar o vetor. A contenção não está no upload, está na
+       publicação — o site desenha a marca por `<img>`, e dentro de `<img>` o
+       navegador não executa script de SVG. Ver `components/logotipo.tsx`, que é
+       onde essa promessa é cumprida. */
+    logotipos: {
+      disablePayloadAccessControl: true,
+      generateFileURL: urlPublicaDoArquivo,
+    },
   },
 
   bucket: R2.bucket ?? "",
@@ -175,6 +194,7 @@ export default buildConfig({
     Projetos,
     Paginas,
     Imagens,
+    Logotipos,
     Arquivos,
 
     /* ⚠️ Leads não é conteúdo — é o que o site RECEBE, não o que ele publica.

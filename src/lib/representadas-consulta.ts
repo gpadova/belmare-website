@@ -73,8 +73,20 @@ async function painel() {
  * obrigatório, campo removido, tipo de um campo alterado. Não suba por mudança
  * de conteúdo: para isso existem as etiquetas, e trocar a chave à toa joga fora
  * um cache quente sem motivo.
+ *
+ * ⚠️ **CAMPO NOVO OPCIONAL TAMBÉM CONTA — foi o que `logotipo` ensinou em
+ * 05/08/2026.** A regra acima falava em campo obrigatório porque o estrago
+ * conhecido era o 500 do catálogo: entrada velha sem `mb`, componente novo
+ * confiando no tipo. Um campo OPCIONAL não derruba nada — a entrada velha volta
+ * sem `logotipo`, o mapper lê `undefined` e a faixa da marca simplesmente não é
+ * desenhada. E é justamente por não quebrar que ele é pior de achar: depois do
+ * deploy, o operador sobe o vetor da Marê, a etiqueta invalida a entrada DELA, e
+ * a marca aparece — enquanto as outras três seguem servindo cache anterior ao
+ * campo existir. Some código correto, banco correto, e uma home que mostra a
+ * faixa em um cartão só. Ausente-porque-não-chegou e ausente-porque-o-cache-é-de-
+ * antes são indistinguíveis do lado de cá, e é a chave que separa os dois.
  */
-const FORMA = 2;
+const FORMA = 3;
 
 const CHAVE_DE_LISTA = `representadas-v${FORMA}`;
 const CHAVE_POR_SLUG = `representada-por-slug-v${FORMA}`;

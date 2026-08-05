@@ -334,6 +334,30 @@ export const Representadas: CollectionConfig = {
     },
 
     {
+      name: "logotipo",
+      type: "upload",
+      relationTo: "logotipos",
+      label: "Logotipo da fábrica",
+
+      /* ⚠️ **OPCIONAL, E NÃO POR FROUXIDÃO.** Nenhum dos quatro vetores chegou
+         — `PRODUCT.md` lista "logos vetoriais + autorização de uso" como o
+         terceiro pedido da ordem de coleta, e ele segue em aberto. Obrigatório
+         aqui trancaria o painel inteiro: ninguém conseguiria salvar uma
+         representada, nem para corrigir uma vírgula, até as quatro fábricas
+         responderem. É a seção anulável aplicada a um elemento: sem arquivo, a
+         faixa da marca não é desenhada, e o cartão começa pela fotografia como
+         começa hoje. O pior resultado de um campo em branco continua sendo
+         menos página, nunca página quebrada.
+
+         ⚠️ E é assim que o painel vira o registro do que chegou: no dia em que
+         a Marê mandar o vetor, ele sobe aqui e a marca aparece na home. Não há
+         planilha do que falta — sobe o arquivo, aparece a linha. */
+      admin: {
+        description:
+          "A marca da fábrica, do jeito que ela mesma desenhou. Prefira o SVG; PNG só com fundo transparente e pelo menos o dobro do tamanho que aparece na tela. O site publica o arquivo como ele é — não recolore nem recorta —, então peça à fábrica o vetor original e a autorização de uso. Sem arquivo, a marca simplesmente não aparece e o cartão começa pela fotografia.",
+      },
+    },
+    {
       name: "imagem",
       type: "upload",
       relationTo: "imagens",

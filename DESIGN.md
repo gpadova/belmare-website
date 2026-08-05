@@ -161,7 +161,7 @@ O sistema recusa, em código e não só em intenção: raio, sombra, gradiente (
 `/arquivos-3d` é a segunda, e desde 05/08/2026 é a **mesma** página — mesma sequência, mesma gramática de linha, um eixo de recorte a mais. As duas colunas partidas por fio vertical que ambas tinham saíram: a coluna da esquerda era argumento sobre como a indústria funciona, escrito para quem monta o site e não para quem veio buscar um arquivo.
 
 **Key Characteristics:**
-- Acromático na interface: cinco valores neutros; o matiz existe em um objeto só, o logotipo
+- Acromático na interface: cinco valores neutros; o matiz existe numa classe de objeto só, o logotipo — o da Belmare e o das fábricas representadas
 - Fio de 1px `#C9C6C0` como único ornamento, e estrutural
 - Raio 0 e sombra 0 impostos por deleção de namespace, não por convenção
 - Duas famílias: grotesca para fala, mono para medida
@@ -169,12 +169,14 @@ O sistema recusa, em código e não só em intenção: raio, sombra, gradiente (
 - Vocabulário de movimento fechado em quatro gestos, todos por ponteiro
 - Toda ação é link; não existe botão no sistema
 - Dado ausente é declarado por extenso, nunca inventado nem travessão
-- A fotografia é a única cor das superfícies — e não é requisito: `/catalogos` fica de pé sem nenhuma
+- A fotografia é a cor das superfícies — e não é requisito: `/catalogos` fica de pé sem nenhuma. A outra cor possível é a de um logotipo, e nunca a da interface
 - Formato, peso e edição declarados antes do clique, formatados por uma função só
 
 ## Colors
 
-Paleta acromática de cinco valores. Nenhum acento, nenhuma cor de estado. O único matiz do projeto está dentro do logotipo, e não sai dele — ver **Logotipo** em Elementos gráficos.
+Paleta acromática de cinco valores. Nenhum acento, nenhuma cor de estado. **O matiz do projeto vive dentro de um logotipo, e não sai dele** — ver **Logotipo** em Elementos gráficos.
+
+> ⚠️ **Reescrita em 05/08/2026, e a regra não afrouxou — ela passou a dizer o que sempre quis dizer.** O texto anterior era "o único matiz do projeto está dentro do logotipo", no singular, e o logotipo era o da Belmare porque era o único que existia. Com `Representada.logotipo` no painel, as marcas das fábricas entram trazendo as cores delas. A regra sempre foi sobre ONDE a cor pode estar, não sobre quantas marcas há: **a cor vive dentro de uma marca e em nenhum outro lugar da interface** — não vira acento, nem estado, nem fio, nem fundo, nem matiz de tipografia. O que mudou é que a classe "marca" tem mais de um membro. O site publica cada uma como o arquivo original é, sem recolorir — ver **Logotipo da representada**.
 
 ### Neutral
 
@@ -284,6 +286,13 @@ O vocabulário de forma é retangular e ortogonal:
 - **Ícone.** Um só: a seta, em `viewBox 0 0 32 12`, traço de 1px com `vector-effect="non-scaling-stroke"`, ponta reta, sem preenchimento. Mesma espessura do fio. Glifo tipográfico fazendo papel de ícone está fora.
 - **Registro de sede.** Círculo com quatro braços de cruz, traço de 1,5 na legenda e de 1px na prancha — a marca de registro de desenho técnico.
 - **Logotipo.** O vetor original da Belmare, em dois lockups servidos de `public/marca/`: horizontal (proporção 5,379 — símbolo à esquerda, palavra e descritor à direita) no cabeçalho, a 24px no telefone e 32px a partir de `md`; e vertical (proporção 0,969) a 112px no rodapé e no bloco 02 de `/quem-somos`. É **o único objeto com matiz do projeto** — azul `#00339A`, verde `#009A34` e vermelho `#FE0100` —, e o matiz não sai dele: não vira acento, nem estado, nem fio, nem fundo. O símbolo sozinho (`public/marca/simbolo.svg`) só aparece no favicon e nas marcas do painel. **O "b" é vazado, não pintado:** quem dá a cor da letra é o que estiver atrás do SVG, então a marca não vai sobre fundo escuro sem uma versão própria — e é por isso que a cópia do símbolo leva um disco de papel embutido. Substituiu, em 04/08/2026, a imitação tipográfica que compunha BELMARE em Söhne com uma faixa de hachura no lugar do símbolo; a hachura saiu junto, porque só existia para ela.
+- **Logotipo da representada.** A marca de cada fábrica, subida no painel (coleção `Logotipos`, campo `Representada.logotipo`) e desenhada por `components/logotipo.tsx`. Aparece em duas superfícies: encabeçando o cartão na galeria da home (28px, 32px a partir de `md`, teto de largura 9rem/11rem) e a ficha nos registros de `/representadas` (20px, teto de 7rem). Em ambas, alinhada à esquerda, `object-contain`, altura fixada por classe — é a classe que reserva a caixa, porque o upload direto para o bucket não devolve dimensão intrínseca confiável e sem reserva a grade salta na primeira pintura. Quatro regras, e nenhuma é preferência:
+  - **O site não transforma a marca dos outros.** Sem recolorir, sem filtro, sem `currentColor`, sem recorte: publica-se o arquivo como ele subiu. "Autorização de uso" chega junto com manual de marca, e manual de marca costuma proibir exatamente a versão monocromática que um sistema acromático pediria.
+  - **`<img>`, nunca SVG em linha.** Aqui é segurança, não peso: um SVG é conteúdo executável, e ele chega ao bucket sem passar por função nossa (`clientUploads: true`), então nenhum hook de servidor pode higienizá-lo. Dentro de `<img>` o navegador desenha e não executa. `dangerouslySetInnerHTML`, `<object>` e `<embed>` transformam upload de terceiro em execução de código na origem do site — e a tentação de usá-los é justamente herdar `currentColor`, que a regra acima já proíbe.
+  - **`alt=""`.** O nome da fábrica está escrito em `h3` ao lado da marca nas duas superfícies; repetir no `alt` faz o leitor de tela dizer o nome duas vezes. Mesma decisão de `MarcaCompacta`.
+  - **A faixa é decidida pela seção, não pelo cartão.** Com um logotipo no ar, todos os cartões abrem a faixa, mesmo os sem arquivo; sem nenhum, ela não existe. O estado que vamos viver por meses é "uma fábrica respondeu, três não", e faixa por cartão sairia como fotografias começando em alturas diferentes — grade desalinhada lê como defeito de build, não como acervo incompleto.
+
+  **A compensação óptica não existe, e é deliberado.** Um lockup empilhado e uma palavra deitada na mesma altura não pesam igual; corrigir isso é um número por fábrica, e nenhum dos quatro vetores chegou. Calibrar contra arquivo que ninguém viu é desenhar para um caso imaginado. Quando os quatro estiverem no painel e um estiver visivelmente errado, um campo `alturaOptica` se paga.
 - **Registro de canto.** Uma cruz simples de 1px em `{colors.line}`, centrada nas quatro quinas da moldura de uma prancha. É a marca de esquadro de folha desenhada, e é irmã do registro de sede — mesma família, sem o círculo, porque marca de esquadro não é ponto de coordenada. Só entra em moldura de prancha.
 - **Barra de rolagem.** Também é do sistema: calha de 12px, trilho em papel com fio de 1px à esquerda, polegar de grafite reduzido a 4px visíveis por uma borda de 4px em cor de papel, e tinta no `hover`. Duas variantes utilitárias existem — `barra-fio` (3px, cor de fio, sem trilho, grafite no `hover`, para bandeja de rolagem horizontal que precisa ser descoberta) e `sem-barra` (oculta, para a navegação de 40px do telefone, onde qualquer barra comeria a linha).
 

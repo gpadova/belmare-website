@@ -65,6 +65,7 @@ export function representadaDoPainel(doc: RepresentadaGerada): Representada {
     parte: doc.parte,
     fato: doc.fato,
     ...opcional("base", texto(doc.base)),
+    ...opcional("logotipo", logotipoDoPainel(doc.logotipo)),
     ...opcional("imagem", imagemDoPainel(doc.imagem)),
     ...opcional("imagemLarga", imagemDoPainel(doc.imagemLarga)),
     ...opcional("declaracoes", declaracoesDoPainel(doc.declaracoes)),
@@ -127,6 +128,27 @@ export function imagemDoPainel(
       posicaoDoFoco({ focoX: valor.focalX, focoY: valor.focalY }),
     ),
   };
+}
+
+/**
+ * O logotipo do painel — o endereço do arquivo, e só.
+ *
+ * ⚠️ **DEVOLVE `string`, E NÃO UM `Imagem`.** A semelhança com `imagemDoPainel`
+ * é de forma, não de assunto: um `Imagem` carrega `alt` composto e ponto focal,
+ * e nenhum dos dois existe sobre uma marca. O `alt` de um logotipo é `""` por
+ * decisão de acessibilidade — o nome da fábrica está escrito ao lado dele nas
+ * duas superfícies onde ele aparece —, e ponto focal é recorte, que não se faz
+ * em marca. Dar a ele o tipo da fotografia obrigaria a inventar um `alt` para
+ * jogar fora depois, e um campo que existe para ser ignorado é um campo que um
+ * dia alguém preenche.
+ *
+ * Ausente é ausente: sem arquivo, sem faixa de marca no cartão.
+ */
+function logotipoDoPainel(
+  valor: RepresentadaGerada["logotipo"],
+): string | undefined {
+  if (!valor || typeof valor !== "object") return undefined;
+  return texto(valor.url);
 }
 
 function declaracoesDoPainel(
