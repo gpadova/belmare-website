@@ -44,7 +44,6 @@ export type Empresa = {
   /** A data de abertura em ISO (`1999-04-22`). É a ÚNICA fonte do tempo de casa
    *  e do ano de fundação — nenhum dos dois é digitado em lugar nenhum. */
   abertura?: string;
-  porte?: string;
   endereco?: Endereco;
   telefones?: string[];
   /** Só dígitos, em E.164 (`5548991375030`), já normalizado e já validado. Se

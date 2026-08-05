@@ -37,7 +37,6 @@ export function empresaDoPainel(doc: EmpresaGerada): Empresa {
     ...opcional("razaoSocial", texto(doc.razaoSocial)),
     ...opcional("cnpj", texto(doc.cnpj)),
     ...opcional("abertura", texto(doc.abertura)),
-    ...opcional("porte", texto(doc.porte)),
     ...opcional("endereco", enderecoDoPainel(doc.endereco)),
     ...opcional("telefones", telefonesDoPainel(doc.telefones)),
     /* Os dois canais que este ticket desmockou: normalizados e conferidos aqui,

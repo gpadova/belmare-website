@@ -1152,10 +1152,6 @@ export interface Empresa {
    * O dia em que a empresa foi aberta, como consta no registro. ⚠️ Não existe campo de "anos de mercado" em lugar nenhum deste painel, e não deve passar a existir: o site conta os anos a partir desta data, sozinho, e vira a contagem no aniversário. Um número digitado ficaria errado a partir do aniversário seguinte sem ninguém perceber.
    */
   abertura: string;
-  /**
-   * Como o cadastro classifica a empresa, por extenso — "Empresa de pequeno porte". Deixe em branco e a linha some da ficha.
-   */
-  porte?: string | null;
   endereco?: {
     /**
      * "Rua Zanzibar do Nascimento Lins, 81".
@@ -1298,7 +1294,6 @@ export interface EmpresaSelect<T extends boolean = true> {
   razaoSocial?: T;
   cnpj?: T;
   abertura?: T;
-  porte?: T;
   endereco?:
     | T
     | {

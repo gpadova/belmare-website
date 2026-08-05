@@ -45,7 +45,6 @@ const EMPRESA = {
   /* Meia-noite UTC: é assim que o seletor "só o dia" do Payload grava, e é o
      que `lib/empresa.ts#anosDeMercado` corta nos dez primeiros caracteres. */
   abertura: "1999-04-22T00:00:00.000Z",
-  porte: "Empresa de pequeno porte",
   endereco: {
     logradouro: "Rua Zanzibar do Nascimento Lins, 81",
     bairro: "Trindade",

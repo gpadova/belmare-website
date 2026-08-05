@@ -44,12 +44,15 @@ import { cnpjFormatado, emailComercial, numeroDeWhatsapp } from "@/lib/empresa";
  * conversa comercial nenhuma. Os cinco CNAEs moravam ali ao lado e já haviam
  * saído antes, junto com a tabela que os exibia.
  *
- * ⚠️ **`porte` CONTINUA SENDO CAMPO, MAS NÃO APARECE MAIS EM PÁGINA NENHUMA.**
- * "Empresa de pequeno porte" abria `/quem-somos` numa faixa de identificação, e
- * era o registro dizendo ao arquiteto que a empresa é pequena, no primeiro
- * viewport de uma página que precisa vender. O dado segue no cadastro porque é
- * verdadeiro e barato de manter; o que mudou é que ele não é mais argumento de
- * venda.
+ * ⚠️ **`porte` SAIU, E SAIU PORQUE NÃO TINHA ONDE APARECER.** "Empresa de
+ * pequeno porte" abria `/quem-somos` numa faixa de identificação, e era o
+ * registro dizendo ao arquiteto que a empresa é pequena, no primeiro viewport de
+ * uma página que precisa vender. A faixa saiu na reescrita de 05/08/2026 e o
+ * campo ficou para trás: atravessava o mapper até o tipo de domínio e morria
+ * ali, sem componente nenhum para lê-lo. Um campo que o operador preenche e o
+ * site nunca publica é pior do que campo nenhum — ele custa uma decisão por
+ * edição e não paga nenhuma. Se o porte voltar a ser argumento de página, volta
+ * como campo no mesmo commit que desenha o lugar dele.
  */
 export const Empresa: GlobalConfig = {
   slug: "empresa",
@@ -265,15 +268,6 @@ export const Empresa: GlobalConfig = {
                 if (data.getTime() > Date.now())
                   return "A data de abertura está no futuro. Confira o ano: uma data adiante de hoje faz o site contar anos negativos.";
                 return true;
-              },
-            },
-            {
-              name: "porte",
-              type: "text",
-              label: "Porte",
-              admin: {
-                description:
-                  "Como o cadastro classifica a empresa, por extenso — \"Empresa de pequeno porte\". Deixe em branco e a linha some da ficha.",
               },
             },
           ],

@@ -123,7 +123,8 @@ deploy para corrigir um telefone.
 | `email` | Campo | Idem — era `EMAIL_COMERCIAL` em código. Normalizado e validado; vazio, a linha some do rodapé. |
 | `telefones[].numero` | Campo | Vira `tel:` no rodapé e na ficha. Validado pela MESMA regra do WhatsApp: um telefone que não disca é a mesma falha silenciosa. |
 | `instagram` | Campo | Endereço do perfil. Vazio, o link some. |
-| `nomeCompleto`, `razaoSocial`, `cnpj`, `porte` | Campo | Transcrição do registro, corrigível sem deploy. `cnpj` confere os dígitos verificadores (`lib/empresa.ts#cnpjFormatado`): é o único número que o leitor de `/quem-somos` vai de fato digitar na consulta oficial. |
+| `nomeCompleto`, `razaoSocial`, `cnpj` | Campo | Transcrição do registro, corrigível sem deploy. `cnpj` confere os dígitos verificadores (`lib/empresa.ts#cnpjFormatado`): é o único número que o leitor de `/quem-somos` vai de fato digitar na consulta oficial. |
+| ~~`porte`~~ | — | **Saiu em 05/08/2026.** "Empresa de pequeno porte" abria `/quem-somos` numa faixa de identificação; a faixa saiu na reescrita e o campo ficou sem leitor nenhum — atravessava o mapper até o tipo de domínio e morria ali. Campo que o operador preenche e o site nunca publica custa uma decisão por edição e não paga nenhuma. |
 | `abertura` | Campo (data) | **O único campo de data da empresa, e a fonte de três valores gerados** — ver abaixo. Recusa data no futuro. |
 | `endereco.*` | Campo | Sede. Uma linha em branco desaparece do endereço em vez de deixar um vão. |
 
