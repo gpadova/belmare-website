@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { FormularioDeLead } from "@/components/formulario-de-lead";
-import { Seta } from "@/components/icones";
+import { IconeWhatsApp, Seta } from "@/components/icones";
 import { SecaoLivre } from "@/components/paginas/secao";
 import { linkDeWhatsapp, type Empresa } from "@/lib/empresa";
 import { ANCORA_DO_FORMULARIO, type Caminho } from "@/lib/paginas";
@@ -96,8 +96,13 @@ export function BlocoCaminhos({
               const conteudo = (
                 <>
                   <span className="min-w-0">
-                    <span className="text-h3 block font-normal underline decoration-line decoration-1 underline-offset-[6px] transition-colors group-hover:decoration-ink">
-                      {caminho.rotulo}
+                    <span className="flex items-center gap-3">
+                      {externo && (
+                        <IconeWhatsApp className="h-5 w-5 shrink-0 text-graphite transition-colors group-hover:text-ink" />
+                      )}
+                      <span className="text-h3 font-normal underline decoration-line decoration-1 underline-offset-[6px] transition-colors group-hover:decoration-ink">
+                        {caminho.rotulo}
+                      </span>
                     </span>
                     {caminho.apoio !== undefined && (
                       <span className="text-support mt-2 block max-w-[52ch] text-pretty text-graphite">

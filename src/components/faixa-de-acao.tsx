@@ -1,4 +1,4 @@
-import { Seta } from "@/components/icones";
+import { IconeWhatsApp, Seta } from "@/components/icones";
 
 /**
  * A faixa de ação — o mais próximo de um botão primário que este sistema tem, e
@@ -40,7 +40,10 @@ export function FaixaDeAcao({
       rel="noopener noreferrer"
       className={`group flex items-center justify-between gap-6 border-y border-ink py-7 transition-colors hover:bg-surface ${className ?? ""}`}
     >
-      <span className="text-h2 font-normal">{rotulo}</span>
+      <span className="flex items-center gap-4 min-w-0">
+        <IconeWhatsApp className="h-6 w-6 shrink-0" />
+        <span className="text-h2 font-normal">{rotulo}</span>
+      </span>
       <Seta className="h-3 w-8 shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1.5 motion-reduce:transition-none" />
     </a>
   );

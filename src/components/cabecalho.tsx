@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { IconeWhatsApp } from "@/components/icones";
 import { MarcaCompacta } from "@/components/marca-belmare";
 import { linkDeWhatsapp } from "@/lib/empresa";
 import { buscarEmpresa } from "@/lib/empresa-consulta";
@@ -52,8 +53,9 @@ export async function Cabecalho() {
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="mono uppercase shrink-0 text-ink md:border-l md:border-line md:pl-8"
+            className="mono uppercase shrink-0 flex items-center gap-2 text-ink md:border-l md:border-line md:pl-8"
           >
+            <IconeWhatsApp className="h-4 w-4" />
             WhatsApp
           </a>
         )}

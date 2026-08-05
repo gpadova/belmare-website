@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
 
+import { BalaoWhatsapp } from "@/components/balao-whatsapp";
 import { Cabecalho } from "@/components/cabecalho";
 import { FaixaDeRascunho } from "@/components/faixa-de-rascunho";
 import { Rodape } from "@/components/rodape";
@@ -120,6 +121,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Rodape />
+        <BalaoWhatsapp />
       </body>
     </html>
   );

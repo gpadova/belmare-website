@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { IconeWhatsApp } from "@/components/icones";
 import { MarcaVertical } from "@/components/marca-belmare";
 import {
   anoDeFundacao,
@@ -71,8 +72,9 @@ export async function Rodape() {
                   href={whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-support text-graphite transition-colors hover:text-ink"
+                  className="text-support flex items-center gap-2 text-graphite transition-colors hover:text-ink"
                 >
+                  <IconeWhatsApp className="h-4 w-4" />
                   WhatsApp
                 </a>
               </li>
