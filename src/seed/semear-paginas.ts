@@ -144,13 +144,13 @@ const ARQUITETOS = {
   slug: "arquitetos",
   titulo: "Catálogos, arquivos 3D e cartas de acabamento.",
   resumo:
-    "O material que a Belmare entrega a quem especifica mobiliário de área externa: os catálogos das fábricas representadas, os blocos 3D, as cartas de tecido e pintura, e uma pessoa do outro lado para responder medida e prazo.",
+    "O material que a Belmare entrega a quem especifica móveis para área externa: os catálogos das fábricas representadas, os blocos 3D, as cartas de tecido e pintura, e uma pessoa do outro lado para responder medida e prazo.",
   composicao: [
     {
       blockType: "prosa",
       corpo: documento([
         paragrafo(
-          "A Belmare representa fábricas de mobiliário de área externa e atende quem especifica. Medida, acabamento, prazo e ficha cotada você pede direto aqui, e recebe de uma pessoa. Tudo o que a fábrica já publicou está na página dela; o que ela não publicou, a Belmare pergunta.",
+          "A Belmare representa fábricas de móveis para área externa e atende quem especifica. Medida, acabamento, prazo e ficha cotada você pede direto aqui, e recebe de uma pessoa. Tudo o que a fábrica já publicou está na página dela; o que ela não publicou, a Belmare pergunta.",
         ),
         paragrafo(
           "Como a mesma pessoa atende todas as marcas, ela consegue comparar as linhas entre si e responder pelo projeto inteiro, e não por uma fábrica de cada vez.",
@@ -225,14 +225,14 @@ const CONTATO = {
         {
           rotulo: "Quero comprar",
           apoio:
-            "Diga a peça e a cidade. A Belmare indica a loja mais próxima que a tem — ou responde a dúvida de medida e acabamento antes de você ir até lá.",
+            "Diga a peça e a cidade. A Belmare indica a loja mais próxima que a tem, ou responde a dúvida de medida e acabamento antes de você ir até lá.",
           destino: "whatsapp",
           contexto: "quero comprar e preciso saber qual loja trabalha com a peça",
         },
         {
           rotulo: "Quero revender",
           apoio:
-            "Loja de mobiliário, escritório ou operação de área externa: deixe a cidade e o perfil da operação, e a Belmare responde com as condições da fábrica.",
+            "Loja de móveis, escritório ou operação de área externa: deixe a cidade e o perfil da operação, e a Belmare responde com as condições da fábrica.",
 
           /* ⚠️ O seam de PRA-126, agora fechado. Era um caminho de WhatsApp
              com contexto próprio; virou o formulário de proposta desenhado na
@@ -298,7 +298,7 @@ const PRIVACIDADE = {
       blockType: "prosa",
       corpo: documento([
         paragrafo(
-          "Aviso: este documento ainda não passou por revisão jurídica. O texto abaixo é o levantamento factual do que este site faz com dados — não é, e não deve ser lido como, uma política de privacidade em vigor. A redação definitiva será publicada aqui assim que revisada.",
+          "Aviso: este documento ainda não passou por revisão jurídica. O texto abaixo é o levantamento factual do que este site faz com dados. Ele não é, e não deve ser lido como, uma política de privacidade em vigor. A redação definitiva será publicada aqui assim que revisada.",
           true,
         ),
         paragrafo(
@@ -307,7 +307,7 @@ const PRIVACIDADE = {
 
         titulo("O que este site coleta"),
         paragrafo(
-          "Este site tem um único formulário, o de proposta comercial em /contato. Ele pede nome, e-mail, cidade e a empresa ou escritório que a pessoa representa — e nada além disso. Não há cadastro, não há login de visitante, não se pede CPF e não se pede telefone. O aceite de novidades por e-mail é uma caixa separada, que nunca vem marcada: deixá-la em branco não muda em nada o atendimento do contato. Fora esse formulário, o único dado pessoal que chega à Belmare é o que a própria pessoa escreve numa conversa iniciada por ela — WhatsApp, e-mail ou telefone —, e ele chega pelo aplicativo ou provedor correspondente, não por este site.",
+          "Este site tem um único formulário, o de proposta comercial em /contato. Ele pede nome, e-mail, cidade e a empresa ou escritório que a pessoa representa, e nada além disso. Não há cadastro, não há login de visitante, não se pede CPF e não se pede telefone. O aceite de novidades por e-mail é uma caixa separada, que nunca vem marcada: deixá-la em branco não muda em nada o atendimento do contato. Fora esse formulário, o único dado pessoal que chega à Belmare é o que a própria pessoa escreve numa conversa iniciada por ela, por WhatsApp, e-mail ou telefone. Esse dado chega pelo aplicativo ou provedor correspondente, não por este site.",
         ),
 
         titulo("Rastreamento e cookies"),
@@ -324,7 +324,7 @@ const PRIVACIDADE = {
 
         titulo("Arquivos e registros de acesso"),
         paragrafo(
-          "Catálogos, fotografias e demais arquivos são servidos a partir de armazenamento em nuvem contratado para este fim. Como qualquer servidor de arquivos, ele registra o acesso — endereço de origem, data e arquivo pedido — para operação e segurança do serviço.",
+          "Catálogos, fotografias e demais arquivos são servidos a partir de armazenamento em nuvem contratado para este fim. Como qualquer servidor de arquivos, ele registra o acesso (endereço de origem, data e arquivo pedido) para operação e segurança do serviço.",
         ),
 
         titulo("Compartilhamento"),
@@ -334,7 +334,7 @@ const PRIVACIDADE = {
 
         titulo("Seus direitos e como exercê-los"),
         paragrafo(
-          "Esta seção — prazos de guarda, base legal de cada tratamento, encarregado pelo tratamento de dados e o procedimento para pedir acesso, correção ou eliminação — aguarda a redação jurídica. Até lá, qualquer pedido sobre dados pode ser feito pelos canais da página de Contato e será respondido pela Belmare.",
+          "Esta seção aguarda a redação jurídica: prazos de guarda, base legal de cada tratamento, encarregado pelo tratamento de dados e o procedimento para pedir acesso, correção ou eliminação. Até lá, qualquer pedido sobre dados pode ser feito pelos canais da página de Contato e será respondido pela Belmare.",
         ),
       ]),
     },

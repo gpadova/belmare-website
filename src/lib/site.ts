@@ -46,8 +46,9 @@ export const NAVEGACAO = [
  * ⚠️ **AS TRÊS SÃO PÁGINA LIVRE PORQUE NUNCA FORAM ESCRITAS EM CÓDIGO.** Não há
  * argumento de desenho a proteger nelas — nascem CMS-nativas. A home,
  * `/quem-somos` e `/representadas/[marca]` continuam de **espinha fixa** e não
- * ganham construtor de blocos: a sequência de `/quem-somos` É o argumento dela.
- * Ver `CONTEXT.md`, seção "Composição de página".
+ * ganham construtor de blocos: `/quem-somos` carrega uma lista vinculante do
+ * que nunca pode aparecer nela, e um array de blocos é exatamente a ferramenta
+ * que contorna essa lista. Ver `CONTEXT.md`, seção "Composição de página".
  *
  * O `rotulo` é o sobretítulo em mono que abre cada uma dessas páginas — o mesmo
  * lugar onde `/catalogos` escreve "Catálogos". É **gerado** daqui, e não um

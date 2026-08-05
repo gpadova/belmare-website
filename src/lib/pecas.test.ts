@@ -74,7 +74,7 @@ describe("a peça, do painel para a página", () => {
       documento({ foto: imagem({ descricao: "Poltrona trançada", mock: true }) }),
     );
 
-    expect(peca.foto?.alt).toBe(`Poltrona trançada — ${MARCACAO_DE_MOCK}.`);
+    expect(peca.foto?.alt).toBe(`Poltrona trançada, ${MARCACAO_DE_MOCK}.`);
   });
 
   test("fotografia que veio só como identificador não vira imagem quebrada", () => {

@@ -11,7 +11,6 @@ import {
   slugsDeRepresentadas,
 } from "@/lib/representadas-consulta";
 import {
-  catalogoPublicado,
   eixoDeFiltro,
   pesoEmMB,
   representadaPorSlug,
@@ -272,40 +271,77 @@ describe("o catálogo, do arquivo armazenado até a linha", () => {
       catalogos: [{ titulo: "Catálogo", ano: 2026, arquivo: pdf }],
     });
 
-    const [catalogo] = (await buscarRepresentadaPorSlug("trisol-teste"))!
-      .catalogos!;
-
-    expect(catalogoPublicado(catalogo)).toBe(true);
-    if (!catalogoPublicado(catalogo)) return;
+    const marca = (await buscarRepresentadaPorSlug("trisol-teste"))!;
+    const [catalogo] = marca.catalogos!;
 
     /* 1 572 864 bytes gravados = 1,5 MB. Não existe campo de peso na coleção:
        o número só pode ter saído do arquivo. */
     expect(pesoEmMB(catalogo.mb)).toBe("1,5");
     expect(catalogo.arquivo).toContain("catalogo");
+
+    // E a faixa da página declara o custo do clique, lido do mesmo arquivo.
+    const secao = secoesDaRepresentada(marca).find((s) => s.id === "levar");
+    expect(secao?.contagem).toBe("PDF 1,5 MB");
   });
 
-  test("sem o PDF, o documento continua declarado e a faixa não anuncia peso", async () => {
+  test("linha órfã no banco não vira catálogo — nem linha, nem seção na página da marca", async () => {
+    /* ⚠️ A regra de 05/08/2026 atravessando o banco de verdade: uma linha de
+       catálogo sem anexo não produz nada do lado do site. Era ela que enchia
+       `/catalogos` de documentos para zero uploads.
+
+       Chegar a este estado pela porta da frente é impossível de propósito — o
+       painel recusa salvar a linha sem PDF, e o teste de recusa mais abaixo
+       prova isso. Ele ainda existe no banco por dois caminhos: os documentos
+       publicados ANTES desta data (a seed criava três), e o PDF apagado por
+       baixo do catálogo, que é o que este teste encena — `arquivo_id` tem
+       `ON DELETE SET NULL`, então a linha sobrevive ao arquivo. */
+    const pdf = await criarPdf("Catálogo Trisol 2026", "orfao.pdf");
+
     await criarRepresentadaPublicada({
       ...marcaMinima("trisol-teste", "Trisol"),
-      catalogos: [{ titulo: "Catálogo", ano: 2026 }],
+      catalogos: [{ titulo: "Catálogo", ano: 2026, arquivo: pdf }],
     });
 
+    await payload.delete({ collection: "arquivos", id: pdf });
+
     const marca = (await buscarRepresentadaPorSlug("trisol-teste"))!;
-    const [catalogo] = marca.catalogos!;
 
-    expect(catalogoPublicado(catalogo)).toBe(false);
-    expect(catalogo.mb).toBeUndefined();
-    expect(catalogo.ano).toBe(2026);
+    expect(marca.catalogos).toBeUndefined();
+    expect(secoesDaRepresentada(marca).map((s) => s.id)).not.toContain("levar");
+  });
 
-    // A seção existe — o documento existe —, mas não há custo a declarar.
+  test("uma fábrica com vários PDFs sai com todos, e a faixa passa a contar", async () => {
+    /* O caso que a rota inteira foi refeita para atender: um catálogo por
+       coleção (P22). Nada de layout muda — a lista só fica mais longa. */
+    const geral = await criarPdf("Catálogo geral", "geral.pdf");
+    const anima = await criarPdf("Linha Ânima", "anima.pdf");
+
+    await criarRepresentadaPublicada({
+      ...marcaMinima("mare-teste", "Marê Mobília"),
+      catalogos: [
+        { titulo: "Catálogo geral", ano: 2026, arquivo: geral },
+        { titulo: "Linha Ânima", arquivo: anima },
+      ],
+    });
+
+    const marca = (await buscarRepresentadaPorSlug("mare-teste"))!;
+
+    expect(marca.catalogos?.map((c) => c.titulo)).toEqual([
+      "Catálogo geral",
+      "Linha Ânima",
+    ]);
+
     const secao = secoesDaRepresentada(marca).find((s) => s.id === "levar");
-    expect(secao?.contagem).toBeUndefined();
+    expect(secao?.rotulo).toBe("Catálogos");
+    expect(secao?.contagem).toBe("2");
   });
 
   test("sem edição declarada, a linha não ganha ano nenhum para inventar em cima", async () => {
+    const pdf = await criarPdf("Catálogo Marê", "catalogo-mare.pdf");
+
     await criarRepresentadaPublicada({
       ...marcaMinima("mare-teste", "Marê Mobília"),
-      catalogos: [{ titulo: "Catálogo" }],
+      catalogos: [{ titulo: "Catálogo", arquivo: pdf }],
     });
 
     const [catalogo] = (await buscarRepresentadaPorSlug("mare-teste"))!
@@ -371,17 +407,38 @@ describe("o painel recusa, e explica em português", () => {
   });
 
   test("edição com ano impossível é recusada", async () => {
+    const pdf = await criarPdf("Catálogo Trisol", "ano-impossivel.pdf");
+
     const recusa = await recusaAoSalvar(
       payload.create({
         collection: "representadas",
         data: {
           ...marcaMinima("trisol-teste", "Trisol"),
-          catalogos: [{ titulo: "Catálogo", ano: 26 }],
+          catalogos: [{ titulo: "Catálogo", ano: 26, arquivo: pdf }],
         },
       }),
     );
 
     expect(recusa).toContain("quatro dígitos");
+  });
+
+  test("catálogo sem o PDF anexado é recusado, com as duas saídas na mensagem", async () => {
+    /* ⚠️ A recusa que entrou em 05/08/2026. O mapper já descarta a linha órfã do
+       lado do site; esta existe para o operador não sair da tela achando que
+       publicou um catálogo que a página não vai listar — e ela oferece anexar OU
+       apagar, porque documentos publicados antes desta data têm linhas assim. */
+    const recusa = await recusaAoSalvar(
+      payload.create({
+        collection: "representadas",
+        data: {
+          ...marcaMinima("trisol-teste", "Trisol"),
+          catalogos: [{ titulo: "Catálogo", ano: 2026 }],
+        },
+      }),
+    );
+
+    expect(recusa).toContain("Anexe o PDF");
+    expect(recusa).toContain("apague a linha");
   });
 
   test("dois cadastros no mesmo endereço são recusados", async () => {

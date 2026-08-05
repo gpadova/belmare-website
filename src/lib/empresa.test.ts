@@ -67,7 +67,7 @@ describe("o link de WhatsApp", () => {
 
     expect(link).toContain("https://wa.me/5548991375030");
     expect(decodeURIComponent(link ?? "")).toContain(
-      "Vim pelo site da Belmare — estava na página da Trisol.",
+      "Vim pelo site da Belmare, estava na página da Trisol.",
     );
   });
 

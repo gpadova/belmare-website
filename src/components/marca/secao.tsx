@@ -5,7 +5,7 @@
  * coluna de margem, conteúdo com teto de 64rem e a margem direita aberta. A
  * diferença é que aqui a numeração é CALCULADA — `secoesDaRepresentada()`
  * numera o que existe, e uma marca sem designers simplesmente não tem a seção,
- * em vez de reservar o número como faz o bloco de projetos em `/quem-somos`.
+ * em vez de reservar o número para uma seção que pode não existir.
  *
  * ⚠️ `scroll-mt` não é detalhe de acabamento: são dois elementos fixos
  * empilhados — o cabeçalho e a faixa de índice — e sem esse recuo toda âncora

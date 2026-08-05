@@ -24,7 +24,7 @@ export async function Cabecalho() {
   return (
     <header className="sticky top-0 z-20 bg-paper">
       <div className="flex h-14 items-center justify-between border-b border-line px-5 md:h-18 md:px-8">
-        <Link href="/" aria-label="Belmare Representações — início" className="shrink-0">
+        <Link href="/" aria-label="Belmare Representações, início" className="shrink-0">
           <MarcaCompacta />
         </Link>
 

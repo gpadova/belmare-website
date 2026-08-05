@@ -1,43 +1,40 @@
 import Image from "next/image";
 
-import { Seta } from "@/components/icones";
-import { Bloco } from "@/components/quem-somos/bloco";
 import { Ficha, FichaLinha } from "@/components/ficha";
+import { Seta } from "@/components/icones";
+import { Secao } from "@/components/quem-somos/secao";
 import { FECHO } from "@/lib/acervo";
 import { linkDeTelefone, linkDeWhatsapp } from "@/lib/empresa";
 import { buscarEmpresa } from "@/lib/empresa-consulta";
 import { buscarQuemSomos } from "@/lib/espinha-consulta";
 
 /**
- * 06 — O interlocutor. O fecho e a ação.
+ * O fecho de `/quem-somos` — a fotografia e a ação.
  *
- * Depois de cinco blocos de registro denso, a página respira: uma fotografia
- * larga, a única de toda a rota, e então a ficha de atendimento. O ritmo é o
- * argumento — registro, prancha, ledger, e enfim o lugar onde tudo isso serve
- * para alguma coisa.
+ * Depois de quatro seções de texto e uma lista, a página respira: uma
+ * fotografia larga, a única de toda a rota, e então a ficha de atendimento.
  *
  * ⚠️ **Todo lead passa pela Belmare.** Nenhum e-mail de fábrica aparece aqui,
  * nem em lugar nenhum do site. Um representante que se desintermedia do próprio
  * funil está construindo o site do concorrente.
  *
- * ⚠️ A ficha NÃO repete o rodapé. Razão social, CNPJ e Instagram já estão lá, e
- * a identidade legal já abriu a página no bloco 01. Aqui fica só o que responde
- * "o que acontece se eu chamar": canal, telefone, sede, território e a regra de
- * canal de venda — que é a informação que protege o lojista e explica por que o
- * site não dá preço.
+ * ⚠️ A ficha NÃO repete o rodapé. Razão social, CNPJ, endereço e Instagram já
+ * estão lá. Aqui fica só o que responde "o que acontece se eu chamar": o canal,
+ * o telefone e a regra de canal de venda — que é a informação que protege o
+ * lojista e explica por que o site não dá preço.
  *
  * ⚠️ O número do WhatsApp não é escrito em texto: o link vai por
- * `linkDeWhatsapp`, e o número em si é campo do painel (global `Empresa`) desde
- * PRA-122 — não existe mais um valor mockado em código para vazar para a tela.
- * Sem número cadastrado, a ação inteira não é desenhada, e a ficha continua de
- * pé com os telefones. Link morto é pior do que link nenhum.
+ * `linkDeWhatsapp`, e o número em si é campo do painel. Sem número cadastrado,
+ * a ação inteira não é desenhada, e a ficha continua de pé com os telefones.
+ * Link morto é pior do que link nenhum.
  *
- * ⚠️ O sócio não é nomeado enquanto ele não confirmar. "Quem representa"
- * sustenta o argumento sem colocar o nome de uma pessoa no ar sem autorização.
+ * ⚠️ O sócio não é nomeado enquanto ele não confirmar. O parágrafo sustenta o
+ * argumento — uma pessoa responde pelas marcas todas — sem colocar o nome de
+ * alguém no ar sem autorização.
  */
-export async function Interlocutor({ numero }: { numero: string }) {
+export async function Contato() {
   const empresa = await buscarEmpresa();
-  const { interlocutor } = await buscarQuemSomos();
+  const { contato } = await buscarQuemSomos();
 
   const whatsapp = linkDeWhatsapp(empresa.whatsapp, "estava em quem somos");
   const telefones = empresa.telefones ?? [];
@@ -59,17 +56,14 @@ export async function Interlocutor({ numero }: { numero: string }) {
             causa da posição: esta imagem cai no vão que a seção de projetos
             deixa vazio, e sem legenda um arquiteto lê obra entregue. */}
         <figcaption className="mono uppercase px-5 pt-3 text-graphite md:px-8">
-          Imagem de referência — não é obra entregue pela Belmare
+          Imagem de referência, não é obra entregue pela Belmare
         </figcaption>
       </figure>
 
-      <Bloco numero={numero}>
-        <h2 className="text-h1 max-w-[18ch] font-normal text-balance">
-          Fale com quem representa.
-        </h2>
-        {interlocutor !== undefined && (
+      <Secao titulo="Fale com a Belmare.">
+        {contato !== undefined && (
           <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-            {interlocutor}
+            {contato}
           </p>
         )}
 
@@ -86,14 +80,13 @@ export async function Interlocutor({ numero }: { numero: string }) {
         )}
 
         {/* Duas linhas, não quatro. Sede e território saíram: um está no rodapé
-            150px abaixo, com CEP e tudo, e o outro é o assunto inteiro do bloco
-            04. O que sobra responde "e se eu chamar?".
+            150px abaixo, com CEP e tudo, e o outro é uma seção inteira desta
+            página. O que sobra responde "e se eu chamar?".
 
             O telefone fica, e sim, ele também está no rodapé. É deliberado:
             quem chega até aqui está agindo, e mandar essa pessoa rolar atrás de
             um número é atrito num fecho de contato. Rodapé é a face legal do
-            site; esta ficha é a face do atendimento. Repetir dois números nesse
-            par de papéis é o que rodapé serve para fazer. */}
+            site; esta ficha é a face do atendimento. */}
         <Ficha className="mt-12 md:mt-16">
           {telefones.length > 0 && (
             <FichaLinha rotulo="Telefone">
@@ -110,24 +103,26 @@ export async function Interlocutor({ numero }: { numero: string }) {
               </span>
             </FichaLinha>
           )}
-          {/* Positivo, e não na negativa. Era "A Belmare não vende direto ao
-              consumidor final" — a mesma informação escrita como recusa, na
-              linha final de uma página de contato. O que o visitante precisa
-              saber é para onde ele vai ser mandado, e a resposta é uma loja
-              perto dele.
+          {/* ⚠️ AQUI HAVIA UMA LINHA "Como comprar", E ELA SAIU EM 05/08/2026,
+              A PEDIDO DO CLIENTE. Dizia: "A venda é sempre feita por uma loja.
+              A Belmare recebe o contato e indica a loja mais próxima dentro do
+              território atendido."
 
-              ⚠️ A lista de estados saiu daqui, e não por espaço: `emLista`
-              devolve "Paraná, Santa Catarina e Rio Grande do Sul" sem
-              preposição, e a frase imprimia "em Paraná" — que não é português.
-              Cada estado pede a sua ("no Paraná", "em Santa Catarina", "no Rio
-              Grande do Sul"), e essa regência não cabe numa junção genérica. O
-              território já está desenhado no bloco 03 e listado no rodapé. */}
-          <FichaLinha rotulo="Como comprar">
-            A venda é sempre feita por uma loja. A Belmare recebe o contato e
-            indica a loja mais próxima dentro do território atendido.
-          </FichaLinha>
+              Ela já tinha sido reescrita uma vez, de "A Belmare não vende
+              direto ao consumidor final" para a forma positiva acima — e o
+              problema sobreviveu à reescrita, porque não era o tom. **É uma
+              ficha de contato explicando o funcionamento de uma representação
+              comercial para um leitor que já trabalha com uma.** Lojista e
+              escritório de arquitetura sabem que representada não fatura no
+              varejo; escrever isso na última linha da página é gastar a linha
+              mais lida com o que ninguém veio perguntar.
+
+              O caminho continua desenhado onde ele é ação e não aviso: as duas
+              portas da home (`components/portas.tsx`) e a página de contato,
+              que manda o comprador para o WhatsApp e o lojista para a proposta
+              de revenda. Não devolva esta linha à ficha. */}
         </Ficha>
-      </Bloco>
+      </Secao>
     </>
   );
 }

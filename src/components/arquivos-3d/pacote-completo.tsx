@@ -80,7 +80,7 @@ export function PacoteCompleto({ pacote }: { pacote: Baixavel }) {
         <p className="text-body max-w-[52ch] text-pretty text-graphite">
           Os blocos das quatro fábricas, com as cartas de tecido e pintura,
           montados num pacote só. É o único arquivo desta página que pede seus
-          dados — os de cima baixam direto, sem formulário.
+          dados: os de cima baixam direto, sem formulário.
         </p>
 
         <p className="text-support mt-4 max-w-[52ch] text-pretty text-graphite">

@@ -50,9 +50,20 @@ export async function Apresentacao() {
   return (
     <section className="px-5 pt-12 pb-14 md:px-8 md:pt-20 md:pb-24">
       <div className="max-w-[64rem] min-w-0">
+        {/* ⚠️ **NÃO REPETE O H1 DA HOME.** A home abre com "Representação
+            comercial de mobiliário de área externa." — a categoria, para quem
+            cai de busca sem saber o que a empresa é. Repeti-la aqui gastaria a
+            primeira linha da página com o que o visitante acabou de ler duas
+            rolagens atrás. Esta nomeia as duas pessoas que compram e o
+            território, que é o passo seguinte da mesma conversa.
+
+            ⚠️ E não conta fábricas: "Quatro fábricas. Um interlocutor." foi
+            rejeitado na home em 30/07/2026 por descrever o ORGANOGRAMA da
+            Belmare para quem não veio saber como ela se organiza. A contagem
+            entra no parágrafo, onde é dado, e não no título, onde seria a
+            empresa se descrevendo por dentro. */}
         <h1 className="text-h1 max-w-[24ch] font-normal text-balance">
-          A Belmare é uma representação comercial de mobiliário para área
-          externa.
+          A Belmare atende lojas e escritórios de arquitetura no Sul do país.
         </h1>
 
         {/* Gerada inteira: a contagem sai das representadas publicadas, a
@@ -66,8 +77,8 @@ export async function Apresentacao() {
             catálogo; um site brasileiro escreve a segunda informação numa
             segunda frase. */}
         <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-          A empresa representa {quantas} fábricas brasileiras junto às lojas e
-          aos escritórios de arquitetura do Sul do país.
+          A empresa representa {quantas} fábricas brasileiras de mobiliário para
+          área externa.
           {cidade !== undefined && ` A sede fica em ${cidade}.`}
           {anos !== undefined &&
             ` A Belmare trabalha nesse ramo há ${anos} anos.`}

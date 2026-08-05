@@ -34,8 +34,7 @@ export const revalidate = 86400;
  * ⚠️ Gerada, e não constante, por causa de uma linha só: `siteName` é o nome
  * público da empresa, e ele é campo do painel desde PRA-122. Uma constante aqui
  * voltaria a ser um nome escrito à mão que ninguém lembra de trocar no dia em
- * que a empresa mudar de nome — que é literalmente o assunto do bloco 03 de
- * `/quem-somos`.
+ * que a empresa mudar de nome — e esta empresa já mudou uma vez.
  */
 export async function generateMetadata(): Promise<Metadata> {
   const { nomeCompleto } = await buscarEmpresa();
@@ -47,8 +46,13 @@ export async function generateMetadata(): Promise<Metadata> {
          nomeia o que a empresa É para quem compra dela — representação, para
          loja e para projeto. */
       default:
-        "Belmare Representações — mobiliário de área externa para lojas e arquitetos",
-      template: "%s — Belmare Representações",
+        /* ⚠️ "móveis DE área externa" aqui, e "móveis PARA área externa" no h1
+           e na descrição: a troca de 05/08/2026 encostou dois "para" na mesma
+           linha ("móveis para área externa para lojas e arquitetos"). As duas
+           regências são corretas e correntes no setor; nesta linha a primeira
+           some para o público ficar com a única preposição que importa. */
+        "Belmare Representações: móveis de área externa para lojas e arquitetos",
+      template: "%s · Belmare Representações",
     },
     /* ⚠️ Duas correções nesta linha, e as duas valem para o site inteiro.
        Primeira: cada estado pede a sua preposição ("no Paraná", "em Santa
@@ -61,7 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
        lista de peças. O cliente de uma representação comercial não é o
        consumidor final — ver a nota longa em `components/abertura.tsx`. */
     description:
-      "Representação comercial de mobiliário de área externa de alto padrão. A Belmare representa Marê Mobília, GDA Móveis, Bux Garden e Trisol, e atende lojas e escritórios de arquitetura no Paraná, em Santa Catarina e no Rio Grande do Sul desde 1999.",
+      "Representação comercial de móveis para área externa de alto padrão. A Belmare representa Marê Mobília, GDA Móveis, Bux Garden e Trisol, e atende lojas e escritórios de arquitetura no Paraná, em Santa Catarina e no Rio Grande do Sul desde 1999.",
     openGraph: {
       type: "website",
       locale: "pt_BR",
@@ -71,10 +75,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const CONTRATO_DE_DIRECAO = `<!--
-THESIS: A primeira linha nomeia OBJETOS, não o organograma. Recusa o herói de
-categoria ("móveis para área externa"), o grid de logos e — desde 30/07/2026 —
-o jargão de contar fábricas e interlocutores, que descreve como a empresa se
-organiza para quem não perguntou.
+THESIS: A primeira linha diz o RAMO, com o nome que o ramo usa, porque quem
+lê já é do ramo. Recusa o herói de categoria pura ("móveis para área externa",
+que descreve uma fábrica), o grid de logos, o jargão de contar fábricas e
+interlocutores (30/07/2026) e a promessa de posicionamento sem verbo
+(05/08/2026). O que sobra no h1 é o que um lojista precisa saber em dois
+segundos: é uma representação, e o produto é área externa.
 OWN-WORLD: Papel #F5F3F0, tinta #17171A, grafite #3D3D40, fio #C9C6C0. Raio 0,
 sombra 0. A interface é acromática; o matiz existe em um único objeto, o
 logotipo (azul #00339A, verde #009A34, vermelho #FE0100), e não sai dele —
@@ -86,9 +92,10 @@ empresa responde pelas quatro fábricas que montam a área externa inteira, e
 escolhe uma das duas portas. O site fala com loja e com escritório, nunca com
 consumidor final.
 FIRST VIEWPORT: cabeçalho 72px em papel; fotografia sangrando na altura da
-tela; sobre o pé da imagem, "A área externa inteira, para quem especifica e
-para quem revende." e a linha que nomeia Marê, GDA, Bux e Trisol, o público, o
-território e o tempo de casa. WhatsApp persistente no topo.
+tela; sobre o pé da imagem, "Representação comercial de móveis para área
+externa." e a linha que nomeia Marê, GDA, Bux e Trisol, o território e o tempo
+de casa. Nada define a categoria nem nomeia o leitor de volta para ele — o
+comprador de loja já sabe as duas coisas. WhatsApp persistente no topo.
 FORM: Direção A — editorial/arquivo. Revisado em 30/07/2026: o eixo de
 material foi cancelado por falta de dado (4 de 32 células), e com ele saíram a
 marca-sistema generativa e a anatomia de etiqueta. Ver briefing/estrutura.md §4.

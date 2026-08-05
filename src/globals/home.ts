@@ -15,22 +15,25 @@ import { aoPublicarGlobal, VERSOES_DO_GLOBAL } from "@/globals/apoio";
  *
  * ⚠️ **O QUE NÃO ENTRA AQUI, E POR QUÊ:**
  *
- *   · **o h1 "A área externa inteira, para quem especifica e para quem
- *     revende."** — fixo. Três versões já caíram: "Quatro fábricas. Um
- *     interlocutor." (jargão de organograma, 30/07/2026), "Móveis para área
- *     externa" (descreve uma fábrica, e a Belmare é representação) e "Sofá,
- *     mesa, espreguiçadeira e ombrelone." (prometia varejo numa empresa que
- *     não vende direto, 04/08/2026). Um campo de texto aqui é um convite para
- *     uma das três voltar numa tarde de edição. Trocar esse título é
+ *   · **o h1 "Representação comercial de móveis para área externa."** —
+ *     fixo. Quatro versões já caíram: "Quatro fábricas. Um interlocutor."
+ *     (jargão de organograma, 30/07/2026), "Móveis para área externa"
+ *     (descreve uma fábrica, e a Belmare é representação), "Sofá, mesa,
+ *     espreguiçadeira e ombrelone." (prometia varejo numa empresa que não
+ *     vende direto, 04/08/2026) e "A área externa inteira, para quem
+ *     especifica e para quem revende." (promessa de posicionamento que não
+ *     diz o ramo, 05/08/2026). Um campo de texto aqui é um convite para uma
+ *     das quatro voltar numa tarde de edição. Trocar esse título é
  *     reposicionar a empresa, e reposicionamento é conversa, não edição.
  *   · **a linha de apoio da abertura** — ela é feita de dado: a lista das
- *     marcas, o território e o tempo de casa saem do painel e do calendário,
- *     não de um campo (`components/abertura.tsx`).
+ *     marcas e o tempo de casa saem do painel e do calendário, não de um campo
+ *     (`components/abertura.tsx`).
  *   · **o nome e o texto das duas portas** — fixo por decisão 3 da spec. As
  *     duas têm que ter peso igual e a simetria "eu especifico / eu compro" é o
  *     argumento; um campo por porta é como uma delas vira maior que a outra.
  *   · **o título da galeria** — a frase é fixa e o número dentro dela é gerado
- *     ("As quatro fábricas…" conta as representadas publicadas).
+ *     ("O que cada uma das quatro fábricas faz." conta as representadas
+ *     publicadas).
  *   · **o aviso de imagem de referência** — gerado da marcação de mock.
  */
 export const Home: GlobalConfig = {
@@ -60,7 +63,7 @@ export const Home: GlobalConfig = {
       label: "Parágrafo da seção das marcas",
       admin: {
         description:
-          "O parágrafo logo abaixo de \"As quatro fábricas que a Belmare representa.\" — o título conta as marcas sozinho, então não repita o número nele. Em branco, o parágrafo desaparece e a seção abre direto nas fotografias. ⚠️ Se uma quinta fábrica entrar, esta frase é sua para reescrever: o título vira sozinho, este texto não.",
+          "O parágrafo logo abaixo de \"O que cada uma das quatro fábricas faz.\" — o título conta as marcas sozinho, então não repita o número nele. Em branco, o parágrafo desaparece e a seção abre direto nas fotografias, e isso é um resultado válido: cada fábrica já mostra a própria linha logo abaixo. ⚠️ Não escreva benefício aqui. \"Conforto\" e \"sombra\" dizem o que o cliente sente; quem lê esta página especifica e revende, e lê o que a fábrica faz. E não conte interlocutores — \"um interlocutor para as quatro\" já foi recusado duas vezes. ⚠️ Se uma quinta fábrica entrar, esta frase é sua para reescrever: o título vira sozinho, este texto não.",
       },
     },
   ],

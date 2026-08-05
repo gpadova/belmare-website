@@ -2,10 +2,14 @@ import { describe, expect, test } from "vitest";
 
 import {
   arquivo3DDoPainel,
-  arquivosPorFormato,
+  arquivos3DDoSite,
   bibliotecaPorRepresentada,
   formatoDoArquivo,
   pacoteDoPainel,
+  recorteDaBiblioteca,
+  recortesDeFormato,
+  recortesDeMarca,
+  SEM_RECORTE,
   totalDeArquivos3D,
   type Arquivo3D,
 } from "@/lib/arquivos3d";
@@ -243,58 +247,188 @@ describe("a biblioteca agrupada por representada", () => {
   });
 });
 
-/**
- * O segundo eixo do agrupamento — por formato, DENTRO de cada fábrica.
- *
- * ⚠️ O que estes testes protegem é a distinção que o projeto inteiro carrega:
- * agrupar arruma na tela o que a consulta escopada já trouxe junto; filtrar
- * seria a consulta pedir duas fábricas de uma vez. Esta função é pura e recebe
- * os arquivos de UMA marca — não há por onde ela virar a segunda coisa.
- */
-describe("os arquivos de uma fábrica, agrupados por formato", () => {
-  const skp = (nome: string): Arquivo3D => ({ ...ITEM, nome, formato: "SKP" });
-  const dwg = (nome: string): Arquivo3D => ({ ...ITEM, nome, formato: "DWG" });
+const skp = (nome: string): Arquivo3D => ({ ...ITEM, nome, formato: "SKP" });
+const dwg = (nome: string): Arquivo3D => ({ ...ITEM, nome, formato: "DWG" });
 
-  test("a mesma peça em dois formatos vira duas linhas em dois grupos, não duas linhas seguidas", () => {
-    // O caso que motiva o eixo: "Cadeira Zuri" existe em `.skp` e em `.dwg`, e
-    // numa lista plana as duas linhas levam o MESMO nome.
+const TRISOL = { slug: "trisol", nome: "Trisol" };
+const GDA = { slug: "gda", nome: "GDA" };
+
+/**
+ * A biblioteca achatada em uma lista só — o que substituiu o agrupamento por
+ * `<h2>` de fábrica e `<h3>` de formato em 05/08/2026.
+ *
+ * ⚠️ O que estes testes protegem é a ORDEM, que é a única coisa que o
+ * agrupamento dava de graça e a lista plana precisa afirmar: a fábrica manda, o
+ * nome da peça vem depois, e o formato desempata — para "Cadeira Zuri" em `.skp`
+ * e em `.dwg` saírem encostadas uma na outra em vez de separadas por tudo que
+ * caia entre elas no alfabeto.
+ */
+describe("a biblioteca inteira, achatada em lista", () => {
+  test("a ordem das fábricas é a que chegou do painel, nunca alfabética", () => {
+    // `Representada.ordem` é campo de painel, e é a mesma ordem da galeria da
+    // home. Reordenar por nome aqui faria a mesma marca aparecer em primeiro num
+    // lugar e em terceiro no outro.
     expect(
-      arquivosPorFormato([skp("Cadeira Zuri"), dwg("Cadeira Zuri")]),
-    ).toEqual([
-      { formato: "DWG", arquivos: [dwg("Cadeira Zuri")] },
-      { formato: "SKP", arquivos: [skp("Cadeira Zuri")] },
+      arquivos3DDoSite([
+        { marca: TRISOL, arquivos: [skp("Mesa Vitta")] },
+        { marca: GDA, arquivos: [skp("Cadeira Zuri")] },
+      ]).map(({ marca }) => marca.slug),
+    ).toEqual(["trisol", "gda"]);
+  });
+
+  test("a mesma peça em dois formatos sai em linhas ENCOSTADAS, e é o caso que motivava o agrupamento", () => {
+    expect(
+      arquivos3DDoSite([
+        {
+          marca: TRISOL,
+          arquivos: [skp("Cadeira Zuri"), dwg("Mesa Vitta"), dwg("Cadeira Zuri")],
+        },
+      ]).map(({ arquivo }) => `${arquivo.nome} ${arquivo.formato}`),
+    ).toEqual(["Cadeira Zuri DWG", "Cadeira Zuri SKP", "Mesa Vitta DWG"]);
+  });
+
+  test("a marca é estreitada a slug e nome — a `Representada` inteira não atravessa para o cliente", () => {
+    const [item] = arquivos3DDoSite([
+      {
+        // O excesso que uma `Representada` de verdade carrega: fotografia,
+        // ficha, designers. Nada disso pode sair daqui.
+        marca: { ...TRISOL, foto: "capa.jpg" } as typeof TRISOL,
+        arquivos: [skp("Cadeira Zuri")],
+      },
+    ]);
+
+    expect(item.marca).toEqual({ slug: "trisol", nome: "Trisol" });
+  });
+
+  test("sem grupo nenhum, lista vazia — e não uma linha sem dono", () => {
+    expect(arquivos3DDoSite([])).toEqual([]);
+  });
+});
+
+/**
+ * Os dois eixos do filtro.
+ *
+ * ⚠️ O que estes testes protegem é a promessa que o número ao lado de cada opção
+ * faz: ele é **quantas linhas sobram se você clicar aqui**, contado sobre a
+ * lista já recortada pelo outro eixo. É a regra do `SKP · 8,4 MB` aplicada a um
+ * controle — declarar o custo do clique antes do clique — e é ela que impede a
+ * combinação que devolve tela vazia.
+ */
+describe("os recortes de cada eixo", () => {
+  const BIBLIOTECA = arquivos3DDoSite([
+    { marca: TRISOL, arquivos: [skp("Cadeira Zuri"), dwg("Cadeira Zuri")] },
+    { marca: GDA, arquivos: [skp("Mesa Vitta")] },
+  ]);
+
+  test("as fábricas saem na ordem de aparição, com a contagem de cada uma", () => {
+    expect(recortesDeMarca(BIBLIOTECA)).toEqual([
+      { chave: "trisol", rotulo: "Trisol", quantidade: 2 },
+      { chave: "gda", rotulo: "GDA", quantidade: 1 },
     ]);
   });
 
   test("os formatos saem em ordem alfabética — `formato` é gerado, não há campo de ordem a respeitar", () => {
-    expect(
-      arquivosPorFormato([skp("Mesa Vitta"), dwg("Cadeira Zuri")]).map(
-        (g) => g.formato,
-      ),
-    ).toEqual(["DWG", "SKP"]);
-  });
-
-  test("dentro do formato, a ordem por nome que a consulta trouxe é preservada", () => {
-    // `sort: "nome"` em `buscarArquivos3DDaRepresentada` é quem ordena; agrupar
-    // não pode dar uma segunda opinião sobre isso.
-    expect(
-      arquivosPorFormato([
-        skp("Banqueta Ilha"),
-        skp("Cadeira Zuri"),
-        skp("Mesa Vitta"),
-      ])[0].arquivos.map((a) => a.nome),
-    ).toEqual(["Banqueta Ilha", "Cadeira Zuri", "Mesa Vitta"]);
-  });
-
-  test("uma fábrica com um formato só continua sendo um grupo — nenhum caso especial", () => {
-    expect(arquivosPorFormato([skp("Cadeira Zuri")])).toEqual([
-      { formato: "SKP", arquivos: [skp("Cadeira Zuri")] },
+    expect(recortesDeFormato(BIBLIOTECA)).toEqual([
+      { chave: "DWG", rotulo: "DWG", quantidade: 1 },
+      { chave: "SKP", rotulo: "SKP", quantidade: 2 },
     ]);
   });
 
-  test("sem arquivo nenhum não há formato nenhum — nem um grupo vazio", () => {
-    // A fábrica sem arquivo já foi descartada por `bibliotecaPorRepresentada`
-    // antes de chegar aqui; o grupo de formato vazio não tem como nascer.
-    expect(arquivosPorFormato([])).toEqual([]);
+  test("um eixo só oferece o que existe na lista que recebe — nunca uma opção que zera a tela", () => {
+    // O caso do filtro por formato que a rota recusou duas vezes por escrito:
+    // quatro botões sobre zero arquivo. Com as opções saindo da lista, ele não
+    // tem como nascer.
+    expect(recortesDeFormato([])).toEqual([]);
+    expect(recortesDeMarca([])).toEqual([]);
+  });
+
+  test("o eixo do formato conta sobre a fábrica escolhida, e o da fábrica sobre o formato escolhido", () => {
+    const { marcas, formatos } = recorteDaBiblioteca(
+      BIBLIOTECA,
+      "gda",
+      SEM_RECORTE,
+    );
+
+    // Escolhida a GDA, o eixo do formato só oferece o que a GDA tem — DWG some,
+    // porque `GDA + DWG` seria dois controles concordando em zerar a tela.
+    expect(formatos).toEqual([{ chave: "SKP", rotulo: "SKP", quantidade: 1 }]);
+    // Já o eixo da fábrica não se recorta por si mesmo: as duas continuam lá.
+    expect(marcas.map((o) => o.chave)).toEqual(["trisol", "gda"]);
+  });
+});
+
+/**
+ * O recorte ativo, e a cascata que impede a tela presa.
+ *
+ * ⚠️ O estado guardado no navegador é a INTENÇÃO de quem clicou; o recorte de
+ * fato é derivado. Uma marca que perde o último arquivo, ou um formato que some
+ * quando o `.dwg` é despublicado, deixariam o estado apontando para uma chave
+ * sem correspondente — e a tela ficaria vazia sem nada na página explicando por
+ * quê.
+ */
+describe("o recorte ativo da biblioteca", () => {
+  const BIBLIOTECA = arquivos3DDoSite([
+    { marca: TRISOL, arquivos: [skp("Cadeira Zuri"), dwg("Cadeira Zuri")] },
+    { marca: GDA, arquivos: [skp("Mesa Vitta")] },
+  ]);
+
+  test("sem recorte nenhum, tudo aparece", () => {
+    const { visiveis } = recorteDaBiblioteca(
+      BIBLIOTECA,
+      SEM_RECORTE,
+      SEM_RECORTE,
+    );
+
+    expect(visiveis).toHaveLength(3);
+  });
+
+  test("os dois eixos se cruzam — fábrica E formato, não fábrica OU formato", () => {
+    const { visiveis } = recorteDaBiblioteca(BIBLIOTECA, "trisol", "SKP");
+
+    expect(visiveis.map(({ arquivo }) => arquivo.nome)).toEqual([
+      "Cadeira Zuri",
+    ]);
+  });
+
+  test("um formato que recorta as fábricas todas de uma vez — o que agrupar nunca deu", () => {
+    const { visiveis } = recorteDaBiblioteca(BIBLIOTECA, SEM_RECORTE, "SKP");
+
+    expect(visiveis.map(({ marca }) => marca.slug)).toEqual(["trisol", "gda"]);
+  });
+
+  test("marca que deixou de existir cai fora, e o formato escolhido SOBREVIVE", () => {
+    const { marca, formato, visiveis } = recorteDaBiblioteca(
+      BIBLIOTECA,
+      "marca-que-sumiu",
+      "SKP",
+    );
+
+    expect(marca).toBe(SEM_RECORTE);
+    expect(formato).toBe("SKP");
+    expect(visiveis).toHaveLength(2);
+  });
+
+  test("formato que deixou de existir cai fora, e a marca escolhida SOBREVIVE", () => {
+    const { marca, formato, visiveis } = recorteDaBiblioteca(
+      BIBLIOTECA,
+      "gda",
+      "3DS",
+    );
+
+    expect(marca).toBe("gda");
+    expect(formato).toBe(SEM_RECORTE);
+    expect(visiveis).toHaveLength(1);
+  });
+
+  test("com os dois recortes inválidos a cascata chega ao fim e mostra tudo", () => {
+    const { marca, formato, visiveis } = recorteDaBiblioteca(
+      BIBLIOTECA,
+      "marca-que-sumiu",
+      "3DS",
+    );
+
+    expect(marca).toBe(SEM_RECORTE);
+    expect(formato).toBe(SEM_RECORTE);
+    expect(visiveis).toHaveLength(3);
   });
 });

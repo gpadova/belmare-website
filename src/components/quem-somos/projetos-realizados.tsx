@@ -1,11 +1,11 @@
 import Image from "next/image";
 
-import { Bloco } from "@/components/quem-somos/bloco";
+import { Secao } from "@/components/quem-somos/secao";
 import { buscarProjetosPublicaveis } from "@/lib/projetos-consulta";
 
 /**
- * Projetos realizados — a seção anulável de `/quem-somos`, agora servida
- * pelo painel (PRA-121).
+ * Projetos realizados — a seção anulável de `/quem-somos`, servida pelo painel
+ * (PRA-121).
  *
  * ⚠️ **A SEÇÃO SÓ RENDERIZA COM TRÊS PROJETOS PUBLICÁVEIS OU MAIS.**
  * `buscarProjetosPublicaveis()` já aplica o portão de três — menos disso, a
@@ -14,18 +14,19 @@ import { buscarProjetosPublicaveis } from "@/lib/projetos-consulta";
  * imagem de referência como obra entregue. A exclusão de fotografia mock
  * também já aconteceu antes de chegar aqui — ver `lib/projetos.ts#projetoDoPainel`.
  *
- * Ela cabe entre 05 e 06 sem redesenhar nada, e a página em pé não tem buraco
- * sem ela: foi assim que esta direção sobreviveu ao P43.
+ * ⚠️ **O `numero` SAIU DO PARÂMETRO JUNTO COM A NUMERAÇÃO DA PÁGINA.** Esta
+ * seção era a única cuja posição deslocava a seguinte: com projetos no ar o
+ * fecho virava `06`, sem projetos ele era `05`, e a página carregava esse
+ * cálculo de ordinal para dentro do componente. Sem número na margem
+ * (`components/quem-somos/secao.tsx`), aparecer e desaparecer não custa nada a
+ * ninguém — que é o que uma seção anulável deveria ter sido desde o começo.
  */
-export async function ProjetosRealizados({ numero }: { numero: string }) {
+export async function ProjetosRealizados() {
   const projetos = await buscarProjetosPublicaveis();
   if (projetos.length === 0) return null;
 
   return (
-    <Bloco numero={numero}>
-      <h2 className="text-h1 max-w-[20ch] font-normal text-balance">
-        Projetos entregues no Sul.
-      </h2>
+    <Secao titulo="Projetos entregues no Sul.">
       <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
         Obras em que peças das representadas foram especificadas e instaladas.
         Cada uma com ano, cidade, as marcas envolvidas e o crédito de quem
@@ -63,6 +64,6 @@ export async function ProjetosRealizados({ numero }: { numero: string }) {
           </li>
         ))}
       </ul>
-    </Bloco>
+    </Secao>
   );
 }

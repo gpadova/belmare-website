@@ -53,6 +53,32 @@ async function painel() {
   return getPayload({ config });
 }
 
+/**
+ * A versão da FORMA de `Representada` guardada em cache.
+ *
+ * ⚠️ **A ETIQUETA INVALIDA QUANDO O DADO MUDA; ELA NÃO FAZ NADA QUANDO O TIPO
+ * MUDA — e essa distinção custou um 500 em 05/08/2026.** `unstable_cache`
+ * escreve em disco (`.next/cache`), e a entrada sobrevive ao processo e à
+ * troca de código: só uma escrita no painel dispara `revalidateTag`. Quando
+ * `Catalogo` deixou de admitir documento sem arquivo, as entradas já gravadas
+ * continuaram devolvendo `{"titulo":"Catálogo"}` sem `mb` — e o componente novo,
+ * que confia no tipo, chamou `toLocaleString` em `undefined` a cada requisição.
+ * A rota inteira caiu, com o banco correto e o código correto.
+ *
+ * Trocar a chave é o que torna a entrada velha INALCANÇÁVEL, em vez de esperar
+ * que alguém apague `.next/` na máquina certa — e o mesmo vale no servidor, onde
+ * o cache de dados atravessa deploy.
+ *
+ * ⚠️ **SUBA ESTE NÚMERO SEMPRE QUE `Representada` MUDAR DE FORMA** — campo novo
+ * obrigatório, campo removido, tipo de um campo alterado. Não suba por mudança
+ * de conteúdo: para isso existem as etiquetas, e trocar a chave à toa joga fora
+ * um cache quente sem motivo.
+ */
+const FORMA = 2;
+
+const CHAVE_DE_LISTA = `representadas-v${FORMA}`;
+const CHAVE_POR_SLUG = `representada-por-slug-v${FORMA}`;
+
 /** Todas as marcas cadastradas, na ordem em que a Belmare as apresenta.
  *
  *  ⚠️ Tagueada com as cinco etiquetas de LISTA — não com a de uma marca
@@ -74,7 +100,7 @@ export async function buscarRepresentadas(): Promise<Representada[]> {
 
       return docs.map(representadaDoPainel);
     },
-    ["representadas"],
+    [CHAVE_DE_LISTA],
     [TAG_HOME, TAG_QUEM_SOMOS, TAG_REPRESENTADAS, TAG_CATALOGOS, TAG_RODAPE],
   );
 }
@@ -103,7 +129,7 @@ export async function buscarRepresentadaPorSlug(
       const doc = docs[0];
       return doc === undefined ? undefined : representadaDoPainel(doc);
     },
-    ["representada-por-slug", slug],
+    [CHAVE_POR_SLUG, slug],
     [tagDaRepresentada(slug)],
   );
 }

@@ -57,41 +57,61 @@ const EMPRESA = {
   instagram: "https://www.instagram.com/belmarerepresentacoes",
 };
 
-/** O parágrafo que estava em `components/representadas-galeria.tsx`. */
+/**
+ * O parágrafo que estava em `components/representadas-galeria.tsx`.
+ *
+ * ⚠️ **REESCRITO EM 05/08/2026, E O QUE SAIU IMPORTA MAIS DO QUE O QUE FICOU.**
+ * A frase era "Móvel de autor, estrutura, conforto e sombra. Juntas, resolvem
+ * uma área externa inteira — e há um único interlocutor para as quatro.", e
+ * quebrava três regras que este repositório já tinha escrito:
+ *
+ *   · **"conforto" e "sombra" são benefício.** A ajuda do campo `resolve`, em
+ *     `collections/representadas.ts`, proíbe as duas palavras pelo nome: "'a
+ *     sombra' e 'o conforto' dizem o que o cliente sente, e o arquiteto
+ *     especifica o que a fábrica faz". A regra existia e o parágrafo da home
+ *     passava por cima dela.
+ *   · **"há um único interlocutor para as quatro" é "Quatro fábricas. Um
+ *     interlocutor." em prosa** — o jargão de organograma rejeitado em
+ *     30/07/2026, de volta com outra pontuação.
+ *   · **a enumeração duplicava os cartões.** Cada fábrica já imprime a própria
+ *     linha três dedos abaixo, concreta e conferível ("Ombrelones laterais e
+ *     centrais"), e a lista abstrata acima era a versão pior da mesma coisa.
+ *
+ * O que sobrou faz o trabalho que os cartões não fazem: manda ler as quatro
+ * como um conjunto. O argumento da empresa vira um fato sobre o portfólio, em
+ * vez de uma promessa sobre o resultado.
+ *
+ * ⚠️ Sem número aqui. A quinta fábrica entra pelo painel e esta frase continua
+ * verdadeira sozinha — era esse o defeito de "para as quatro".
+ */
 const HOME = {
-  galeria:
-    "Mobiliário de autor, alumínio fundido, estofado de performance e ombrelone. Linhas que se completam numa área externa inteira, com um interlocutor só.",
+  galeria: "Nenhuma delas repete a linha da outra.",
 };
 
 /**
- * A prosa que estava dentro dos blocos de `/quem-somos`.
+ * A prosa que mora dentro das seções de `/quem-somos`.
  *
- * ⚠️ `nome` e `acervo` começam na SEGUNDA frase do parágrafo. A primeira é
- * montada pelo site com dado — a razão social do cadastro no bloco 02, a
- * contagem de fábricas no bloco 04 — para que a prosa não possa discordar do
- * painel nem congelar num "quatro". Ver `globals/quem-somos.ts`.
+ * ⚠️ `acervo` começa na SEGUNDA frase do parágrafo. A primeira é montada pelo
+ * site contando as representadas cadastradas, para que a prosa não congele num
+ * "quatro" no dia da quinta marca. Ver `globals/quem-somos.ts`.
  *
- * ⚠️ **A REESCRITA CONTA UMA HISTÓRIA, E ISSO NÃO AFROUXOU NENHUMA REGRA.** A
- * versão anterior era prosa de arquivo: explicava a própria página ("esta
- * página não narra a empresa — mostra o registro dela"), legendava uma tabela
- * de CNAEs que já não existe, e justificava ao visitante uma decisão interna de
- * funil. Nenhuma frase daqui narra intenção, sonho ou valor de quem fundou a
- * empresa — o arco é feito só do que está em documento: o nome antigo lista os
- * produtos do começo, e o cadastro de representadas lista os de hoje.
+ * ⚠️ **A PÁGINA FOI REFEITA EM 05/08/2026, E DOIS DESTES CAMPOS SUMIRAM COM OS
+ * BLOCOS QUE ELES ESCREVIAM.** `registro` legendava o ano de fundação em
+ * display; `nome` era o parágrafo do bloco que comparava o nome público
+ * anterior ao logotipo de hoje. Os dois contavam de onde a empresa veio para um
+ * visitante que veio perguntar outra coisa — em que ano a Belmare abriu e como
+ * ela se chamava antes não decidem conversa comercial nenhuma. No lugar deles
+ * entram `apresentacao` (o que a empresa é) e `atuacao` (o que ela faz por quem
+ * chega).
  *
  * ⚠️ **O REGISTRO É O DE UM SITE BRASILEIRO, NÃO O DE UM PORTFÓLIO DE DESIGN.**
- * A primeira tentativa de reescrita caiu num terceiro estilo, pior que o
- * original: fragmentos sem sujeito e substantivo no singular sem artigo
- * ("móvel de jardim, ombrelone, móvel de design"), antíteses de duas frases
- * nominais, travessão a cada parágrafo. Ninguém escreve assim em português. A
- * referência do setor é como as próprias fábricas contam a história delas — a
- * Butzke, de Timbó, abre com "Foi no ano de 1899 que Emil Butzke produziu as
- * primeiras peças em madeira. Naquela época as peças mais necessárias eram
- * baldes, barricas, bacias para cozinha e para banho, e carroças para
- * transporte": oração com verbo, substantivo concreto no plural, cronologia
- * simples. O polo oposto, que a lista vinculante desta página já proíbe, é o
- * "somos mais do que uma representação comercial: somos parceiros estratégicos
- * da indústria" que a categoria escreve.
+ * Uma tentativa anterior de reescrita caiu num estilo pior que o original:
+ * fragmentos sem sujeito e substantivo no singular sem artigo ("móvel de
+ * jardim, ombrelone, móvel de design"), antíteses de duas frases nominais,
+ * travessão a cada parágrafo. Ninguém escreve assim em português. O polo
+ * oposto, que a lista vinculante desta página já proíbe, é o "somos mais do que
+ * uma representação comercial: somos parceiros estratégicos da indústria" que a
+ * categoria escreve.
  *
  * Ao editar estes campos, o teste é ler em voz alta: se soar como legenda de
  * catálogo ou como slogan, está errado nos dois casos.
@@ -101,13 +121,13 @@ const HOME = {
  * como a página congela em "quatro" no dia da quinta marca.
  */
 const QUEM_SOMOS = {
-  registro:
-    "Na época a empresa se chamava Bello Mare e trabalhava com pouco mais que isso: ombrelones e móveis de design. O nome mudou e a linha cresceu, mas o ramo é o mesmo até hoje: mobiliário para área externa, sempre através de lojas.",
-  nome:
-    "O nome antigo listava os produtos um a um, que era como as lojas encontravam a empresa nos anos 1990. Belmare é mais curto, e quem quiser saber o que a empresa vende encontra tudo no catálogo de cada representada.",
+  apresentacao:
+    "A Belmare não fabrica e não vende ao consumidor final: ela representa as fábricas junto de quem revende e de quem especifica. Quem compra trata das marcas todas na mesma conversa, com a mesma pessoa.",
+  atuacao:
+    "A Belmare trabalha junto da loja e do escritório de arquitetura, do primeiro desenho até a peça instalada. A venda é sempre fechada pela loja, e o contato com as fábricas passa pela Belmare.",
   acervo:
-    "Cada uma cobre uma parte da área externa, e juntas elas atendem um projeto completo. As linhas não se sobrepõem.",
-  interlocutor:
+    "Cada uma cobre uma parte da área externa, e as linhas não se sobrepõem. O catálogo completo de cada fábrica está na página dela.",
+  contato:
     "Quem atende é quem representa as fábricas. A mesma pessoa responde à primeira dúvida de especificação, acompanha o pedido na loja e resolve a assistência três anos depois, para qualquer uma das marcas.",
 };
 
@@ -144,7 +164,7 @@ async function semear(): Promise<void> {
   for (const [slug, rotulo, dados] of [
     ["empresa", "identidade, telefones e endereço", EMPRESA],
     ["home", "o parágrafo da seção das marcas", HOME],
-    ["quem-somos", "a prosa dos blocos numerados", QUEM_SOMOS],
+    ["quem-somos", "a prosa das seções da página", QUEM_SOMOS],
   ] as const) {
     console.log(`- ${slug}`);
     resultados[await semearGlobal(payload, slug, rotulo, dados)]++;

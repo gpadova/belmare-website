@@ -1,242 +1,200 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { AcaoDeFecho } from "@/components/acao-de-fecho";
-import { Seta } from "@/components/icones";
-import {
-  GRADE_DA_LINHA,
-  LinhaDeCatalogo,
-  TETO_DA_LISTA,
-} from "@/components/linha-de-catalogo";
-import {
-  catalogoPublicado,
-  documentosDeCatalogo,
-  representadasSemCatalogo,
-} from "@/lib/representadas";
+import { ListaDeCatalogos } from "@/components/catalogos/lista-de-catalogos";
+import { buscarEmpresa } from "@/lib/empresa-consulta";
+import { emLista } from "@/lib/frase";
+import { catalogosDoSite, marcasComCatalogo } from "@/lib/representadas";
 import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
  * ⚠️ A DESCRIÇÃO SAI DO DADO, e a razão é que ela é o texto que o arquiteto lê
- * no Google — a única superfície do site que aparece antes do site. A primeira
- * versão anunciava "os catálogos das 4 fábricas … em PDF, com formato e peso
- * declarados antes do clique", e as três afirmações eram falsas ao mesmo tempo:
- * uma das quatro não declara catálogo, nenhum documento está em PDF aqui, e não
- * há um peso medido no site inteiro. Prometer no resultado de busca o que a
- * própria página desmente é a pior versão de inventar dado, porque quem clica
- * chega já desmentido.
+ * no Google — a única superfície do site que aparece antes do site. Uma versão
+ * anterior anunciava "os catálogos das 4 fábricas … em PDF, com formato e peso
+ * declarados antes do clique" enquanto não havia um único PDF no site: prometer
+ * no resultado de busca o que a própria página desmente é a pior versão de
+ * inventar dado, porque quem clica chega já desmentido.
  *
- * ⚠️ **É `generateMetadata`, E NÃO `metadata`, PORQUE A FONTE É O PAINEL.** A
- * descrição é derivada das marcas cadastradas, e leitura de painel é assíncrona
- * — um `const` em escopo de módulo não consegue esperar por ela. Tê-la estática
- * era o que amarrava esta rota ao array escrito à mão.
+ * ⚠️ **AS DUAS ESCRITAS SÃO O ESTADO REAL DO ACERVO, não uma variação de tom.**
+ * Sem nenhum PDF hospedado, a descrição não promete download nenhum — ela diz o
+ * que de fato acontece hoje, que é a Belmare mandar o arquivo.
+ *
+ * ⚠️ É `generateMetadata`, e não `metadata`, porque a fonte é o painel: leitura
+ * de painel é assíncrona, e um `const` em escopo de módulo não espera por ela.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const documentos = documentosDeCatalogo(await representadasDaPagina());
-  const haPublicado = documentos.some((d) => catalogoPublicado(d.catalogo));
+  const catalogos = catalogosDoSite(await representadasDaPagina());
+  const marcas = marcasComCatalogo(catalogos);
 
   return {
     title: "Catálogos",
-    description: `Os catálogos das fábricas de mobiliário de área externa representadas pela Belmare: ${documentos
-      .map((d) => d.representada.nome)
-      .join(", ")}. Medida, acabamento e ficha cotada — ${
-      haPublicado
-        ? "com formato e peso declarados antes do clique."
-        : "peça o arquivo pelo WhatsApp."
-    }`,
+    description:
+      catalogos.length === 0
+        ? "Os catálogos das fábricas de móveis para área externa representadas pela Belmare. Peça o catálogo da fábrica que você precisa pelo WhatsApp e ele chega direto de quem representa as fábricas no Sul do Brasil."
+        : `Os catálogos de ${emLista(
+            marcas.map((m) => m.nome),
+          )} em PDF, com formato e peso declarados antes do clique e sem cadastro para baixar. Medida e acabamento de móveis para área externa, de quem representa as fábricas no Sul do Brasil.`,
   };
 }
 
 /**
- * `/catalogos` — o índice de documentos.
+ * `/catalogos` — a lista de catálogos, recortável por fábrica.
  *
- * Dois problemas nasceram junto com esta rota, e nenhum era de layout.
+ * ⚠️ **ESTA ROTA FOI REFEITA EM 05/08/2026, E A REFORMA REVERTE TRÊS DECISÕES
+ * DECLARADAS DA PRIMEIRA VERSÃO.** Não são ajustes de layout; são inversões, e
+ * ficam escritas aqui porque a versão anterior deixou os argumentos dela no
+ * mesmo lugar.
  *
- * O primeiro: **não existe um único PDF.** Nada foi recebido até 30/07/2026, e
- * a implementação literal do briefing — "os PDFs, lista plana" — renderiza uma
- * página em branco. Página em branco atrás de item de menu é pior que o 404 que
- * estava aqui antes. A saída não foi inventar arquivo nem escrever "em breve":
- * foi tratar **o estado do catálogo como o dado**. A Trisol declara edição 2026,
- * a Marê e a GDA publicam catálogo sem dizer de que ano, a Bux não declara nada.
- * Quatro fábricas, quatro estados de conhecimento diferentes — e isso é
- * informação real para quem vai decidir se pede.
+ * **1. A entrada volta a ser a fábrica.** A primeira versão fazia do DOCUMENTO o
+ * assunto e rebaixava a marca a qualificador dentro do título ("Catálogo
+ * Trisol"), para não ser a quarta enumeração das mesmas quatro marcas. O
+ * argumento era bom e a prática o derrubou: uma fábrica tem N catálogos, não um.
+ * Com seis da Marê e quatro da GDA numa lista ordenada por edição, as fábricas
+ * se embaralham e ninguém acha o que veio buscar. Quem abre esta página abre
+ * sabendo de que fábrica quer o catálogo — essa é a pergunta, e a página passa a
+ * respondê-la.
  *
- * O segundo: esta seria a **quarta enumeração das mesmas quatro marcas** —
- * galeria da home, ledger de `/quem-somos` 05, registros de `/representadas`, e
- * agora. O que a tira da repetição é a inversão: **a linha é o documento, e a
- * marca só qualifica o título dele** — "Catálogo Trisol". A lista ordena por
- * edição, não por fábrica; aceita duas entradas da mesma fábrica sem mudar de
- * forma; e o dia em que a Marê responder "um PDF por coleção" (P22), ela absorve
- * trinta linhas sem redesenho.
+ * **2. O filtro por marca existe.** A primeira versão o listava entre o que
+ * "NÃO ENTRA", junto com a grade de capas e a subpágina por marca. Ele entra, e
+ * pelo mesmo motivo do item 1. Filtrar aqui **não** reabre taxonomia global nem
+ * viola o princípio de que nada atravessa duas fábricas: é `Array.filter` sobre
+ * uma leitura que a página já fazia, sem consulta nova e sem rota nova.
+ *
+ * **3. Um catálogo é um arquivo.** A primeira versão declarava documentos que a
+ * Belmare ainda não tinha em mãos, com a linha virando um pedido pelo WhatsApp.
+ * A intenção era honestidade — declarar o que existe no mundo em vez de fingir
+ * que a fábrica não tem catálogo. O que chegou na tela foi o contrário: três
+ * linhas anunciando documentos para zero uploads e, sem número de WhatsApp
+ * cadastrado, a linha virava um `<div>` com título sublinhado e destino nenhum.
+ * Um botão morto. **A regra agora é literal: sobe o PDF, aparece a linha.** Ver
+ * a nota de `lib/representadas.ts#Catalogo`.
+ *
+ * ⚠️ **O ARGUMENTO EM COLUNA SAIU INTEIRO, e é a mudança que o cliente pediu
+ * primeiro.** A coluna da esquerda explicava como a indústria funciona — quem
+ * publica o catálogo, quem entrega o arquivo, o que não vem dentro dele, qual
+ * fábrica ainda não declarou o dela. É informação de dentro do balcão, escrita
+ * para quem monta o site, e nenhuma linha dela ajuda quem chegou querendo um
+ * PDF. A página passa a ser: título, filtro, lista, pedido.
  *
  * A sequência:
  *
- *   Coluna esquerda   o que é a página, e o que não está no arquivo
- *   Coluna direita    os documentos, ordenados por edição
- *   Fecho             o pedido coletivo
+ *   Cabeçalho   o que é a página, em uma linha
+ *   Filtro      as fábricas que têm catálogo, com a contagem de cada uma
+ *   Lista       os catálogos, agrupados por fábrica na ordem do painel
+ *   Fecho       o pedido pelo WhatsApp
  *
- * ⚠️ **É A PRIMEIRA SUPERFÍCIE DO SITE SEM UMA ÚNICA IMAGEM, e é decisão.** O
- * DESIGN.md declara o teste sobre si mesmo: tire tudo menos tipografia, fio e
- * foto, e a página tem que ficar de pé. Aqui ela fica de pé sem a foto. Numa
- * rota em que o visitante veio buscar um arquivo, fotografia de ambiente é ruído
- * entre ele e o arquivo.
+ * ⚠️ **CONTINUA SEM UMA ÚNICA IMAGEM, e continua sendo decisão.** Numa rota em
+ * que o visitante veio buscar um arquivo, fotografia de ambiente é ruído entre
+ * ele e o arquivo.
  *
- * ⚠️ O QUE NÃO ENTRA, e a lista é vinculante: link para o site da fábrica — o
- * catálogo 2026 da Trisol está público lá, e linkar entrega o lead, o e-mail
- * comercial deles e a comissão de graça · "em breve", "aguarde" ou travessão em
- * campo vazio · peso ou edição estimados · capa de catálogo, miniatura de PDF,
- * visualizador embutido · grade, filtro ou subpágina por marca, que é o segundo
- * índice das mesmas marcas voltando pela porta dos fundos · uma PRANCHA 03, que
- * seria maneirismo: as duas existentes desenham dado com geometria, e uma lista
- * de arquivos não tem geometria.
+ * ⚠️ O QUE NÃO ENTRA, e a lista continua vinculante: link para o site da
+ * fábrica — o catálogo 2026 da Trisol está público lá, e linkar entrega o lead,
+ * o e-mail comercial deles e a comissão de graça · "em breve", "aguarde" ou
+ * travessão em campo vazio · peso ou edição estimados · capa de catálogo,
+ * miniatura de PDF, visualizador embutido · nota de rodapé nomeando a fábrica
+ * que ainda não tem catálogo, que era o "Origem não declarada" do ledger
+ * aplicado onde não cabe: numa página de catálogos, uma fábrica sem catálogo
+ * não é assunto.
  */
 /* O contrato de direção desta rota, no HTML construído para poder ser auditado
    depois do build. Só decisão de design entra aqui; o rastro de processo vive
    em `.impeccable/surfaces/`. */
 const CONTRATO_DE_DIRECAO = `<!--
-THESIS: A linha é o documento, não a marca — a fábrica qualifica o título
-("Catálogo Trisol") e nunca é a entrada. Recusa a quarta lista das mesmas quatro
-marcas, a grade de capas, o filtro e a subpágina por marca.
+THESIS: A lista é plana, a fábrica é a chave e o filtro é o único controle. Um
+catálogo é um arquivo — sem PDF em mãos não há linha, não há opção de filtro e
+não há promessa. Recusa a coluna de argumento, a grade de capas, o acordeão por
+marca e a nota de rodapé sobre quem não tem catálogo.
 OWN-WORLD: o mundo do site, inalterado. Papel #F5F3F0, tinta #17171A, fio
 #C9C6C0, raio 0, sombra 0, cor 0 — e aqui, imagem 0. Tipografia e fio sozinhos:
-fio vertical de altura total separando argumento de lista, cabeçalho de colunas
-em mono, linhas regradas com medida à direita.
-STORY: o visitante vê o que existe, o que custa o clique e o que ainda não está
-em disco; leva o arquivo ou pede à Belmare, que é quem entrega.
-FIRST VIEWPORT: duas colunas partidas por fio vertical — à esquerda rótulo em
-mono, h1 de duas linhas, parágrafo e saída secundária; à direita o cabeçalho de
-colunas e as linhas de documento com seta na ponta.
-FORM: "o índice de documentos", comp aprovado catalogos-c-duas-colunas.
+cabeçalho de colunas em mono, linhas regradas com medida à direita, e o recorte
+ativo marcado por um fio de 1px em tinta sob o nome da fábrica.
+STORY: o visitante vê tudo o que existe, encurta para a fábrica dele em um
+clique, e leva o arquivo — ou pede à Belmare, que é quem entrega.
+FIRST VIEWPORT: uma coluna de largura total — rótulo em mono, h1 de uma linha,
+a fila de recortes, o cabeçalho de colunas e as linhas de catálogo com seta na
+ponta.
+FORM: "o índice de documentos" de /arquivos-3d, herdado e achatado — a mesma
+gramática de linha, sem a coluna de argumento.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->`;
 
 export default async function Catalogos() {
-  /* Uma leitura de painel só, compartilhada pelas três vistas desta página: o
-     índice de documentos, o rótulo da coluna e a nota da fábrica sem catálogo.
+  /* Uma leitura de painel só, compartilhada pela lista e pelo filtro.
      `representadasDaPagina` é cacheada por etiqueta, então `generateMetadata`
-     acima não paga uma segunda ida ao banco. */
-  const representadas = await representadasDaPagina();
-  const documentos = documentosDeCatalogo(representadas);
-  const haPublicado = documentos.some((d) => catalogoPublicado(d.catalogo));
-  const semCatalogo = representadasSemCatalogo(representadas);
+     acima não paga uma segunda ida ao banco.
+
+     ⚠️ **A SEGUNDA LEITURA É DE GRAÇA E EXISTE PARA O ESTADO VAZIO NOMEAR O
+     CANAL.** `buscarEmpresa` já foi chamada nesta requisição pelo cabeçalho e
+     pelo rodapé, que moram no layout; a etiqueta é `TAG_SITE` e a resposta vem
+     do cache. O que se ganha é a página SABER se existe WhatsApp antes de
+     escrever a palavra — ver a nota do parágrafo vazio, abaixo. */
+  const [representadas, { whatsapp }] = await Promise.all([
+    representadasDaPagina(),
+    buscarEmpresa(),
+  ]);
+
+  const catalogos = catalogosDoSite(representadas);
+  const marcas = marcasComCatalogo(catalogos);
 
   return (
     <>
       <div hidden dangerouslySetInnerHTML={{ __html: CONTRATO_DE_DIRECAO }} />
 
-      {/* ⚠️ `flex` no telefone, `grid` a partir de `md` — e não grid nas duas.
-          Em grid, a saída secundária mora dentro da coluna do argumento e
-          linearizava ANTES da lista: quem abre no telefone encontrava o link
-          para fora da página antes do primeiro documento. Com flex, a ordem de
-          empilhamento fica sob controle e a lista sobe para o lugar dela. */}
       <section
         aria-labelledby="catalogos"
-        className="flex flex-col px-5 pt-12 pb-14 md:grid md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:px-8 md:pt-16 md:pb-20"
+        className="px-5 pt-12 pb-14 md:px-8 md:pt-16 md:pb-20"
       >
-        {/* A coluna do argumento. `md:pr-8` abre o respiro antes do fio, e a
-            saída secundária desce com `mt-auto` para assentar na base da coluna
-            — é o que dá altura ao fio vertical sem nenhum elemento de enchimento. */}
-        <div className="contents md:flex md:flex-col md:pr-8">
-          <p className="mono uppercase text-graphite">Catálogos</p>
+        <p className="mono uppercase text-graphite">Catálogos</p>
 
-          <h1
-            id="catalogos"
-            className="text-h1 mt-5 max-w-[16ch] font-normal text-balance"
-          >
-            Medida, acabamento e ficha cotada.
-          </h1>
+        {/* ⚠️ **O H1 MUDA COM O ESTADO DO ACERVO, e as duas escritas são
+            verdadeiras onde aparecem.** "Baixe o catálogo de cada fábrica" sobre
+            uma lista vazia é a mesma promessa quebrada que as linhas fantasma
+            eram. Sem arquivo nenhum, o que a página de fato oferece é o pedido —
+            e o fecho, logo abaixo, é o gesto que a cumpre. */}
+        <h1
+          id="catalogos"
+          className="text-h1 mt-5 max-w-[20ch] font-normal text-balance"
+        >
+          {catalogos.length === 0
+            ? "Peça o catálogo da fábrica que você precisa."
+            : "Baixe o catálogo de cada fábrica."}
+        </h1>
 
-          {/* ⚠️ "O que já está em disco abre daqui" saiu: "em disco" é jargão de
-              quem construiu o site, não palavra de quem usa. O visitante não
-              sabe nem precisa saber onde o arquivo mora — ele quer saber se
-              abre agora ou se alguém manda depois. */}
-          <p className="text-body mt-6 max-w-[44ch] text-pretty text-graphite">
-            Cada fábrica publica o próprio catálogo, e quem entrega o arquivo é
-            a Belmare. Os que já estão aqui abrem na hora. Os outros, ela manda
-            para você.
-          </p>
+        <div className="mt-10 md:mt-12">
+          {catalogos.length === 0 ? (
+            /* ⚠️ Nem lista vazia, nem "em breve", nem travessão em célula — a
+               mesma recusa de `/arquivos-3d`. O que existe hoje é o canal, e o
+               canal é dito por extenso. O fecho da página é o gesto; este
+               parágrafo é a explicação, e são duas frases porque a terceira já
+               seria a coluna de argumento voltando pela porta dos fundos.
 
-          {/* No telefone ele é o último item da seção — a saída só aparece
-              depois de o visitante ter visto o que veio buscar. E o afastamento
-              é maior ali: empilhado, este bloco cai logo abaixo da nota da Bux,
-              nos mesmos support e grafite, e dois parágrafos cinzentos a duas
-              entrelinhas de distância lêem como um bloco só. O que separa não é
-              fio, é distância. */}
-          <div className="order-last mt-16 md:order-none md:mt-auto md:pt-16">
-            <p className="text-support max-w-[40ch] text-pretty text-graphite">
-              Quem assina cada coleção e as categorias de cada fábrica não vêm
-              no catálogo. Essas duas coisas estão na página da representada.
+               ⚠️ **A PALAVRA "WHATSAPP" SÓ É ESCRITA QUANDO O NÚMERO EXISTE.**
+               A faixa de fecho não se desenha sem número cadastrado — é a regra
+               de `components/faixa-de-acao.tsx` — e um parágrafo mandando falar
+               pelo WhatsApp acima de uma página que não oferece WhatsApp nenhum
+               é a mesma classe de defeito que as linhas fantasma eram: prometer
+               um canal que não abre. Com número, o texto nomeia o canal e o
+               botão logo abaixo o cumpre; sem número, ele pede o contato sem
+               inventar por onde, e o rodapé continua com telefone e endereço. */
+            <p className="text-body max-w-[52ch] text-pretty text-graphite">
+              {whatsapp === undefined
+                ? "Ainda não há catálogo para baixar aqui. Diga de qual fábrica você precisa e a Belmare manda o arquivo."
+                : "Ainda não há catálogo para baixar aqui. Chame a Belmare no WhatsApp e ela manda o catálogo da fábrica que você procura."}
             </p>
-            <Link
-              href="/representadas"
-              className="mono uppercase group mt-5 inline-flex items-center gap-3 text-ink"
-            >
-              Ver as representadas
-              <Seta className="h-3 w-8 transition-transform duration-300 ease-out group-hover:translate-x-1.5 motion-reduce:transition-none" />
-            </Link>
-          </div>
-        </div>
-
-        {/* A coluna da lista. O fio vertical é a borda dela, e por isso tem
-            exatamente a altura da linha da grade — sem altura escrita à mão. */}
-        <div className="mt-12 md:mt-0 md:border-l md:border-line md:pl-8">
-          {/* Cabeçalho de colunas de verdade, não rótulo decorativo: cada label
-              assenta sobre a coluna que nomeia. Duas consequências disso: no
-              telefone a linha empilha e só DOCUMENTO faz sentido, porque ARQUIVO
-              nomearia uma coluna que ali não existe; e enquanto nada foi
-              publicado a coluna carrega edição e estado de entrega, não arquivo
-              nenhum — então ela se chama EDIÇÃO até existir um arquivo, pela
-              mesma regra de declarar o estado em vez de prometer.
-
-              ⚠️ EDIÇÃO em cima de três células que começam com "EDIÇÃO" repete a
-              palavra quatro vezes, e a correção óbvia — tirar o prefixo da
-              célula — quebra o telefone, onde o cabeçalho está oculto e a célula
-              precisa se descrever sozinha. "2026" solto não diz o que é. A
-              repetição custa menos que a máquina de prefixo condicional por
-              breakpoint, e fica. */}
-          <div
-            aria-hidden
-            className={`mono ${GRADE_DA_LINHA} ${TETO_DA_LISTA} border-b border-line pb-3 uppercase text-graphite`}
-          >
-            <span>Documento</span>
-            <span className="hidden md:block">
-              {haPublicado ? "Arquivo" : "Edição"}
-            </span>
-          </div>
-
-          <ul aria-label="Documentos declarados" className={TETO_DA_LISTA}>
-            {documentos.map((documento, i) => (
-              <LinhaDeCatalogo
-                /* O índice entra na chave porque o cenário planejado a colide:
-                   se a Marê responder "um PDF por coleção" (P22), dois
-                   documentos dela chegam com o mesmo título e sem ano. */
-                key={`${documento.representada.slug}-${i}`}
-                catalogo={documento.catalogo}
-                representada={documento.representada}
-                mostrarMarca
-              />
-            ))}
-          </ul>
-
-          {/* A fábrica que não declara catálogo não vira linha com célula vazia,
-              e não some em silêncio: ela é nomeada por extenso. É a mesma regra
-              do "Origem não declarada" no ledger de `/quem-somos`, e quem lê esta
-              página é exatamente quem repara na marca que faltou. */}
-          {semCatalogo.length > 0 && (
-            <p className="text-support mt-6 max-w-[52ch] text-pretty text-graphite">
-              {semCatalogo.map((r) => r.nome).join(", ")}{" "}
-              {semCatalogo.length === 1
-                ? "ainda não publicou o catálogo dela"
-                : "ainda não publicaram os catálogos delas"}
-              . A Belmare pede direto à fábrica.
-            </p>
+          ) : (
+            <ListaDeCatalogos catalogos={catalogos} marcas={marcas} />
           )}
         </div>
       </section>
 
       <div className="px-5 pb-16 md:px-8 md:pb-24">
         <AcaoDeFecho
-          rotulo="Pedir os catálogos num pedido só"
-          contexto="queria os catálogos das representadas"
+          rotulo={
+            catalogos.length === 0
+              ? "Pedir um catálogo"
+              : "Pedir um catálogo que não está aqui"
+          }
+          contexto="queria o catálogo de uma das representadas"
         />
       </div>
     </>

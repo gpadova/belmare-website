@@ -26,11 +26,15 @@ Direção A, editorial/arquivo. A identidade da página vem de **três coisas ap
 Duas decisões que governam o resultado e não devem ser desfeitas:
 
 1. **A foto sangra e o texto vive sobre ela.** Nada de painel regrado ao lado, nada de campo de matéria: num site de mobiliário o herói é a peça, e a interface some para deixá-la falar. O véu escuro no pé da imagem é legibilidade, não ornamento.
-2. **O título nomeia objetos.** *"Sofá, mesa, espreguiçadeira e ombrelone."* — e a linha de apoio nomeia as marcas, o território e o tempo de casa.
+2. **O título diz o ramo, com o nome que o ramo usa.** *"Representação comercial de móveis para área externa."* — e a linha de apoio nomeia as marcas, o território e o tempo de casa, e nada além disso.
 
-   Duas formulações anteriores estão **proibidas de voltar**: a categoria pura ("Móveis para área externa"), que descreve uma fábrica e a Belmare não é fábrica; e o jargão de estrutura ("Quatro fábricas. Um interlocutor."), rejeitado em 30/07/2026 por contar o organograma da empresa a quem chegou procurando um móvel. O teste para qualquer substituta: **a frase põe um objeto na cabeça de quem lê?**
+   > ⚠️ **Revisado em 05/08/2026.** As duas versões anteriores desta decisão diziam "o título nomeia objetos" (*"Sofá, mesa, espreguiçadeira e ombrelone."*) e "o título nomeia o público" (*"A área externa inteira, para quem especifica e para quem revende."*). As duas caíram.
 
-O argumento de que uma empresa só resolve a área externa inteira é feito por **demonstração**: a abertura nomeia as quatro peças, e a seção seguinte mostra qual fábrica resolve cada uma. O visitante conclui sozinho. Não vira mecanismo de interface nem slogan — as duas tentativas caíram.
+   Quatro formulações estão **proibidas de voltar**: a categoria pura ("Móveis para área externa"), que descreve uma fábrica e a Belmare não é fábrica; o jargão de estrutura ("Quatro fábricas. Um interlocutor."), que conta o organograma a quem não perguntou; a enumeração de peças, que promete varejo numa empresa que não vende direto; e a promessa de posicionamento sem verbo, que diz o resultado e esconde o ramo.
+
+   **O teste mudou junto com o título.** Era *"a frase põe um objeto na cabeça de quem lê?"* — e essa regra vale para copy escrita ao consumidor final, que não é quem lê esta tela. O leitor daqui é o lojista e o escritório de arquitetura: ele já sabe o que é móvel de área externa, e a pergunta dele é outra. O teste de agora: **em dois segundos, a frase diz se isto é uma fábrica, uma loja ou uma representação?**
+
+O argumento de que uma empresa só resolve a área externa inteira **não é afirmado em lugar nenhum da página** — é feito por demonstração, na sequência: a abertura diz que a empresa é uma representação de mobiliário de área externa, a seção seguinte mostra as quatro fábricas lado a lado, e o visitante conclui sozinho que elas cobrem o mesmo terreno. Não vira mecanismo de interface nem slogan — as três tentativas caíram.
 
 **Sequência:** abertura (100svh) → as quatro marcas em linhas regradas → as duas portas → rodapé. Três telas e o pé.
 

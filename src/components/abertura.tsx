@@ -26,7 +26,9 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  *    · "Móveis para área externa" — a categoria pura descreve uma FÁBRICA, e a
  *      Belmare é representação. **É esta a objeção que "representação comercial
  *      de…" resolve, e é por isso que a categoria só volta com essas duas
- *      palavras na frente.**
+ *      palavras na frente.** As três palavras seguintes são as mesmas de 30/07,
+ *      e isso é correto: o que estava errado nelas nunca foi o vocabulário, era
+ *      a ausência do sujeito.
  *    · "Sofá, mesa, espreguiçadeira e ombrelone." — durou de 30/07 a 04/08/2026
  *      e caiu por um defeito que só aparece lendo a página inteira: **ele
  *      descreve uma loja.** Quem cai de busca entende que compra um sofá ali,
@@ -38,6 +40,16 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  *      lojista lê a primeira tela para saber se é com ele, e "a área externa
  *      inteira" não responde isso — "representação comercial" responde em duas
  *      palavras.
+ *
+ *    ⚠️ **É "MÓVEIS", E NUNCA "MOBILIÁRIO" — 05/08/2026.** O h1 nasceu dizendo
+ *    "mobiliário de área externa" e o cliente derrubou a palavra na leitura:
+ *    "quem que fala isso". Ele está certo, e o registro da própria empresa
+ *    prova — a Belmare se anuncia como "Móveis para Jardim, Ombrellones,
+ *    Móveis de Design e Tapetes" (`briefing/empresa.md`), a Bux Garden vende
+ *    "móveis de luxo para área externa", a GDA "móveis de alto padrão".
+ *    "Mobiliário" é palavra de catálogo e de release; ninguém do ramo a diz em
+ *    voz alta. **O termo do setor é o que o setor escreve sobre a própria
+ *    porta, e isso se confere no briefing, não no bom gosto de quem edita.**
  *
  *    ⚠️ **O TESTE DO OBJETO NÃO VALE PARA ESTE H1, E ISSO É DELIBERADO.** A
  *    regra que derrubou "Quatro fábricas. Um interlocutor." era "a frase põe um
@@ -107,11 +119,19 @@ export async function Abertura() {
       />
 
       <div className="relative px-5 pb-10 md:px-8 md:pb-14">
+        {/* ⚠️ A medida acompanha a copy, e mudou com ela em 05/08/2026: 18ch
+            quebrava o título antigo, de 62 caracteres, em quatro linhas. A
+            frase de agora tem 52 e cabe nas DUAS linhas que a composição pede
+            (`.impeccable/surfaces/src-app-page-tsx.md`) — "Representação
+            comercial de" / "móveis para área externa." Reescrever o h1 sem
+            reconferir este número é como a primeira tela volta a quebrar
+            torto. No telefone o `px-5` do contêiner limita antes deste teto, e
+            a frase quebra sozinha. */}
         <h1
           id="promessa"
-          className="text-display max-w-[18ch] font-normal text-balance text-white"
+          className="text-display max-w-[27ch] font-normal text-balance text-white"
         >
-          Representação comercial de mobiliário de área externa.
+          Representação comercial de móveis para área externa.
         </h1>
         {/* ⚠️ "no Sul do país", e não a lista de estados: `emLista` devolve
             "Paraná, Santa Catarina e Rio Grande do Sul" sem preposição, e cada

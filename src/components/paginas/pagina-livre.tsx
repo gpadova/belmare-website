@@ -88,9 +88,8 @@ function BlocoDesenhado({
       return <BlocoFicha titulo={bloco.titulo} empresa={empresa} />;
     /* ⚠️ A ação de fecho NÃO entra numa `SecaoLivre`: ela já traz o próprio fio
        em tinta em cima e embaixo, e um fio de divisor logo acima do fio de tinta
-       são dois traços paralelos a 28px de distância — a mesma leitura de
-       "pendência" que o número sem fio de `/quem-somos` produzia. O respiro é o
-       mesmo do fecho de `/catalogos`. */
+       são dois traços paralelos a 28px de distância, que leem como pendência e
+       não como composição. O respiro é o mesmo do fecho de `/catalogos`. */
     case "fecho":
       return (
         <div className="px-5 pt-4 pb-16 md:px-8 md:pt-8 md:pb-24">

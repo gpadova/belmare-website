@@ -98,7 +98,7 @@ describe("a marcação de mock é gerada, nunca digitada", () => {
       "marcada.jpg",
     );
 
-    expect(doc.alt).toBe(`Ombrelone lateral com lona técnica — ${MARCACAO_DE_MOCK}.`);
+    expect(doc.alt).toBe(`Ombrelone lateral com lona técnica, ${MARCACAO_DE_MOCK}.`);
 
     // A metade que dói se for ignorada: o sufixo é composto na LEITURA e nunca
     // gravado. Persistido, desmarcar o mock não limparia nada.

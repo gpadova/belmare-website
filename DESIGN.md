@@ -62,7 +62,10 @@ spacing:
   coluna-numero: "5rem"
   coluna-rotulo: "9rem"
   coluna-medida: "13rem"
-  teto-lista: "52rem"
+  coluna-medida-3d: "10rem"
+  coluna-marca: "11rem"
+  coluna-eixo: "6rem"
+  teto-lista: "64rem"
 components:
   cabecalho:
     backgroundColor: "{colors.paper}"
@@ -116,6 +119,17 @@ components:
     width: "{spacing.teto-lista}"
   linha-documento-hover:
     backgroundColor: "{colors.surface}"
+  recorte:
+    typography: "{typography.body}"
+    textColor: "{colors.graphite}"
+    rounded: "{rounded.none}"
+    padding: "0.25rem 0"
+  recorte-ativo:
+    textColor: "{colors.ink}"
+    borderColor: "{colors.ink}"
+  recorte-contagem:
+    typography: "{typography.mono}"
+    textColor: "{colors.graphite}"
   acao-fecho:
     typography: "{typography.h2}"
     textColor: "{colors.ink}"
@@ -140,9 +154,11 @@ O sistema é uma folha técnica, não uma peça de campanha. Fundo de papel off-
 
 A densidade é de amostrário: alinhamento visível e sem exceção, números de bloco na margem, fichas de rótulo e valor, tabelas regradas, um ledger de quatro linhas e uma prancha de território desenhada sobre malha oficial do IBGE. O que dá identidade é a grade, não a decoração. O teste que o projeto aplica em si mesmo: tire tudo menos tipografia, fio e foto — o site ainda tem que ficar de pé.
 
-O sistema recusa, em código e não só em intenção: raio, sombra, gradiente (exceto o véu de legibilidade sobre foto), matiz fora do logotipo, terceira família tipográfica, textura de fundo, movimento por rolagem, botão. Cinco superfícies existem hoje — `/`, `/quem-somos`, `/representadas`, o template `/representadas/[marca]` e `/catalogos`. A segunda introduziu os padrões de composição de arquivo; a terceira os estendeu para a prancha chaveada sobre fotografia; a quarta acrescentou o único elemento fixo do sistema além do cabeçalho, a faixa de índice, mais o padrão de **seção anulável com numeração calculada** — a seção some quando o dado não existe, e a numeração fecha sem buraco; e a quinta acrescentou a **linha de documento**, primeira linha do sistema com duas escritas dentro de um markup só.
+O sistema recusa, em código e não só em intenção: raio, sombra, gradiente (exceto o véu de legibilidade sobre foto), matiz fora do logotipo, terceira família tipográfica, textura de fundo, movimento por rolagem, botão. Seis superfícies existem hoje — `/`, `/quem-somos`, `/representadas`, o template `/representadas/[marca]`, `/catalogos` e `/arquivos-3d`. A segunda introduziu os padrões de composição de arquivo; a terceira os estendeu para a prancha chaveada sobre fotografia; a quarta acrescentou o único elemento fixo do sistema além do cabeçalho, a faixa de índice, mais o padrão de **seção anulável com numeração calculada** — a seção some quando o dado não existe, e a numeração fecha sem buraco; a quinta acrescentou a **linha de documento**, primeira linha do sistema com duas escritas dentro de um markup só; e a sexta acrescentou o **recorte**, primeiro controle do sistema — e o único `<button>` dele, porque é a única coisa que muda a tela sem sair dela.
 
-`/catalogos` é a primeira superfície **sem uma única imagem**, e isso é direção, não falta de acervo: numa rota em que o visitante veio buscar um arquivo, fotografia de ambiente é ruído entre ele e o arquivo. O teste que o parágrafo acima declara passa a ter uma página que o cumpre com dois dos três elementos — ela fica de pé só com tipografia e fio, sem foto, sem prancha e sem gráfico: duas colunas partidas por um fio vertical de altura total, cabeçalho de colunas em mono e linhas regradas com a medida à direita. Não é licença para o resto do site. Onde há fotografia, ela continua sendo a única cor.
+`/catalogos` é a primeira superfície **sem uma única imagem**, e isso é direção, não falta de acervo: numa rota em que o visitante veio buscar um arquivo, fotografia de ambiente é ruído entre ele e o arquivo. O teste que o parágrafo acima declara passa a ter uma página que o cumpre com dois dos três elementos — ela fica de pé só com tipografia e fio, sem foto, sem prancha e sem gráfico: uma coluna de largura total, fila de recortes, cabeçalho de colunas em mono e linhas regradas com a medida à direita. Não é licença para o resto do site. Onde há fotografia, ela continua sendo a única cor.
+
+`/arquivos-3d` é a segunda, e desde 05/08/2026 é a **mesma** página — mesma sequência, mesma gramática de linha, um eixo de recorte a mais. As duas colunas partidas por fio vertical que ambas tinham saíram: a coluna da esquerda era argumento sobre como a indústria funciona, escrito para quem monta o site e não para quem veio buscar um arquivo.
 
 **Key Characteristics:**
 - Acromático na interface: cinco valores neutros; o matiz existe em um objeto só, o logotipo
@@ -227,9 +243,9 @@ Sem contêiner centralizado. O conteúdo pendura na margem esquerda e a margem d
 
 **Medida de texto:** teto sempre em `ch`, nunca em px. Título 14–24ch, corpo 44–68ch. É o que mantém a medida entre 65 e 75 caracteres sem centralizar nada.
 
-**Grades internas observadas:** galeria de representadas `sm:2` → `lg:4` colunas, com calha `1.5rem`/`2rem` e vão vertical de `2.5rem`; portas em duas colunas a partir de `md`, separadas por fio; rodapé em quatro colunas a partir de `md`; ledger em quatro colunas (`18rem` / `10rem` / `1fr` / `2rem`) a partir de `md` e em duas abaixo; `/catalogos` em duas colunas a partir de `md` (`minmax(0,20rem)` para o argumento, `minmax(0,1fr)` para a lista, com `2rem` de respiro de cada lado do fio); linha de documento em três colunas (`minmax(0,1fr)` / `minmax(0,13rem)` / `2rem`, calha `2rem`) a partir de `md` e em duas abaixo (`minmax(0,1fr)` / `2rem`, calha `1rem`), sempre com teto de `52rem`.
+**Grades internas observadas:** galeria de representadas `sm:2` → `lg:4` colunas, com calha `1.5rem`/`2rem` e vão vertical de `2.5rem`; portas em duas colunas a partir de `md`, separadas por fio; rodapé em quatro colunas a partir de `md`; ledger em quatro colunas (`18rem` / `10rem` / `1fr` / `2rem`) a partir de `md` e em duas abaixo. As duas rotas de índice de arquivo — `/catalogos` e `/arquivos-3d` — são **uma coluna de largura total**, sem grade de página: a coluna de argumento que ambas tinham foi deletada, e com ela o fio vertical de altura total. A linha de documento é quatro colunas a partir de `md` (`minmax(0,11rem)` fábrica / `minmax(0,1fr)` título / `minmax(0,13rem)` medida / `2rem` seta, calha `2rem`) e duas abaixo (`minmax(0,1fr)` / `2rem`, calha `1rem`); a linha de arquivo 3D é a mesma com a medida em `minmax(0,10rem)`. Teto de `64rem` nas duas. A fila de recortes é `minmax(0,6rem)` rótulo / `minmax(0,1fr)` opções a partir de `md`, empilhada abaixo.
 
-**Ordem de empilhamento:** `/catalogos` é `flex` no telefone e só vira `grid` a partir de `md`. Em grid nas duas larguras, a saída secundária mora dentro da coluna do argumento e lineariza **antes** da lista — quem abre no telefone encontra o link para fora da página antes do primeiro documento. Com flex, a coluna do argumento é `contents` e a saída recebe `order-last`, o que põe a lista no lugar dela. A mesma saída desce com `mt-auto` a partir de `md`, e é ela que dá altura ao fio vertical, sem nenhum elemento de enchimento.
+**Ordem de empilhamento.** As duas rotas de índice de arquivo resolveram por deleção o que antes se resolvia com `flex`/`order-last`: enquanto havia coluna de argumento, a saída secundária morava dentro dela e, em grid nas duas larguras, linearizava **antes** da lista — quem abria no telefone encontrava o link para fora da página antes do primeiro documento. Sem coluna, a ordem do markup já é a ordem da leitura, em qualquer largura, e a saída de `/arquivos-3d` fica onde de fato pertence: depois da lista. **Quando a correção de uma ordem de empilhamento exige `order-*`, quase sempre a coluna é que estava errada.**
 
 **Separação por distância.** Empilhado no telefone, o bloco da saída secundária cai logo abaixo da nota de ausência, nos mesmos support e grafite — dois parágrafos cinzentos a duas entrelinhas de distância lêem como um bloco só. O que separa ali é `4rem` de afastamento, não um fio: fio alinhado a nada é o que a Regra do Fio Estrutural proíbe.
 
@@ -277,7 +293,9 @@ O vocabulário de forma é retangular e ortogonal:
 
 ## Components
 
-Não existe botão neste sistema. Toda ação é um link — `<a>` ou `<Link>` — e o peso vem de tipografia, fio e área, nunca de preenchimento. Documentar um "botão primário" aqui seria inventar.
+Não existe botão neste sistema. Toda **ação** é um link — `<a>` ou `<Link>` — e o peso vem de tipografia, fio e área, nunca de preenchimento. Documentar um "botão primário" aqui seria inventar.
+
+A única exceção é o **recorte**, e ela não é uma frouxidão da regra: a regra fala de ação, e o que recorta uma lista sem sair da página não navega, não envia e não baixa. Ele é `<button>` porque o teclado precisa alcançá-lo e porque `<a href="#">` mentiria sobre um destino que não existe — e continua sem preenchimento, sem raio e sem sombra. Ver "Recorte", abaixo.
 
 ### Navegação
 
@@ -331,11 +349,14 @@ Não existe botão neste sistema. Toda ação é um link — `<a>` ou `<Link>` �
 - **Leitor de tela:** um `sr-only` no fim da linha diz "(abre o PDF)" ou "(abre o WhatsApp)". As duas escritas são o mesmo markup e o mesmo gesto — quem não enxerga a diferença precisa ouvi-la.
 - **Alvo externo em toda linha.** As duas escritas saem do site, e as duas levam `target="_blank"` com `rel="noopener noreferrer"`. O `download` da linha publicada é **ignorado em URL de outra origem**, e `arquivo` é URL de storage; ele fica porque volta a valer no dia em que o arquivo for servido da mesma origem, mas quem sustenta o comportamento é o `target`. A copy da página segue o mesmo fato: "abre daqui", não "baixa daqui".
 
-**A Regra do Cabeçalho de Coluna.** Um cabeçalho de coluna assenta sobre a coluna que nomeia — por isso a grade é importada, não redigitada — e nomeia o que a coluna **de fato carrega hoje**: enquanto nenhum documento está publicado ela leva edição e estado de entrega, e se chama `EDIÇÃO`; vira `ARQUIVO` sozinha no dia em que houver arquivo. Na largura em que a coluna não existe, o rótulo dela também não existe: no telefone a linha empilha e só `DOCUMENTO` fica. Cabeçalho que promete coluna inexistente é pior que cabeçalho nenhum.
+**A Regra do Cabeçalho de Coluna.** Um cabeçalho de coluna assenta sobre a coluna que nomeia — por isso a grade é importada, não redigitada — e nomeia o que a coluna **de fato carrega hoje**: enquanto nenhum documento está publicado ela leva edição e estado de entrega, e se chama `EDIÇÃO`; vira `ARQUIVO` sozinha no dia em que houver arquivo. Na largura em que a coluna não existe, o rótulo dela também não existe: no telefone as duas listas empilham e sobra `DOCUMENTO` numa e `ARQUIVO` na outra, sem `FÁBRICA` nem `FORMATO E PESO`. Cabeçalho que promete coluna inexistente é pior que cabeçalho nenhum.
 
 ### Linha de arquivo 3D
 
-`components/arquivos-3d/linha-de-arquivo.tsx` — a terceira da família, e a mais curta: `SKP · 8,4 MB` e acabou. Herda a anatomia da linha de documento (nome em h3 sublinhado no fio, medida em mono versal, seta na ponta, o mesmo `hover` de três sinais), e **não importa a grade dela**: a linha de catálogo tem uma coluna larga porque a edição de um catálogo cabe ali, e um arquivo 3D não tem ano. Acoplar as duas larguras faria uma se mexer quando a outra fosse apertada.
+`components/arquivos-3d/linha-de-arquivo.tsx` — a terceira da família, e a mais curta na medida: `SKP · 8,4 MB` e acabou. Herda a anatomia da linha de documento (fábrica em support grafite, nome em h3 sublinhado no fio, medida em mono versal, seta na ponta, o mesmo `hover` de três sinais), e **não importa a grade dela**: a coluna da medida da linha de catálogo é larga porque a edição cabe ali, e um arquivo 3D não tem ano. Acoplar as duas larguras faria uma se mexer quando a outra fosse apertada.
+
+- **A coluna da fábrica é obrigatória aqui**, e opcional na linha de catálogo. Aquela também serve a seção "Para levar" da página da própria marca, onde a atribuição é a página inteira; esta só existe em `/arquivos-3d`, que atravessa as quatro fábricas sempre — um parâmetro opcional seria um ramo que nenhuma tela alcança.
+- **No telefone a linha empilha nome, fábrica e medida, nessa ordem**, com a seta alinhada ao nome. É a colocação da linha de catálogo, copiada com o argumento: em leitura linear a fábrica vem primeiro ("Trisol, Cadeira Zuri, SKP 8,4 MB"), mas na tela empilhada é o nome da peça que sobe, porque uma seta centrada num rótulo de onze pixels lê como se apontasse para a fábrica em vez de para o arquivo.
 
 - **Uma escrita só, e sempre a que baixa.** A linha de documento tem duas (publicada e a pedir) porque um catálogo pode existir sem estar em disco. Um `Arquivo3D` **é** o arquivo: sem peso medido e sem extensão legível ele não vira item nenhum (`lib/arquivos3d.ts`), então não existe estado em que esta linha desenhe um download mudo.
 - **Nenhuma delas pede cadastro** — ver a Regra do Portão, abaixo.
@@ -345,13 +366,33 @@ Não existe botão neste sistema. Toda ação é um link — `<a>` ou `<Link>` �
 
 ### Índice de biblioteca (`/arquivos-3d`)
 
-A segunda superfície **sem uma única imagem**, e irmã declarada de `/catalogos`: mesmas duas colunas partidas por fio vertical de altura total, mesmo cabeçalho de colunas em mono, mesmas linhas regradas com a medida à direita. Um arquiteto que aprendeu a ler uma não reaprende nada na outra.
+A segunda superfície **sem uma única imagem**, e irmã declarada de `/catalogos`. Desde 05/08/2026 elas são a **mesma página**: uma coluna de largura total, rótulo em mono, h1 de uma linha, fila de recortes, cabeçalho de colunas em mono, linhas regradas com a medida à direita e a contagem gerada no pé. Um arquiteto que aprendeu a ler uma não reaprende nada na outra — e agora isso é literal, não aproximado.
 
-- **A diferença é o agrupamento.** `/catalogos` recusa agrupar por marca de propósito — lá a linha é o documento e a fábrica só qualifica o título. Aqui o grupo é necessário: "Cadeira Zuri" não diz de quem é, e cada arquivo pende de uma fábrica só. **Agrupar não é filtrar** — não há filtro por formato e não há consulta que peça duas fábricas ao mesmo tempo.
-- **Dois eixos, um dentro do outro: fábrica e, dentro dela, formato.** A mesma peça vem em `.skp` e em `.dwg`, e numa lista plana as duas linhas levam o mesmo nome, separadas por tudo que caia entre elas no alfabeto — quem só abre SketchUp lê a lista inteira para achar metade. O formato é `h3` em **mono versal**, e isso não contradiz a linha acima: a Regra da Caixa Alta reserva versal para medida, código, **sigla** e rótulo de campo, e "SKP" é sigla, do mesmo desenho da medida que ele nomeia à direita. O segundo eixo é TypeScript puro sobre o que a consulta escopada já devolveu (`lib/arquivos3d.ts#arquivosPorFormato`) — o filtro transversal continua sem existir.
-- **O nome da fábrica é `h2` em grotesca caixa baixa, `text-h2`** — um degrau acima do `text-h3` das linhas. A primeira escrita foi `mono uppercase` e é a **segunda** violação da Regra da Caixa Alta neste projeto; a correção de `/catalogos` (apagar a linha) não servia aqui, porque o grupo é o desenho. Quando o elemento está certo e a caixa está errada, muda-se a caixa.
-- **Nenhum cabeçalho órfão.** A fábrica sem arquivo não vira título sobre lista vazia — ela some (seção anulável). Hoje isso é o estado das quatro.
-- **Biblioteca vazia escreve o estado**, como `/catalogos`: sem arquivo em disco a página diz que a Belmare manda o bloco, nunca "em breve" e nunca uma tabela vazia.
+> ⚠️ **A reforma reverteu o agrupamento e o veto ao filtro por formato, que esta seção declarava.** O texto anterior dizia "aqui o grupo é necessário: 'Cadeira Zuri' não diz de quem é" e "não há filtro por formato". A primeira metade continua verdadeira e passou a ser respondida por uma **coluna** `FÁBRICA` na linha, que atribui em toda linha e não só na primeira depois do cabeçalho. A segunda caiu: o veto valia contra um filtro que exigiria consulta sem pai e desenharia botões sobre zero arquivo, e o filtro construído não faz nem uma coisa nem outra. **O código vence**; a demonstração por extenso está em `lib/arquivos3d.ts#recortesDeFormato`.
+
+- **A lista é plana e a fábrica é uma coluna.** Mesma decisão de `/catalogos`, e pela mesma razão: blocos empilhados não se deixam recortar, e uma fábrica com um arquivo ao lado de outra com seis vira uma página que se lê descendo em vez de escolhendo.
+- **Dois eixos de recorte, lado a lado e nunca aninhados: fábrica e formato.** É o eixo que só uma biblioteca de arquivo tem — a mesma peça vem em `.skp` e em `.dwg`, e quem só abre SketchUp quer os `.skp` **das quatro fábricas**, que é justamente o que agrupar por formato dentro da marca nunca deu. A sigla do formato entra como rótulo do recorte na caixa em que `formatoDoArquivo` a gerou (`SKP`), e não é violação da Regra da Caixa Alta: sigla é uma das classes que a regra reserva para versal.
+- **Ordem da lista: fábrica (ordem do painel), peça, formato.** O desempate por formato é o que põe `Cadeira Zuri · DWG` e `Cadeira Zuri · SKP` em linhas **encostadas**, que era o problema que o agrupamento existia para resolver.
+- **A grade da linha é a de `/catalogos` com a coluna da medida mais estreita** — `11rem / 1fr / 10rem / 2rem` contra `11rem / 1fr / 13rem / 2rem`, porque `SKP · 8,4 MB` não carrega o ano que `PDF · 24,0 MB · 2026` carrega. O teto passou a ser o mesmo `64rem`, e a grade continua **não sendo importada** da linha de catálogo: ver "Linha de arquivo 3D".
+
+**A Regra do Eixo que Pode Mudar a Tela.** Um eixo de filtro só é desenhado quando tem mais de uma opção, e cada opção só existe se devolve pelo menos uma linha. Uma biblioteca inteira em `.skp` desenharia `TODOS 12 · SKP 12` — dois controles que fazem a mesma coisa, que é nada. É a regra que apagou as linhas sem PDF de `/catalogos` aplicada um degrau acima: se um controle que não leva a lugar nenhum é um botão morto, um eixo que não pode mudar a tela é uma fileira deles.
+
+**A Regra da Contagem no Recorte.** O número ao lado de cada opção é **quantas linhas sobram se você clicar nela** — contado sobre a lista já recortada pelo outro eixo, nunca sobre o acervo inteiro. É o `SKP · 8,4 MB` aplicado a um controle: declarar o custo do clique antes do clique. Contadas sobre o total, as duas facetas ofereceriam combinações que zeram a tela.
+
+- **Rótulo de eixo em mono versal, à esquerda da fila**, em coluna de `6rem` a partir de `md` e empilhado abaixo dela. Ele só aparece onde há mais de um eixo: `/catalogos` filtra por uma coisa e a fila sob um h1 chamado "catálogos" se explica. O **nome acessível** do grupo existe nas duas rotas, com ou sem rótulo visível.
+- **A fila rola na horizontal no telefone**, com `barra-fio`, em vez de embrulhar: um filtro que quebra em duas alturas de linha empurra a lista para baixo da dobra na tela onde ela mais importa. O recorte ativo é tinta mais fio de 1px embaixo; o inativo é grafite. Nunca preenchimento, nunca raio.
+- **Biblioteca vazia escreve o estado**, como `/catalogos`: sem arquivo em disco não há filtro, não há cabeçalho de colunas e não há tabela — a página diz que a Belmare manda o bloco, nunca "em breve".
+- **A saída para `/catalogos` mora abaixo da lista**, não numa coluna ao lado dela. É o resto da antiga coluna de argumento, e é a única razão pela qual a sequência das duas rotas não é idêntica: só uma delas manda o leitor para a outra, e mandar antes da lista é oferecer a saída a quem ainda não viu o que veio ver.
+
+### Recorte (a opção de filtro)
+
+`components/recorte.tsx` — `Recorte` e `FilaDeRecortes`, compartilhados por `/catalogos` e `/arquivos-3d`. Nasceu privado dentro da lista de catálogos e saiu de lá quando a segunda lista apareceu, **antes de existir a segunda cópia**: o controle carrega uma contagem, que é dado, e dado desenhado em dois lugares diverge na primeira vez que alguém apertar um dos dois — a mesma razão pela qual a linha de documento é compartilhada.
+
+- **Estilo:** rótulo em grotesca caixa baixa, contagem em mono grafite ao lado, `0.5rem` entre os dois, `0.25rem` de altura interna, fio de 1px na base. Ativo é tinta com o fio em tinta; inativo é grafite com o fio transparente, indo a tinta no `hover`.
+- **É `<button>`, e isso não fura a Regra do Link.** A regra fala de **ação** — o que navega, envia ou baixa é link. O que muda o que já está na tela sem sair dela não é ação, e um `<a href="#">` mentiria para o leitor de tela sobre um destino que não existe. `aria-pressed` carrega o estado; não há preenchimento, raio nem sombra.
+- **A caixa do rótulo é de quem chama.** "Trisol" chega em caixa baixa e "SKP" em versal, porque só quem chama sabe se a string é nome próprio ou sigla. O componente não impõe `text-transform` — a mesma disciplina da utilidade `mono`.
+- **A fila anuncia o eixo mesmo quando não o mostra.** `aria-label="Filtrar por fábrica"` existe nas duas rotas; o rótulo visível em mono versal só entra onde há mais de um eixo, e leva `aria-hidden` para o leitor de tela não ouvir "Fábrica, Filtrar por fábrica".
+- **O resultado é anunciado.** A `<ul>` recebe o recorte no `aria-label` e a linha de contagem é `aria-live="polite"`. Sem isso o filtro é um efeito puramente visual para quem navega por landmarks.
 
 ### Bloco numerado
 
@@ -469,7 +510,8 @@ O vocabulário é fechado em quatro gestos, e todos disparam por ponteiro:
 - **Do** dar à prancha o mesmo aspecto do arquivo em toda largura. Qualquer outro aspecto recorta por dentro e move a chamada para fora do objeto.
 - **Do** derivar contagem de sumário de itens **distintos**, e derivar o próprio sumário da mesma função que monta as seções.
 - **Do** formatar toda medida por **uma função só**, nunca inline. `pesoEmMB()` fixa uma casa decimal para `PDF · 24,0 MB` assentar embaixo de `SKP · 8,4 MB` numa coluna de numeral tabular; `toLocaleString` solto em cada chamada devolve "24" num lugar e "8,4" no outro, e a coluna deixa de ler como medida.
-- **Do** compartilhar o componente de linha entre as superfícies que declaram o mesmo documento, **desde a primeira linha escrita**. Peso e edição são a promessa que a linha faz antes do clique, e promessa formatada em dois lugares diverge. O componente exporta a própria grade e o próprio teto, para o cabeçalho de colunas cair exatamente sobre ela.
+- **Do** compartilhar o componente de linha entre as superfícies que declaram o mesmo documento, **desde a primeira linha escrita**. Peso e edição são a promessa que a linha faz antes do clique, e promessa formatada em dois lugares diverge. O componente exporta a própria grade e o próprio teto, para o cabeçalho de colunas cair exatamente sobre ela. Vale igual para o controle: o recorte saiu de dentro de `/catalogos` no dia em que a segunda lista apareceu, não no dia em que as duas cópias começaram a divergir.
+- **Do** desenhar um eixo de filtro só quando ele pode mudar a tela, e uma opção só quando ela devolve pelo menos uma linha. A contagem ao lado da opção é o resultado do clique — contada sobre a lista já recortada pelos outros eixos —, nunca um total de acervo que promete mais do que entrega.
 - **Do** derivar o rótulo de um cabeçalho de coluna do dado que a coluna **carrega hoje** — `EDIÇÃO` enquanto nada está publicado, `ARQUIVO` quando houver arquivo — e esconder o rótulo na largura em que a coluna não existe.
 - **Do** dar `target="_blank"` a todo link de arquivo. O atributo `download` é **ignorado em URL de outra origem**, e os arquivos são servidos de storage: sem o `target`, o dia em que o primeiro PDF chegar o clique deixa de baixar e leva o visitante para fora da página, sem sintoma nenhum em revisão porque hoje não há arquivo para testar. A copy acompanha o fato — "abre", não "baixa".
 - **Do** derivar número exibido de função, nunca de literal. `anosDeMercado()` conta com dia e mês, e a rota declara `revalidate = 86400` para o número não congelar entre builds.
@@ -482,7 +524,7 @@ O vocabulário é fechado em quatro gestos, e todos disparam por ponteiro:
 - **Don't** tirar as cores de dentro do logotipo. O azul, o verde e o vermelho da marca são do desenho, e só dele: não viram acento, estado, fio nem fundo. Um matiz da marca aparecendo fora do lockup é o sistema quebrado, não estendido.
 - **Don't** acrescentar uma terceira família tipográfica, nem substituir a pilha de fonte: Söhne já é a primeira da pilha, e Geist entra como fallback dentro dela.
 - **Don't** criar movimento disparado por rolagem, parallax, scroll-jacking, loader longo ou contador animado.
-- **Don't** desenhar botão preenchido. Toda ação é link.
+- **Don't** desenhar botão preenchido. Toda ação é link — e o recorte, que é `<button>`, não é ação: ele muda o que já está na tela sem sair dela, e mesmo assim não ganha preenchimento nem canto.
 - **Don't** centralizar o único gráfico de uma página, nem qualquer bloco de conteúdo, para "preencher" tela larga.
 - **Don't** apresentar imagem mock como foto real de produto, fábrica ou projeto entregue — nem em copy, nem em `alt`, nem em legenda.
 - **Don't** escrever nome próprio, frase ou legenda em mono versal, **nem quando são curtos**. Versal é medida, código, sigla, rótulo de campo e estado de campo declarado; nome de fábrica, nome de coleção, nota de modelo e legenda de figura vão na grotesca em caixa baixa. Quando a saída for "baixar a caixa e manter o elemento", o elemento é que estava errado.

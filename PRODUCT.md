@@ -2,11 +2,9 @@
 
 <!-- impeccable:product-schema 1 -->
 
-> **Fonte:** `briefing/` — levantamento de 30/07/2026. Este arquivo guarda a **verdade de produto** durável; o briefing guarda o raciocínio e as fontes.
+> Este arquivo guarda a **verdade de produto** durável — público, território, canal, escopo. O como está construído é `README.md`; o que as palavras significam é `CONTEXT.md`; como o site se parece é `DESIGN.md`.
 >
-> **Legenda:** `✅` confirmado pelo cliente ou verificado em fonte pública · `🟡` inferido do briefing, ainda não confirmado por resposta direta · `❓` decisão em aberto — **não inventar**.
->
-> **Nota de método:** a rodada de entrevista foi dispensada pelo usuário em 30/07/2026; os campos marcados `🟡` foram inferidos do briefing explícito, não confirmados em conversa.
+> **Legenda:** `✅` confirmado pelo cliente ou verificado em fonte pública · `🟡` inferido, ainda não confirmado por resposta direta · `❓` decisão em aberto — **não inventar**.
 
 ## Platform
 
@@ -14,12 +12,12 @@ web
 
 ## Stack
 
-✅ Repositório existente decide a base: **Next.js 16.2.12** (App Router), **React 19.2.4** com React Compiler ativo, **Tailwind CSS v4**, **TypeScript 5**, **pnpm**. Scaffold `create-next-app` limpo — nada a trocar.
+**Next.js 16.2.12** (App Router), **React 19.2.4** com React Compiler ativo, **Tailwind CSS v4**, **TypeScript 5**, **pnpm**.
 
-- ✅ **CMS: Payload 3** — open source (MIT), gratuito de verdade, roda dentro do próprio app Next. Escolhido por não adicionar serviço externo e por lidar bem com upload pesado. Ainda não instalado.
-- 🟡 Banco Postgres (Neon ou Supabase, plano gratuito) e storage de binários (Vercel Blob) — implicação técnica do Payload, não decisão declarada.
-- 🟡 Hospedagem: **Vercel** recomendada, não confirmada (❓ P60). Domínio `belmare.com.br` existe e hoje retorna **404** — há DNS ativo apontando para algum lugar (❓ P61: quem controla DNS e e-mail `@belmare.com.br`; trocar sem cuidado derruba o e-mail da empresa).
-- ⚠️ **Binários pesados não vão para o git** — fotos em alta, PDFs de catálogo e arquivos 3D (`.skp`, `.rvt`, `.dwg`) exigem storage externo ou Git LFS. Decidir antes de receber o primeiro lote.
+- ✅ **CMS: Payload 3.86** — open source (MIT), roda dentro do próprio app Next, sem serviço externo. Site e painel na mesma aplicação: `src/app/(frontend)` e `src/app/(payload)`.
+- ✅ **Banco Postgres no Neon**, plano gratuito — o conteúdo são algumas centenas de linhas.
+- ✅ **Binários no Cloudflare R2**, com envio direto do navegador para o bucket: a função serverless da Vercel recusa corpo acima de 4,5 MB e o catálogo tem 24 MB. Nenhum binário pesado vai para o git.
+- ✅ Hospedagem **Vercel Pro** (US$ 20/mês — o plano Hobby proíbe uso comercial). ❓ P61: quem controla DNS e e-mail `@belmare.com.br`; trocar sem cuidado derruba o e-mail da empresa.
 
 ## Users
 
@@ -248,8 +246,6 @@ Facebook `/belmarerepresentacoes`, sob o nome antigo "Bello Mare — Móveis par
 
 ## Evidence on Hand
 
-⚠️ **Nenhum arquivo foi recebido do cliente até 30/07/2026.** Tudo que se sabe veio de inspeção pública dos sites das marcas.
-
 ### O teto fotográfico — a restrição mais séria do projeto ✅
 Medições reais nos sites das fábricas:
 
@@ -274,20 +270,10 @@ Regras que isso impõe:
 - Os mocks são gerados **nas dimensões reais que o layout precisa** (hero em 2880px, card no tamanho do card). O objetivo é projetar contra o teto de qualidade desejado, não normalizar o teto atual.
 - Nenhum mock vai para produção sem substituição ou marcação explícita.
 
-### O que existe hoje
-| Item | Status |
-|---|---|
-| Catálogos PDF | 🟡 Marê e GDA têm; **Trisol edição 2026** ✅; Bux ❓ — **viraram o ativo central do site** |
-| Fotos de produto e ambiente | 🟡 existem nos sites das fábricas, em baixa resolução |
-| Logos vetoriais + autorização de uso | ❌ nenhum — **bloqueia home e páginas de marca**. 🟡 Risco de a fábrica vetar uso do logo em monocromia; pedir autorização por escrito na coleta |
-| Arquivos 3D | 🟡 GDA na Casoca; demais ❓ |
-| Cartas de acabamento e tecido | ❌ |
-| Fotos de fábrica, processo e retratos de designer | ❌ |
-| Textos institucionais das marcas | 🟡 fragmentos públicos, insuficientes — as fábricas não publicam história utilizável |
-| Manuais de marca | ❌ |
-
 ### Ordem de coleta ✅
-1. Fotos originais em alta · 2. Fotos de projetos da Belmare · 3. Logos vetoriais + autorização · 4. Os 4 catálogos PDF atualizados · 5. Arquivos 3D · 6. Peças em destaque por marca (12–20) · 7. Textos institucionais.
+O que pedir ao cliente, em ordem de retorno: 1. fotos originais em alta · 2. fotos de projetos da Belmare · 3. logos vetoriais + autorização de uso · 4. os quatro catálogos PDF atualizados · 5. arquivos 3D · 6. peças em destaque por marca (12–20) · 7. textos institucionais.
+
+⚠️ O que já chegou de cada item não se registra aqui — vira estado velho em uma semana. O painel é a fonte: o que está no CMS, chegou.
 
 ## Product Principles
 

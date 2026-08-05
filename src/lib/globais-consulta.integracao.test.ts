@@ -201,11 +201,16 @@ describe("os outros dois globais invalidam uma página cada, e não o site", () 
     await payload.updateGlobal({
       slug: "quem-somos",
       draft: false,
-      data: { registro: "Um parágrafo de registro.", _status: "published" },
+      data: {
+        apresentacao: "Um parágrafo de apresentação.",
+        _status: "published",
+      },
     } as never);
 
     expect(etiquetas).toEqual([TAG_QUEM_SOMOS]);
-    expect((await buscarQuemSomos()).registro).toBe("Um parágrafo de registro.");
+    expect((await buscarQuemSomos()).apresentacao).toBe(
+      "Um parágrafo de apresentação.",
+    );
   });
 
   test("campo em branco vira parágrafo ausente, não parágrafo vazio", async () => {

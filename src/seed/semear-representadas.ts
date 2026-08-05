@@ -68,11 +68,19 @@ import { REPRESENTADAS, type Representada } from "@/lib/representadas";
  * Bux e da Trisol) não têm posição hand-tuned e ficam com o centro padrão do
  * campo — o mesmo que `posicaoDoFoco` já assume quando nada foi clicado.
  *
- * ⚠️ **NENHUM CATÁLOGO GANHA `arquivo` AQUI.** Os quatro `catalogos` de
- * `lib/representadas.ts` só declaram `titulo` e, às vezes, `ano` — nenhuma das
- * quatro marcas tem o PDF em mãos hoje (só a Trisol declara edição, e mesmo
- * essa não tem arquivo anexado). O seed espelha exatamente isso: a linha
- * atravessa como "a pedir", igual já renderizava antes da migração.
+ * ⚠️ **NENHUMA MARCA GANHA CATÁLOGO AQUI, e a ausência é o ponto.** Até
+ * 05/08/2026 o seed criava três linhas de catálogo sem arquivo — a Trisol com
+ * edição 2026, a Marê e a GDA sem edição — porque o domínio admitia um catálogo
+ * "a pedir". Era isso que fazia `/catalogos` mostrar três documentos para zero
+ * uploads, com um deles virando um link sem destino quando o número de WhatsApp
+ * também estava em branco. Um catálogo agora é um arquivo: `lib/representadas.ts`
+ * não declara `catalogos` em nenhuma das quatro marcas, e um banco recém-semeado
+ * sobe com a página de catálogos honestamente vazia, oferecendo o pedido.
+ *
+ * ⚠️ **BANCO SEMEADO ANTES DESTA DATA PODE TER AS TRÊS LINHAS ÓRFÃS.** Elas já
+ * não aparecem no site — o mapper as descarta —, mas continuam no painel até
+ * alguém apagá-las, e a validação do campo pede isso na primeira republicação
+ * da marca.
  *
  * A classificação gerado/fixo/campo de cada campo tocado aqui está registrada
  * em `docs/classificacao-de-texto.md` — não repetida string por string a cada
@@ -92,7 +100,7 @@ function opcional<C extends string, V>(
 
 /** O sufixo gerado, como padrão — a mesma frase que `lib/acervo.ts` compõe,
  *  aqui para DESFAZER em vez de compor. */
-const SUFIXO_DE_MOCK = new RegExp(`\\s*—\\s*${MARCACAO_DE_MOCK}\\.?\\s*$`, "i");
+const SUFIXO_DE_MOCK = new RegExp(`\\s*[—,]\\s*${MARCACAO_DE_MOCK}\\.?\\s*$`, "i");
 
 /**
  * A inversa de `descricaoDeImagem`: tira o sufixo gerado do `alt` escrito à

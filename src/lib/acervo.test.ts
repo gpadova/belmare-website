@@ -50,7 +50,7 @@ describe("descricaoDeImagem", () => {
       mock: true,
     });
 
-    expect(alt).toBe(`Ombrelone lateral com lona técnica — ${MARCACAO_DE_MOCK}.`);
+    expect(alt).toBe(`Ombrelone lateral com lona técnica, ${MARCACAO_DE_MOCK}.`);
   });
 });
 

@@ -153,7 +153,7 @@ export function FormularioDeLead({
           className="text-support text-pretty text-graphite"
         >
           Quero receber novidades da Belmare por e-mail. Deixar em branco não
-          muda nada no seu contato — a Belmare responde do mesmo jeito.
+          muda nada no seu contato: a Belmare responde do mesmo jeito.
         </label>
       </div>
 

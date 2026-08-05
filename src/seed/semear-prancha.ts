@@ -35,7 +35,7 @@ import { PRANCHA_EM_CODIGO } from "@/lib/prancha-area-externa";
 /** O sufixo gerado, para DESFAZER — a mesma inversa do seed de PRA-119, e pelo
  *  mesmo motivo: gravar o `alt` inteiro dentro de `descricao` faz a página
  *  publicar "imagem de referência" duas vezes. */
-const SUFIXO_DE_MOCK = new RegExp(`\\s*—\\s*${MARCACAO_DE_MOCK}\\.?\\s*$`, "i");
+const SUFIXO_DE_MOCK = new RegExp(`\\s*[—,]\\s*${MARCACAO_DE_MOCK}\\.?\\s*$`, "i");
 
 function descricaoSemMarcacao(alt: string): string {
   const semSufixo = alt.replace(SUFIXO_DE_MOCK, "").trim();

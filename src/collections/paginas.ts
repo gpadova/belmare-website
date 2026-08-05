@@ -15,10 +15,16 @@ import { ROTAS_LIVRES } from "@/lib/site";
  * `/politica-de-privacidade` nunca foram escritas em código: não há argumento de
  * desenho a proteger nelas, então nascem CMS-nativas. A home, `/quem-somos` e
  * `/representadas/[marca]` continuam de **espinha fixa** e NÃO ganham construtor
- * de blocos — a sequência de `/quem-somos` é o argumento dela, e aquela página
- * carrega uma lista vinculante do que nunca pode aparecer nela. Um array de
- * blocos ali seria exatamente a ferramenta que contorna essa lista, e ele não
- * existe. Ver `CONTEXT.md` e decisão 1 da spec.
+ * de blocos — `/quem-somos` carrega uma lista vinculante do que nunca pode
+ * aparecer nela (foto de equipe, missão/visão/valores, contador animado), e uma
+ * biblioteca de blocos genérica oferece exatamente esses três. Um array de
+ * blocos ali seria a ferramenta que contorna a lista sem contrariá-la em lugar
+ * nenhum, e ele não existe. Ver `CONTEXT.md` e decisão 1 da spec.
+ *
+ * ⚠️ A numeração de `/quem-somos` — que já foi o motivo declarado desta recusa,
+ * "a sequência É o argumento" — saiu na reescrita de 05/08/2026. A recusa não
+ * saiu com ela: o que a sustenta é a lista acima, e essa lista não depende de
+ * ordem nenhuma.
  *
  * ⚠️ **O ENDEREÇO NÃO SE DIGITA — ESCOLHE-SE ENTRE AS ROTAS QUE EXISTEM.** É a
  * decisão mais consequente desta coleção. Um campo de texto livre deixaria o

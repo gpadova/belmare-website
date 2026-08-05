@@ -3,7 +3,6 @@ import { describe, expect, test } from "vitest";
 import { MARCACAO_DE_MOCK } from "@/lib/acervo";
 import { representadaDoPainel } from "@/lib/representadas-traducao";
 import {
-  catalogoPublicado,
   eixoDeFiltro,
   imagemDaRepresentada,
   imagemLargaDaRepresentada,
@@ -20,9 +19,11 @@ import type {
  * O mapper, sobre as formas que o Payload de fato gera.
  *
  * ⚠️ Os documentos abaixo são escritos à mão de propósito: é a única maneira de
- * exercitar os quatro estados do catálogo, inclusive os dois que só aparecem
- * quando alguém consulta na profundidade errada ou quando um upload chega sem
- * tamanho. Um banco daria os fáceis e esconderia justamente esses.
+ * exercitar os quatro estados que o painel admite para o catálogo — inclusive os
+ * dois que só aparecem quando alguém consulta na profundidade errada ou quando
+ * um upload chega sem tamanho. Um banco daria os fáceis e esconderia justamente
+ * esses. Do lado do domínio sobra um estado só, e é essa redução que os testes
+ * afirmam.
  */
 
 const AGORA = "2026-07-31T00:00:00.000Z";
@@ -74,9 +75,6 @@ describe("o catálogo, do painel para a página", () => {
       documento({ catalogos: [{ titulo: "Catálogo", ano: 2026, arquivo: arquivo() }] }),
     ).catalogos!;
 
-    expect(catalogoPublicado(catalogo)).toBe(true);
-    if (!catalogoPublicado(catalogo)) return;
-
     expect(catalogo.arquivo).toBe(
       "https://arquivos.belmare.com.br/catalogo-trisol.pdf",
     );
@@ -84,55 +82,67 @@ describe("o catálogo, do painel para a página", () => {
     expect(pesoEmMB(catalogo.mb)).toBe("24,0");
   });
 
-  test("sem arquivo, o documento continua declarado — a pedir, e sem peso nenhum", () => {
-    // A Trisol publica a edição 2026 no site dela e a Belmare ainda não recebeu
-    // o arquivo. A página tem que poder dizer isso em vez de escolher entre
-    // linkar um arquivo que não existe e fingir que a fábrica não tem catálogo.
-    const [catalogo] = representadaDoPainel(
-      documento({ catalogos: [{ titulo: "Catálogo", ano: 2026 }] }),
-    ).catalogos!;
+  /* ⚠️ Os três testes abaixo são a regra de 05/08/2026 afirmada de três
+     ângulos: **um catálogo é um arquivo**. Antes desta data os três estados
+     atravessavam como catálogo "a pedir", e era isso que fazia `/catalogos`
+     listar três documentos para zero uploads — com um deles virando um título
+     sublinhado sem destino quando o número de WhatsApp também estava em branco.
+     Nenhum deles pode voltar a produzir uma linha. */
 
-    expect(catalogoPublicado(catalogo)).toBe(false);
-    expect(catalogo.mb).toBeUndefined();
-    expect(catalogo.ano).toBe(2026);
+  test("sem arquivo anexado, não há catálogo — a linha não existe", () => {
+    expect(
+      representadaDoPainel(documento({ catalogos: [{ titulo: "Catálogo", ano: 2026 }] }))
+        .catalogos,
+    ).toBeUndefined();
   });
 
-  test("arquivo que voltou sem tamanho medido não vira download", () => {
-    // O terceiro dos quatro estados gerados: o anexo existe e o site não
-    // consegue medi-lo. Um link sem peso é a promessa que este site existe para
-    // não quebrar — a linha vira pedido, não download mudo.
-    const [catalogo] = representadaDoPainel(
+  test("arquivo que voltou sem tamanho medido não vira catálogo", () => {
+    // O anexo existe e o site não consegue medi-lo. Um link sem peso é a
+    // promessa que este site existe para não quebrar.
+    expect(
+      representadaDoPainel(
+        documento({
+          catalogos: [{ titulo: "Catálogo", arquivo: arquivo({ filesize: null }) }],
+        }),
+      ).catalogos,
+    ).toBeUndefined();
+  });
+
+  test("arquivo que veio só como referência não vira catálogo", () => {
+    // Consulta em profundidade 0 devolve o identificador do upload, e não o
+    // upload. Nem endereço nem peso existem ali.
+    expect(
+      representadaDoPainel(documento({ catalogos: [{ titulo: "Catálogo", arquivo: 7 }] }))
+        .catalogos,
+    ).toBeUndefined();
+  });
+
+  test("um catálogo pela metade some sozinho e os inteiros da mesma fábrica ficam", () => {
+    /* A recusa é por LINHA, não por fábrica: uma linha órfã no painel — e as
+       três que a seed criava antes desta data são exatamente isso — não pode
+       levar junto o catálogo que de fato subiu. */
+    const catalogos = representadaDoPainel(
       documento({
-        catalogos: [{ titulo: "Catálogo", arquivo: arquivo({ filesize: null }) }],
+        catalogos: [
+          { titulo: "Sem arquivo" },
+          { titulo: "Catálogo geral", arquivo: arquivo() },
+        ],
       }),
     ).catalogos!;
 
-    expect(catalogoPublicado(catalogo)).toBe(false);
-    expect(catalogo.arquivo).toBeUndefined();
-    expect(catalogo.mb).toBeUndefined();
-  });
-
-  test("arquivo que veio só como referência não vira download", () => {
-    // O segundo estado: consulta em profundidade 0 devolve o identificador do
-    // upload, e não o upload. Nem endereço nem peso existem ali.
-    const [catalogo] = representadaDoPainel(
-      documento({ catalogos: [{ titulo: "Catálogo", arquivo: 7 }] }),
-    ).catalogos!;
-
-    expect(catalogoPublicado(catalogo)).toBe(false);
-    expect(catalogo.arquivo).toBeUndefined();
+    expect(catalogos.map((c) => c.titulo)).toEqual(["Catálogo geral"]);
   });
 
   test("sem edição declarada, o ano fica ausente em vez de plausível", () => {
-    // A Marê e a GDA publicam catálogo sem dizer de que ano. A linha escreve
-    // "Edição não declarada" com todas as letras, e para isso o ano precisa
-    // chegar ausente ao componente — não como um 2025 arredondado.
+    // A Marê e a GDA publicam catálogo sem dizer de que ano. A linha termina na
+    // medida e para, e para isso o ano precisa chegar ausente ao componente —
+    // não como um 2025 arredondado.
     const [catalogo] = representadaDoPainel(
-      documento({ catalogos: [{ titulo: "Catálogo", ano: null }] }),
+      documento({ catalogos: [{ titulo: "Catálogo", ano: null, arquivo: arquivo() }] }),
     ).catalogos!;
 
     expect(catalogo.ano).toBeUndefined();
-    expect(Object.keys(catalogo)).toEqual(["titulo"]);
+    expect(Object.keys(catalogo).sort()).toEqual(["arquivo", "mb", "titulo"]);
   });
 
   test("fábrica que não declara documento nenhum não ganha lista vazia", () => {
@@ -295,7 +305,7 @@ describe("a fotografia que o painel entrega", () => {
     );
 
     expect(imagemDaRepresentada(representada).alt).toBe(
-      `Ombrelone lateral com lona técnica — ${MARCACAO_DE_MOCK}.`,
+      `Ombrelone lateral com lona técnica, ${MARCACAO_DE_MOCK}.`,
     );
     expect(imagemDaRepresentada(representada).src).toBe(
       "/api/imagens/file/ombrelone.jpg",

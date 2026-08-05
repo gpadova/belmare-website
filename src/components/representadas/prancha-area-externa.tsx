@@ -15,13 +15,19 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
 /**
  * PRANCHA 02 — a área externa desmontada.
  *
- * `/quem-somos` desenhou ONDE a Belmare opera. Esta desenha O QUE ela resolve.
- * Duas pranchas, a mesma gramática de moldura, registro e rótulo em mono, dois
- * assuntos diferentes, as duas construídas sobre dado declarado. É série, não
- * gesto avulso.
+ * `/quem-somos` desenha ONDE a Belmare opera. Esta desenha O QUE ela resolve.
+ * Dois desenhos, a mesma gramática de fio, registro e rótulo em mono, dois
+ * assuntos diferentes, os dois construídos sobre dado declarado.
+ *
+ * ⚠️ A moldura, o carimbo e a escala gráfica que faziam do mapa de
+ * `/quem-somos` uma prancha completa saíram daquela página em 05/08/2026 —
+ * eram desenho sobre o próprio desenho numa página institucional. Aqui a
+ * moldura fica: esta é uma prancha DE VERDADE, com chamadas numeradas que
+ * apontam para objetos de uma fotografia, e sem o quadro as chamadas ficam
+ * soltas sobre a imagem.
  *
  * A rota existia com um problema: o site já mostrou as quatro marcas duas vezes
- * — a galeria fotográfica da home e o ledger de quatro linhas do bloco 05. Uma
+ * — a galeria fotográfica da home e a lista de quatro linhas de `/quem-somos`. Uma
  * terceira lista das mesmas quatro não tem por que existir. O que nenhuma das
  * duas fez é mostrar que as quatro, juntas, cobrem uma área externa inteira, e
  * onde cada uma entra. É o que esta prancha faz, e por demonstração: o desenho
@@ -33,7 +39,8 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  * ombrelone gerado afirma que aquilo é um produto da Trisol.
  *
  * ⚠️ **Sem véu.** A legibilidade do rótulo vem do recorte em papel — o mesmo
- * `bg-paper px-1.5` que abre a graticula para a sigla do estado na PRANCHA 01.
+ * `bg-paper px-1.5` que abre o contorno para a sigla do estado no mapa de
+ * `/quem-somos`.
  * Escurecer a foto seria a solução da abertura da home, e é o gesto errado
  * aqui: numa prancha o desenho não se apaga para o rótulo caber.
  *

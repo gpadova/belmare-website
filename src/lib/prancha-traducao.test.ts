@@ -69,8 +69,11 @@ describe("a fotografia só vira prancha quando a página consegue desenhá-la", 
   test("a marcação de imagem de referência é composta, nunca lida do campo", () => {
     const resultado = pranchaDoPainel(prancha({ chamadas: [chamada({})] }));
 
+    // ⚠️ Vírgula, e não travessão: o separador do sufixo mudou em 05/08/2026
+    // (`lib/acervo.ts`). A asserção é literal de propósito — é ela que prova
+    // que a frase é COMPOSTA aqui, e não copiada do campo do painel.
     expect(resultado?.foto.alt).toBe(
-      "Área externa em deck de madeira com sofá, mesa e ombrelone — imagem de referência.",
+      "Área externa em deck de madeira com sofá, mesa e ombrelone, imagem de referência.",
     );
   });
 

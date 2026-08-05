@@ -98,7 +98,7 @@ export async function enviarLead(
     return {
       status: "erro",
       mensagem:
-        "Não conseguimos registrar seu contato agora. Tente de novo em alguns instantes — ou fale com a Belmare pelo WhatsApp.",
+        "Não conseguimos registrar seu contato agora. Tente de novo em alguns instantes, ou fale com a Belmare pelo WhatsApp.",
     };
   }
 
@@ -150,7 +150,7 @@ async function avisarPorEmail(lead: DadosDoLead): Promise<void> {
 
   const entregue = await enviarEmail({
     para: destinatario,
-    assunto: `Novo contato pelo site — ${lead.nome}`,
+    assunto: `Novo contato pelo site: ${lead.nome}`,
     texto: corpoDoAvisoPorEmail(lead),
     responderPara: lead.email,
   });

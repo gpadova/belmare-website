@@ -271,12 +271,12 @@ export interface Representada {
       | null;
   };
   /**
-   * Os catálogos que esta fábrica publica. Declare o documento mesmo quando a Belmare ainda não recebeu o arquivo: com o PDF anexado a página oferece o download, sem ele a página diz que o envio é pela Belmare e leva o visitante ao WhatsApp. Os dois são verdade; o que não pode é a página fingir que o catálogo não existe.
+   * Os catálogos desta fábrica, um por PDF — pode ser um só ou um por coleção. Cada linha precisa do arquivo anexado: o site lista o que dá para baixar, e nada além disso. Uma linha sem PDF não aparece em /catalogos nem na página da marca, e não vira "em breve" — enquanto o arquivo não chegar, quem pede o catálogo pede pelo WhatsApp, no botão que já existe no fim da página.
    */
   catalogos?:
     | {
         /**
-         * Como o documento se chama — "Catálogo". Não escreva a edição aqui: o ano tem campo próprio logo abaixo e o site compõe a linha sozinho.
+         * Como o documento se chama, e é ele que separa um catálogo dos outros desta mesma fábrica — "Catálogo geral", "Linha Ânima", "Área externa". Com um catálogo só, "Catálogo" basta. Não escreva a edição aqui: o ano tem campo próprio logo abaixo e o site compõe a linha sozinho.
          */
         titulo: string;
         /**
@@ -284,7 +284,7 @@ export interface Representada {
          */
         ano?: number | null;
         /**
-         * Anexe o PDF só quando ele estiver em mãos. O peso aparece sozinho na página, lido do arquivo — não há o que preencher e não há o que estimar. Sem anexo, a linha continua existindo e vira um pedido pelo WhatsApp.
+         * O arquivo em si. O peso aparece sozinho na página, lido do PDF — não há o que preencher e não há o que estimar. Sem ele esta linha não vai para o site: se o catálogo ainda não chegou da fábrica, apague a linha e cadastre-a no dia em que o arquivo chegar.
          */
         arquivo?: (number | null) | Arquivo;
         id?: string | null;
@@ -1185,7 +1185,7 @@ export interface Empresa {
 export interface Home {
   id: number;
   /**
-   * O parágrafo logo abaixo de "As quatro fábricas que a Belmare representa." — o título conta as marcas sozinho, então não repita o número nele. Em branco, o parágrafo desaparece e a seção abre direto nas fotografias. ⚠️ Se uma quinta fábrica entrar, esta frase é sua para reescrever: o título vira sozinho, este texto não.
+   * O parágrafo logo abaixo de "O que cada uma das quatro fábricas faz." — o título conta as marcas sozinho, então não repita o número nele. Em branco, o parágrafo desaparece e a seção abre direto nas fotografias, e isso é um resultado válido: cada fábrica já mostra a própria linha logo abaixo. ⚠️ Não escreva benefício aqui. "Conforto" e "sombra" dizem o que o cliente sente; quem lê esta página especifica e revende, e lê o que a fábrica faz. E não conte interlocutores — "um interlocutor para as quatro" já foi recusado duas vezes. ⚠️ Se uma quinta fábrica entrar, esta frase é sua para reescrever: o título vira sozinho, este texto não.
    */
   galeria?: string | null;
   _status?: ('draft' | 'published') | null;
@@ -1193,7 +1193,7 @@ export interface Home {
   createdAt?: string | null;
 }
 /**
- * O texto dentro de cada bloco numerado de /quem-somos. Os números, os títulos e a ordem dos blocos são desenho da página e não se editam aqui. Todo campo em branco faz o parágrafo desaparecer, nunca aparecer vazio.
+ * O texto dentro de cada seção de /quem-somos. Os títulos e a ordem das seções são desenho da página e não se editam aqui. Todo campo em branco faz o parágrafo desaparecer, nunca aparecer vazio.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "quem-somos".
@@ -1201,21 +1201,21 @@ export interface Home {
 export interface QuemSomos {
   id: number;
   /**
-   * Sob o título "Começou com móvel de jardim." O ano, a cidade e o tempo de casa aparecem logo acima e saem do cadastro — não os repita aqui. Este parágrafo conta o que a empresa vendia no começo e o que ela vende hoje; nada de missão, valores ou superlativo.
+   * Sob o título "A Belmare é uma representação comercial de mobiliário para área externa." ⚠️ O primeiro parágrafo é montado pelo site com o cadastro — a contagem de fábricas, a cidade da sede e o tempo de casa. Escreva aqui o que vem DEPOIS dele: o que a empresa faz de diferente, em uma ou duas frases. Nada de missão, valores ou superlativo, e nenhuma contagem digitada à mão.
    */
-  registro?: string | null;
+  apresentacao?: string | null;
   /**
-   * ⚠️ A primeira frase deste parágrafo é montada pelo site — "No papel, a empresa continua sendo …" — com a razão social do cadastro, para que ela nunca discorde do painel. Escreva aqui o que vem DEPOIS dela.
+   * Sob o título "O que a Belmare faz.", antes da lista de representação, especificação, pedido e pós-venda. Diga em uma ou duas frases como a Belmare trabalha com a loja e com o escritório de arquitetura. ⚠️ Sem promessa de prazo, de exclusividade ou de condição comercial — a lista abaixo dele descreve trabalho, não serviço contratado.
    */
-  nome?: string | null;
+  atuacao?: string | null;
   /**
-   * ⚠️ A primeira frase é montada pelo site contando as fábricas cadastradas — "Quatro fábricas, quatro linhas." — e vira sozinha quando uma marca entra ou sai. Escreva aqui o que vem DEPOIS dela.
+   * ⚠️ A primeira frase é montada pelo site contando as fábricas cadastradas — "São quatro fábricas brasileiras." — e vira sozinha quando uma marca entra ou sai. Escreva aqui o que vem DEPOIS dela.
    */
   acervo?: string | null;
   /**
-   * Sob o título "Fale com quem representa." Diga o que acontece quando alguém chama. ⚠️ Nenhum e-mail de fábrica entra neste site, em lugar nenhum: um representante que se desintermedia do próprio funil está construindo o site do concorrente. Mas isso é regra de bastidor — não a explique ao visitante dentro do parágrafo.
+   * Sob o título "Fale com a Belmare." Diga o que acontece quando alguém chama. ⚠️ Nenhum e-mail de fábrica entra neste site, em lugar nenhum: um representante que se desintermedia do próprio funil está construindo o site do concorrente. Mas isso é regra de bastidor — não a explique ao visitante dentro do parágrafo.
    */
-  interlocutor?: string | null;
+  contato?: string | null;
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1329,10 +1329,10 @@ export interface HomeSelect<T extends boolean = true> {
  * via the `definition` "quem-somos_select".
  */
 export interface QuemSomosSelect<T extends boolean = true> {
-  registro?: T;
-  nome?: T;
+  apresentacao?: T;
+  atuacao?: T;
   acervo?: T;
-  interlocutor?: T;
+  contato?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;

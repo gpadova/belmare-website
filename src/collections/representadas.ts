@@ -24,9 +24,10 @@ import { tagsDaMudanca } from "@/lib/revalidacao";
  *
  * ⚠️ **VALIDAÇÃO AQUI É UX DE EDITOR, NÃO SEGURANÇA DE TIPO.** O que estas
  * recusas fazem é explicar o problema em pt-BR para quem está salvando. Quem
- * protege os componentes de um estado impossível é a união de `Catalogo` em
- * `lib/representadas.ts`, aplicada pelo mapper. São dois trabalhos diferentes e
- * os dois existem: o painel recusa, o tipo torna irrepresentável.
+ * protege os componentes de um estado impossível é o tipo `Catalogo` de
+ * `lib/representadas.ts`, aplicado pelo mapper — um catálogo sem PDF em mãos não
+ * atravessa a fronteira. São dois trabalhos diferentes e os dois existem: o
+ * painel recusa e diz por quê, o tipo torna irrepresentável.
  *
  * ⚠️ Peso de arquivo NÃO é campo. Ele sai do `filesize` que o Payload gravou do
  * arquivo armazenado — decisão 6 da spec. Número digitado à mão é como o site
@@ -580,7 +581,7 @@ export const Representadas: CollectionConfig = {
       labels: { singular: "Catálogo", plural: "Catálogos" },
       admin: {
         description:
-          "Os catálogos que esta fábrica publica. Declare o documento mesmo quando a Belmare ainda não recebeu o arquivo: com o PDF anexado a página oferece o download, sem ele a página diz que o envio é pela Belmare e leva o visitante ao WhatsApp. Os dois são verdade; o que não pode é a página fingir que o catálogo não existe.",
+          "Os catálogos desta fábrica, um por PDF — pode ser um só ou um por coleção. Cada linha precisa do arquivo anexado: o site lista o que dá para baixar, e nada além disso. Uma linha sem PDF não aparece em /catalogos nem na página da marca, e não vira \"em breve\" — enquanto o arquivo não chegar, quem pede o catálogo pede pelo WhatsApp, no botão que já existe no fim da página.",
       },
       fields: [
         {
@@ -590,7 +591,7 @@ export const Representadas: CollectionConfig = {
           label: "Título do documento",
           admin: {
             description:
-              "Como o documento se chama — \"Catálogo\". Não escreva a edição aqui: o ano tem campo próprio logo abaixo e o site compõe a linha sozinho.",
+              "Como o documento se chama, e é ele que separa um catálogo dos outros desta mesma fábrica — \"Catálogo geral\", \"Linha Ânima\", \"Área externa\". Com um catálogo só, \"Catálogo\" basta. Não escreva a edição aqui: o ano tem campo próprio logo abaixo e o site compõe a linha sozinho.",
           },
           validate: exigeTexto(
             "Escreva o título do documento antes de salvar. É o texto que o visitante lê para decidir se baixa.",
@@ -615,19 +616,31 @@ export const Representadas: CollectionConfig = {
           name: "arquivo",
           type: "upload",
           relationTo: "arquivos",
-          label: "O PDF, quando a Belmare já tem o arquivo",
+          label: "O PDF do catálogo",
           admin: {
             description:
-              "Anexe o PDF só quando ele estiver em mãos. O peso aparece sozinho na página, lido do arquivo — não há o que preencher e não há o que estimar. Sem anexo, a linha continua existindo e vira um pedido pelo WhatsApp.",
+              "O arquivo em si. O peso aparece sozinho na página, lido do PDF — não há o que preencher e não há o que estimar. Sem ele esta linha não vai para o site: se o catálogo ainda não chegou da fábrica, apague a linha e cadastre-a no dia em que o arquivo chegar.",
           },
 
-          /* ⚠️ Um arquivo sem tamanho medido não pode virar link. O peso é a
-             promessa que a linha faz antes do clique, e é a promessa que este
-             site existe para não quebrar: quem está em obra com sinal ruim
-             decide pelo número. O mapper já protege o componente devolvendo um
-             catálogo a pedir; esta recusa existe para o operador não sair da
-             tela achando que publicou um download que a página não vai
-             oferecer. */
+          /* ⚠️ **A RECUSA DE ANEXO AUSENTE ENTROU EM 05/08/2026, e ela não é
+             `required: true` por um motivo de banco: a coluna `arquivo_id` é
+             anulável no esquema publicado, e torná-la obrigatória no Payload
+             pediria migração para apertar uma regra que é de EDIÇÃO, não de
+             armazenamento. `validate` recusa na tela do operador, onde a
+             explicação cabe; o mapper (`lib/representadas-traducao.ts`) já torna
+             o estado irrepresentável do lado do site. Rascunho continua salvando
+             pela metade — `versions.drafts` não roda validação —, então isto só
+             barra na hora de publicar, que é a hora certa.
+
+             ⚠️ Documentos publicados ANTES desta data podem ter linhas de
+             catálogo sem anexo (a seed criava três). Elas já não aparecem no
+             site; a primeira republicação da marca é que vai pedir ao operador
+             para anexar o PDF ou apagar a linha — e é por isso que a mensagem
+             abaixo oferece as duas saídas em vez de só exigir o arquivo.
+
+             ⚠️ Um arquivo sem tamanho medido também não vira link. O peso é a
+             promessa que a linha faz antes do clique: quem está em obra com
+             sinal ruim decide pelo número. */
           validate: async (
             valor: unknown,
             opcoes: {
@@ -635,7 +648,8 @@ export const Representadas: CollectionConfig = {
             },
           ) => {
             const id = identidadeDoUpload(valor);
-            if (id === undefined) return true;
+            if (id === undefined)
+              return "Anexe o PDF deste catálogo, ou apague a linha inteira. O site lista só catálogo que dá para baixar — sem o arquivo, esta linha não apareceria em lugar nenhum, e quem quer o catálogo já tem o pedido pelo WhatsApp no fim da página.";
 
             const payload = opcoes.req?.payload;
             if (!payload) return true;

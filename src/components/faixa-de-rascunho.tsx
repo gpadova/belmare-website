@@ -13,7 +13,7 @@
 export function FaixaDeRascunho() {
   return (
     <div className="mono flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-ink px-4 py-2 text-center text-paper uppercase">
-      <span>Pré-visualização de rascunho — este conteúdo ainda não foi publicado</span>
+      <span>Pré-visualização de rascunho: este conteúdo ainda não foi publicado</span>
       {/* ⚠️ `<a>` de propósito, e NÃO `<Link>`. O destino não é página: é o
           route handler que APAGA o cookie de rascunho. O `<Link>` do Next faz
           prefetch do que está em viewport, e prefetch aqui significa sair da

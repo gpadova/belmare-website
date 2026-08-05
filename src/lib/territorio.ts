@@ -1,5 +1,5 @@
 /**
- * A PRANCHA 01 — o território atendido, desenhado.
+ * O território atendido, desenhado — o mapa de `/quem-somos`.
  *
  * O contorno dos três estados não é ilustração: é a malha territorial oficial
  * do IBGE (API de malhas, região Sul, recorte por UF, qualidade intermediária),

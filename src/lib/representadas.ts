@@ -71,52 +71,42 @@ export type Vocabulario = {
 };
 
 /**
- * O catálogo é CAMPO da marca, não coleção — não tem página, não tem rota, e
- * `/catalogos` é uma VISTA sobre este mesmo dado, nunca uma segunda árvore.
+ * Um catálogo. O catálogo é CAMPO da marca, não coleção — não tem página, não
+ * tem rota, e `/catalogos` é uma VISTA sobre este mesmo dado.
  *
- * ⚠️ **DUAS ESCRITAS, NÃO DUAS ENTIDADES.** Um documento existe no mundo antes
- * de existir em disco: a Trisol publica a edição 2026 no site dela, e a Belmare
- * ainda não recebeu o arquivo. Se só o documento com PDF em mãos pudesse ser
- * declarado, a página teria que escolher entre mentir (link para um arquivo que
- * não existe) e mentir por omissão (fingir que a Trisol não tem catálogo). Por
- * isso `arquivo` e `mb` são o par que discrimina os dois estados, e um estado
- * vira o outro preenchendo dois campos — sem tipo novo, sem linha nova, sem
- * layout novo.
+ * ⚠️ **UM CATÁLOGO É UM ARQUIVO. NÃO EXISTE CATÁLOGO SEM PDF.** O tipo teve dois
+ * estados até 05/08/2026 — "publicado" e "a pedir" — para poder declarar um
+ * documento que existia na fábrica e ainda não em disco. O que isso produziu na
+ * tela foi o defeito que o cliente encontrou: três linhas com título sublinhado,
+ * cada uma anunciando um documento que ninguém tinha subido, e o gesto de clicar
+ * apontando para lugar nenhum quando o número de WhatsApp também estava em
+ * branco. Uma lista de catálogos que enche sozinha, sem nenhum upload, é uma
+ * lista que não responde à única pergunta que ela existe para responder.
  *
- * ⚠️ **`arquivo` e `mb` andam juntos ou não andam.** O tipo impõe isso porque
- * peso é a promessa que a linha faz antes do clique, e um link sem peso medido
- * é exatamente a promessa que este site existe para não quebrar. O peso sai do
- * arquivo medido — nunca estimado, nunca copiado de wireframe.
+ * A regra agora é literal: **sobe o PDF, aparece a linha; não sobe, não
+ * aparece.** O operador vê no site exatamente o que colocou no painel, e a
+ * página nunca desenha um destino que não abre. O pedido pelo WhatsApp continua
+ * existindo — mas como a ação de fecho da página, que é UMA e funciona, e não
+ * como N linhas fantasma.
  *
- * ⚠️ `ano` é opcional e só entra quando a edição é conhecida em fonte pública.
- * A Marê e a GDA publicam catálogo sem dizer de que ano (P22): a linha escreve
- * "Edição não declarada" com todas as letras, e não inventa um 2025 plausível.
+ * ⚠️ **`arquivo` e `mb` andam juntos, e agora os dois são obrigatórios.** O peso
+ * é a promessa que a linha faz antes do clique, e sai do arquivo medido pelo
+ * Payload — nunca estimado, nunca digitado.
+ *
+ * ⚠️ `ano` continua opcional: só entra quando a fábrica declara a edição. Sem
+ * ele a linha termina na medida e para, em vez de escrever a ausência.
  */
-type CatalogoBase = {
-  /** Como o documento se chama. Sem edição inventada dentro do título. */
+export type Catalogo = {
+  /** Como o documento se chama. Distingue um catálogo dos outros da mesma
+   *  fábrica — é o que a fábrica escreve na capa. */
   titulo: string;
-  /** Só quando a edição é conhecida em fonte pública. */
+  /** Só quando a edição é conhecida. */
   ano?: number;
-};
-
-/** Arquivo em mãos e medido: a linha baixa o PDF. */
-export type CatalogoPublicado = CatalogoBase & {
+  /** O endereço do PDF armazenado. */
   arquivo: string;
   /** Tamanho real do arquivo, medido. Nunca estimado. */
   mb: number;
 };
-
-/** Documento que existe na fábrica e ainda não em disco: a linha pede. */
-export type CatalogoAPedir = CatalogoBase & {
-  arquivo?: undefined;
-  mb?: undefined;
-};
-
-export type Catalogo = CatalogoPublicado | CatalogoAPedir;
-
-export function catalogoPublicado(c: Catalogo): c is CatalogoPublicado {
-  return c.arquivo !== undefined;
-}
 
 /**
  * O peso de um arquivo, sempre com uma casa decimal.
@@ -161,8 +151,9 @@ export type Representada = {
   colecoes?: string[];
   vocabulario?: Vocabulario;
   /** Lista, e não campo único: a Marê pode ter um PDF por coleção (P22), e a
-   *  GDA publica "catálogos" no plural. Um array vazio hoje não custa nada; um
-   *  campo único vira migração depois que o CMS estiver cadastrando. */
+   *  GDA publica "catálogos" no plural. Uma fábrica com seis catálogos é o caso
+   *  normal, não a exceção — `/catalogos` lista os N de cada uma e filtra por
+   *  fábrica. Ausente enquanto nenhum PDF dela subiu. */
   catalogos?: Catalogo[];
 };
 
@@ -247,12 +238,12 @@ export const REPRESENTADAS: Representada[] = [
         },
       ],
     },
-    /* O site da Marê tem seção de catálogo/download — o documento existe. O que
-       não se sabe é a edição, nem se é PDF único ou um por coleção (P22), e por
-       isso não há `ano`: a linha escreve "Edição não declarada" em vez de um
-       2025 plausível. Se a resposta for "um por coleção", isto vira trinta
-       entradas neste array e a página absorve sem mudar de forma. */
-    catalogos: [{ titulo: "Catálogo" }],
+    /* ⚠️ **SEM `catalogos`, E A AUSÊNCIA É O DADO.** O site da Marê tem seção de
+       download, mas a Belmare não recebeu nenhum PDF — e catálogo, a partir de
+       05/08/2026, é o arquivo. Declarar aqui um documento sem arquivo era o que
+       fazia `/catalogos` mostrar três linhas para zero uploads. O dia em que os
+       PDFs chegarem, eles entram pelo painel, um por coleção se for o caso
+       (P22), e a página absorve os N sem mudar de forma. */
   },
   {
     slug: "gda-moveis",
@@ -273,7 +264,7 @@ export const REPRESENTADAS: Representada[] = [
       {
         rotulo: "Fundição",
         valor:
-          "Cláudio, Minas Gerais — polo de fundição artesanal de alumínio",
+          "Cláudio, Minas Gerais, polo de fundição artesanal de alumínio",
       },
       { rotulo: "Prazo", valor: "Personalizados em até 30 dias" },
       { rotulo: "Ambiente", valor: "Externo e interno" },
@@ -311,8 +302,8 @@ export const REPRESENTADAS: Representada[] = [
         },
       ],
     },
-    /* A GDA publica catálogo em PDF na própria navegação. Edição não declarada. */
-    catalogos: [{ titulo: "Catálogo" }],
+    /* Sem `catalogos` pelo mesmo motivo da Marê: a GDA publica catálogo em PDF
+       na navegação dela, e nenhum arquivo chegou à Belmare. */
   },
   {
     slug: "bux-garden",
@@ -351,11 +342,11 @@ export const REPRESENTADAS: Representada[] = [
        filtro nunca sai da marca, isso trava só esta página — as outras três
        vão ao ar sem esperar.
 
-       Sem `catalogos` também, e é o mesmo tipo de silêncio: a Bux é a única das
-       quatro que não declara catálogo em fonte nenhuma. Ela não vira linha em
-       `/catalogos` com um documento inventado — sai numa nota por extenso
-       abaixo da lista, que é a mesma regra do "Origem não declarada" no ledger
-       de `/quem-somos`. */
+       Sem `catalogos` como as outras três, e aqui por dois motivos somados: a
+       Bux é a única que não declara catálogo em fonte nenhuma, e nenhum PDF
+       chegou. Ela não aparece na lista, não aparece no filtro, e não vira nota
+       de rodapé explicando a própria ausência — uma fábrica sem catálogo
+       simplesmente não é assunto de uma página de catálogos. */
   },
   {
     slug: "trisol",
@@ -400,12 +391,11 @@ export const REPRESENTADAS: Representada[] = [
         },
       ],
     },
-    /* A única edição conhecida do portfólio inteiro. A Trisol publica a edição
-       2026 para download no site dela — e é justamente por isso que ela NÃO é
-       linkada: mandar o arquiteto ao site da fábrica entrega o lead, o e-mail
-       comercial deles e a comissão de graça. O documento é declarado aqui com a
-       edição que se conhece, e quem entrega é a Belmare. */
-    catalogos: [{ titulo: "Catálogo", ano: 2026 }],
+    /* Sem `catalogos`. A Trisol publica a edição 2026 para download no site
+       dela, e o site da Belmare continua não linkando para lá — mandar o
+       arquiteto à fábrica entrega o lead, o e-mail comercial deles e a comissão
+       de graça. Enquanto o PDF não estiver hospedado aqui, não há catálogo da
+       Trisol para listar: a linha voltará no minuto em que o arquivo subir. */
   },
 ];
 
@@ -527,21 +517,20 @@ export function secoesDaRepresentada(r: Representada): Secao[] {
     });
   }
 
-  /* ⚠️ A contagem só existe quando há PESO MEDIDO para declarar. Um documento
-     que ainda vai chegar não anuncia "1" na faixa: a faixa existe para dizer o
-     que custa o clique, e "1" não é custo de nada. Com um único publicado, o
-     peso é a informação; com vários, a quantidade volta a ser. */
+  /* ⚠️ Com UM catálogo, o peso é a informação — a faixa existe para dizer o que
+     custa o clique. Com vários, a quantidade volta a ser: "PDF 24,0 MB" ao lado
+     de um rótulo no plural anunciaria o custo de um dos seis e esconderia os
+     outros cinco. Não há mais o caso "declarado sem arquivo": um catálogo é um
+     arquivo, então toda entrada aqui tem peso medido. */
   if (r.catalogos?.length) {
-    const publicados = r.catalogos.filter(catalogoPublicado);
+    const catalogos = r.catalogos;
     secoes.push({
       id: "levar",
-      rotulo: "Catálogo",
+      rotulo: catalogos.length === 1 ? "Catálogo" : "Catálogos",
       contagem:
-        publicados.length === 1
-          ? `PDF ${pesoEmMB(publicados[0].mb)} MB`
-          : publicados.length > 1
-            ? String(publicados.length)
-            : undefined,
+        catalogos.length === 1
+          ? `PDF ${pesoEmMB(catalogos[0].mb)} MB`
+          : String(catalogos.length),
     });
   }
 
@@ -554,74 +543,106 @@ export function secoesDaRepresentada(r: Representada): Secao[] {
 }
 
 /**
- * Um documento e a fábrica a quem ele pertence — a entrada de `/catalogos`.
+ * A fábrica, reduzida ao que uma lista de catálogos precisa saber dela.
  *
- * ⚠️ **O DOCUMENTO É O ASSUNTO; A MARCA É A ATRIBUIÇÃO.** Essa inversão é a
- * razão de a rota existir. O site já enumera as mesmas quatro fábricas três
- * vezes — galeria da home, ledger de `/quem-somos` 05, registros de
- * `/representadas` — e uma quarta lista de marcas não teria o que acrescentar.
- * Aqui a linha é o arquivo: ordena por edição, aceita duas entradas da mesma
- * fábrica sem nenhuma mudança de layout, e some da página quando o documento
- * não existe, em vez de deixar a marca ali com uma célula vazia.
+ * ⚠️ **É PROPOSITALMENTE MAGRO, e o motivo é a fronteira do cliente.** A lista
+ * de `/catalogos` filtra no navegador, então ela atravessa para o cliente como
+ * props serializadas. Mandar a `Representada` inteira levaria junto fotografia,
+ * ficha, oito designers e dezenove categorias por linha — dezenas de KB de JSON
+ * para desenhar um nome. Duas strings é o que a linha usa e é o que ela recebe.
  */
-export type DocumentoDeCatalogo = {
-  catalogo: Catalogo;
-  representada: Representada;
+export type MarcaDoCatalogo = {
+  slug: string;
+  nome: string;
 };
 
 /**
- * Os documentos declarados, na ordem em que servem a quem chegou.
+ * Um catálogo e a fábrica dele — a entrada da lista de `/catalogos`.
  *
- * Publicado antes de a pedir — o que se baixa agora vem primeiro, sempre. Dentro
- * de cada bloco, edição mais recente primeiro, e edição desconhecida por último,
- * porque um documento sem ano é o que menos ajuda a decidir. Empate mantém a
- * ordem em que as marcas CHEGARAM, que é a do painel (campo `ordem`) e não
- * depende de dado ausente.
+ * ⚠️ **A MARCA VOLTOU A SER A CHAVE, e é uma reversão declarada.** A rota nasceu
+ * organizada pelo documento, com a fábrica rebaixada a qualificador dentro do
+ * título ("Catálogo Trisol"), para não ser a quarta enumeração das mesmas
+ * marcas. O argumento caiu por dois motivos que a prática trouxe:
+ *
+ *   1. **Uma fábrica tem N catálogos, não um.** Com uma linha por marca a
+ *      inversão era invisível; com seis linhas da Marê e quatro da GDA numa
+ *      lista ordenada por edição, a lista embaralha as fábricas e ninguém acha
+ *      o que veio buscar. Quem chega aqui chega sabendo de que fábrica quer o
+ *      catálogo — essa é a pergunta real desta página.
+ *   2. **Filtrar por fábrica passou a ser o pedido do cliente**, e um filtro só
+ *      faz sentido sobre o eixo pelo qual a lista já se organiza.
+ *
+ * Isto NÃO reabre taxonomia global: a marca continua sendo a raiz, o recorte
+ * continua sendo por marca, e nada atravessa duas fábricas.
+ */
+export type CatalogoNaLista = {
+  catalogo: Catalogo;
+  marca: MarcaDoCatalogo;
+};
+
+/** Uma opção do filtro: a fábrica e quantos catálogos ela tem aqui. */
+export type FiltroDeMarca = MarcaDoCatalogo & {
+  quantidade: number;
+};
+
+/**
+ * Os catálogos que existem, na ordem em que a página os apresenta.
+ *
+ * A ordem é **fábrica, depois edição mais recente primeiro** — e o desempate
+ * final é o título, para que a lista não reordene sozinha entre duas leituras.
+ * A ordem das fábricas é a que chegou do painel (campo `ordem`), a mesma da
+ * galeria da home: uma segunda ordenação por nome aqui faria a mesma marca
+ * aparecer em terceiro num lugar e em primeiro no outro.
+ *
+ * ⚠️ Uma fábrica sem nenhum catálogo não produz entrada nenhuma — não há linha
+ * vazia, nem cabeçalho órfão, nem nota explicando a ausência.
  *
  * ⚠️ A lista entra por parâmetro em vez de ser lida aqui dentro, e é isso que
- * mantém esta função pura enquanto a fonte passou a ser o painel. Quem decide de
- * onde vêm as marcas é a rota — `representadasDaPagina()` —, não este módulo.
+ * mantém esta função pura. Quem decide de onde vêm as marcas é a rota —
+ * `representadasDaPagina()` —, não este módulo.
  */
-export function documentosDeCatalogo(
+export function catalogosDoSite(
   representadas: Representada[],
-): DocumentoDeCatalogo[] {
-  const documentos = representadas.flatMap((representada) =>
-    (representada.catalogos ?? []).map((catalogo) => ({
-      catalogo,
-      representada,
-    })),
+): CatalogoNaLista[] {
+  return representadas.flatMap((representada) =>
+    [...(representada.catalogos ?? [])]
+      .sort((a, b) => {
+        /* Sem ano vai para o FIM da fábrica, e não para o começo, que é onde um
+           `?? 0` numa comparação decrescente o colocaria. */
+        const anoA = a.ano ?? -Infinity;
+        const anoB = b.ano ?? -Infinity;
+        if (anoA !== anoB) return anoB - anoA;
+        return a.titulo.localeCompare(b.titulo, "pt-BR");
+      })
+      .map((catalogo) => ({
+        catalogo,
+        marca: { slug: representada.slug, nome: representada.nome },
+      })),
   );
-
-  return documentos
-    .map((documento, ordem) => ({ documento, ordem }))
-    .sort((a, b) => {
-      const publicado =
-        Number(catalogoPublicado(b.documento.catalogo)) -
-        Number(catalogoPublicado(a.documento.catalogo));
-      if (publicado !== 0) return publicado;
-
-      /* Sem ano vai para o fim dos dois blocos, e não para o começo, que é onde
-         um `?? 0` numa comparação decrescente o colocaria. */
-      const anoA = a.documento.catalogo.ano ?? -Infinity;
-      const anoB = b.documento.catalogo.ano ?? -Infinity;
-      if (anoA !== anoB) return anoB - anoA;
-
-      return a.ordem - b.ordem;
-    })
-    .map(({ documento }) => documento);
 }
 
 /**
- * As fábricas que não declaram documento nenhum.
+ * As fábricas que o filtro oferece — só as que têm catálogo, com a contagem.
  *
- * ⚠️ Elas não viram linha com o campo vazio, e não somem em silêncio. Saem numa
- * nota escrita por extenso abaixo da lista — a mesma regra que faz o ledger de
- * `/quem-somos` escrever "Origem não declarada" em vez de um travessão. Quem lê
- * esta página repara na fábrica que faltou, e a resposta honesta é dizer qual é
- * e por quê.
+ * ⚠️ **DERIVA DA LISTA JÁ MONTADA, e não de uma segunda passagem pelas marcas.**
+ * Um filtro que oferece uma fábrica sem catálogo é um controle que leva a uma
+ * tela vazia, que é a versão em miniatura do defeito que esta rota inteira
+ * acabou de corrigir. Derivando da lista, a opção e o resultado dela não têm
+ * como divergir.
+ *
+ * A ordem é a de aparição, que é a do painel — as opções ficam na mesma ordem
+ * dos blocos que elas recortam.
  */
-export function representadasSemCatalogo(
-  representadas: Representada[],
-): Representada[] {
-  return representadas.filter((r) => !r.catalogos?.length);
+export function marcasComCatalogo(
+  lista: CatalogoNaLista[],
+): FiltroDeMarca[] {
+  const porSlug = new Map<string, FiltroDeMarca>();
+
+  for (const { marca } of lista) {
+    const existente = porSlug.get(marca.slug);
+    if (existente) existente.quantidade += 1;
+    else porSlug.set(marca.slug, { ...marca, quantidade: 1 });
+  }
+
+  return [...porSlug.values()];
 }

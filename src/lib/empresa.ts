@@ -184,7 +184,7 @@ export function linkDeWhatsapp(
   if (numero === undefined) return undefined;
 
   const texto = contexto
-    ? `Olá! Vim pelo site da Belmare — ${contexto}.`
+    ? `Olá! Vim pelo site da Belmare, ${contexto}.`
     : "Olá! Vim pelo site da Belmare.";
 
   return `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
@@ -240,7 +240,13 @@ function dataDeAbertura(abertura: string | undefined): Date | undefined {
  * ⚠️ Ele era `fundacao: 1999` ao lado de `abertura: "22.04.1999"` em
  * `lib/site.ts`: dois campos para o mesmo fato, e o segundo lugar onde um erro
  * de digitação passaria despercebido para sempre. O rodapé escreve "Desde
- * 1999" a partir daqui, e a faixa de `/quem-somos` escreve o mesmo número.
+ * 1999" a partir daqui.
+ *
+ * ⚠️ `/quem-somos` NÃO usa mais esta função. A página abria com o ano em
+ * display, sozinho, acima da cidade e do tempo de casa em mono — e um ano solto
+ * na primeira tela não traz ninguém. Depois da reescrita de 05/08/2026 o tempo
+ * de casa entra lá como oração, uma vez, por `anosDeMercado`. O rodapé
+ * continua sendo o lugar do ano cru.
  */
 export function anoDeFundacao(abertura: string | undefined): number | undefined {
   return dataDeAbertura(abertura)?.getFullYear();
@@ -249,9 +255,10 @@ export function anoDeFundacao(abertura: string | undefined): number | undefined 
 /**
  * A data de abertura no formato do próprio cadastro — `22.04.1999`.
  *
- * ⚠️ **GERADA, PELO MESMO MOTIVO DO ANO.** A ficha de `/quem-somos` mostra esta
- * string como transcrição do registro; ela sai da data que o operador escolheu
- * no calendário, e não de um segundo campo de texto que poderia discordar dele.
+ * ⚠️ **GERADA, PELO MESMO MOTIVO DO ANO.** O bloco de ficha das páginas livres
+ * (`components/paginas/ficha-belmare.tsx`) mostra esta string como transcrição
+ * do registro; ela sai da data que o operador escolheu no calendário, e não de
+ * um segundo campo de texto que poderia discordar dele.
  */
 export function aberturaPorExtenso(abertura: string | undefined): string | undefined {
   const dia = dataDeAbertura(abertura);

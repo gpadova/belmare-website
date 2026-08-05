@@ -31,8 +31,17 @@ export type Imagem = {
  */
 export const MARCACAO_DE_MOCK = "imagem de referência";
 
-/** O travessão e o ponto que fecham a frase. Ver `descricaoDeImagem`. */
-const SUFIXO_DE_MOCK = ` — ${MARCACAO_DE_MOCK}.`;
+/**
+ * A vírgula e o ponto que fecham a frase. Ver `descricaoDeImagem`.
+ *
+ * ⚠️ **ERA UM TRAVESSÃO ATÉ 05/08/2026, E DUAS SEMENTES DESFAZEM ESTE SUFIXO
+ * POR EXPRESSÃO REGULAR.** `semear-representadas.ts` e `semear-prancha.ts`
+ * removem a marcação antes de gravar a descrição no painel; as duas aceitam o
+ * travessão E a vírgula de propósito, porque o banco já tem linhas gravadas com
+ * a forma antiga. Trocar o separador aqui sem mexer nas duas era o seed parar
+ * de desfazer a marcação em silêncio, e a frase crescer a cada re-semeadura.
+ */
+const SUFIXO_DE_MOCK = `, ${MARCACAO_DE_MOCK}.`;
 
 /**
  * O `alt` de uma imagem, composto a partir do que o operador escreveu.
@@ -115,7 +124,7 @@ function porcentagem(valor: number | null | undefined): number {
  */
 export const ABERTURA: Imagem = {
   src: "/acervo/abertura.jpg",
-  alt: "Área externa de alto padrão com sofá, mesa baixa, ombrelone e estrutura em alumínio sobre deck de madeira — imagem de referência.",
+  alt: "Área externa de alto padrão com sofá, mesa baixa, ombrelone e estrutura em alumínio sobre deck de madeira, imagem de referência.",
 };
 
 /**
@@ -133,11 +142,11 @@ export const ABERTURA: Imagem = {
  * versão repetia o deck largo de frente para o mar, com o mesmo ombrelone e o
  * mesmo sofá — a página não respirava, repetia. Esta é fechada e no fim do
  * dia: duas poltronas viradas uma para a outra, luminária acesa, o chão vazio à
- * direita. É a conversa antes de começar, que é o assunto do bloco 06.
+ * direita. É a conversa antes de começar, que é o assunto do fecho.
  */
 export const FECHO: Imagem = {
   src: "/acervo/fecho-interlocutor.jpg",
-  alt: "Duas poltronas de área externa com estrutura em alumínio e trançado em corda, viradas uma para a outra em torno de uma mesinha de teca, num terraço coberto ao anoitecer — imagem de referência.",
+  alt: "Duas poltronas de área externa com estrutura em alumínio e trançado em corda, viradas uma para a outra em torno de uma mesinha de teca, num terraço coberto ao anoitecer, imagem de referência.",
 };
 
 /**
@@ -174,19 +183,19 @@ export const IMAGEM_DA_PORTA: Record<string, Imagem> = {
 export const IMAGEM_DA_MARCA: Record<string, Imagem> = {
   "mare-mobilia": {
     src: "/acervo/marca-mare-mobilia.jpg",
-    alt: "Poltrona de área externa trançada em corda náutica — imagem de referência.",
+    alt: "Poltrona de área externa trançada em corda náutica, imagem de referência.",
   },
   "gda-moveis": {
     src: "/acervo/marca-gda-moveis.jpg",
-    alt: "Poltrona de área externa com estrutura em alumínio fundido — imagem de referência.",
+    alt: "Poltrona de área externa com estrutura em alumínio fundido, imagem de referência.",
   },
   "bux-garden": {
     src: "/acervo/marca-bux-garden.jpg",
-    alt: "Sofá modular de área externa estofado em tecido de performance — imagem de referência.",
+    alt: "Sofá modular de área externa estofado em tecido de performance, imagem de referência.",
   },
   trisol: {
     src: "/acervo/marca-trisol.jpg",
-    alt: "Ombrelone lateral de área externa com lona técnica — imagem de referência.",
+    alt: "Ombrelone lateral de área externa com lona técnica, imagem de referência.",
   },
 };
 
@@ -205,7 +214,7 @@ export const IMAGEM_DA_MARCA: Record<string, Imagem> = {
  */
 export const PRANCHA_AREA_EXTERNA: Imagem = {
   src: "/acervo/prancha-area-externa.jpg",
-  alt: "Vista de conjunto de uma área externa em deck de madeira: sofá de corda à esquerda, mesa e cadeiras de alumínio ao centro, chaise estofada à direita e ombrelone lateral ao fundo — imagem de referência.",
+  alt: "Vista de conjunto de uma área externa em deck de madeira: sofá de corda à esquerda, mesa e cadeiras de alumínio ao centro, chaise estofada à direita e ombrelone lateral ao fundo, imagem de referência.",
 };
 
 /**
@@ -224,20 +233,20 @@ export const PRANCHA_AREA_EXTERNA: Imagem = {
 export const IMAGEM_LARGA_DA_MARCA: Record<string, Imagem> = {
   "mare-mobilia": {
     src: "/acervo/marca-mare-mobilia-larga.jpg",
-    alt: "Poltrona de área externa com assento e encosto trançados em corda sobre estrutura de madeira, sozinha num deck vazio ao sol da tarde — imagem de referência.",
+    alt: "Poltrona de área externa com assento e encosto trançados em corda sobre estrutura de madeira, sozinha num deck vazio ao sol da tarde, imagem de referência.",
     posicao: "30% center",
   },
   "gda-moveis": {
     src: "/acervo/marca-gda-moveis-larga.jpg",
-    alt: "Espreguiçadeira de área externa em alumínio fundido vista de perfil, com as juntas da estrutura à mostra, diante de uma parede de concreto — imagem de referência.",
+    alt: "Espreguiçadeira de área externa em alumínio fundido vista de perfil, com as juntas da estrutura à mostra, diante de uma parede de concreto, imagem de referência.",
     posicao: "65% center",
   },
   "bux-garden": {
     src: "/acervo/marca-bux-garden-larga.jpg",
-    alt: "Sofá modular de área externa com assentos e encostos estofados em tecido de trama fechada, encostado numa parede de concreto — imagem de referência.",
+    alt: "Sofá modular de área externa com assentos e encostos estofados em tecido de trama fechada, encostado numa parede de concreto, imagem de referência.",
   },
   trisol: {
     src: "/acervo/marca-trisol-larga.jpg",
-    alt: "Ombrelone lateral de lona escura visto de baixo, com haste e ferragens em alumínio, projetando sombra sobre uma parede de concreto e um deck de madeira — imagem de referência.",
+    alt: "Ombrelone lateral de lona escura visto de baixo, com haste e ferragens em alumínio, projetando sombra sobre uma parede de concreto e um deck de madeira, imagem de referência.",
   },
 };

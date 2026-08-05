@@ -1,6 +1,6 @@
 # Belmare — site institucional
 
-O site da Belmare Representações: quatro fábricas de mobiliário de área externa,
+O site da Belmare Representações: quatro fábricas de móveis para área externa,
 um interlocutor, três estados. Este documento é o glossário do projeto — a
 língua que o código, o briefing e o painel do CMS usam em comum. Não é
 especificação nem registro de decisão técnica.

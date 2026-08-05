@@ -30,16 +30,19 @@ import { cnpjFormatado, emailComercial, numeroDeWhatsapp } from "@/lib/empresa";
  * primeira tela do site.
  *
  * ⚠️ **O TERRITÓRIO TAMBÉM NÃO É CAMPO.** Ele é gerado da malha do IBGE que
- * DESENHA a prancha de `/quem-somos` — ver a nota longa em `lib/empresa.ts`.
+ * DESENHA o mapa de `/quem-somos` — ver a nota longa em `lib/empresa.ts`.
  * Um campo de texto deixaria o operador escrever um quarto estado que o único
  * gráfico da página não sabe desenhar.
  *
- * ⚠️ **O NOME PÚBLICO ANTERIOR FICA EM `lib/registro.ts`, NO CÓDIGO.** É uma
- * citação, e um campo de texto é precisamente a ferramenta que convida alguém a
- * reescrevê-la "com palavras melhores" — que é a única coisa que aquela página
- * não pode fazer sem quebrar o que a citação prova. Os cinco CNAEs moravam lá
- * ao lado dele e saíram do projeto junto com o bloco que os exibia; ver o `⚠️`
- * no topo de `lib/registro.ts`.
+ * ⚠️ **O NOME PÚBLICO ANTERIOR NÃO EXISTE MAIS EM LUGAR NENHUM DO PROJETO, NEM
+ * COMO CAMPO NEM COMO CÓDIGO.** Ele morava em `lib/registro.ts` e alimentava um
+ * bloco de `/quem-somos` que mostrava "Bello Mare — Móveis para Jardim,
+ * Ombrellones, Móveis de Design e Tapetes" ao lado do logotipo de hoje, como
+ * prova de continuidade. O bloco saiu na reescrita de 05/08/2026 e o arquivo
+ * saiu com ele: contar ao arquiteto que a empresa vendia móvel de jardim e
+ * tapete provava a coisa errada, e como a empresa se chamava em 1999 não decide
+ * conversa comercial nenhuma. Os cinco CNAEs moravam ali ao lado e já haviam
+ * saído antes, junto com a tabela que os exibia.
  *
  * ⚠️ **`porte` CONTINUA SENDO CAMPO, MAS NÃO APARECE MAIS EM PÁGINA NENHUMA.**
  * "Empresa de pequeno porte" abria `/quem-somos` numa faixa de identificação, e
@@ -215,7 +218,7 @@ export const Empresa: GlobalConfig = {
                   "Como consta no registro — \"Bello Mare Mercantil Ltda\". Transcreva; não traduza para o cliente.",
               },
               validate: exigeTexto(
-                "Escreva a razão social como está no registro. Ela abre a ficha de /quem-somos e fecha o rodapé.",
+                "Escreva a razão social como está no registro. Ela fecha o rodapé, em toda página do site.",
               ),
             },
             {

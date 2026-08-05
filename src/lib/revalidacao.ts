@@ -17,7 +17,7 @@
  * conferida contra o que o código de fato renderiza hoje — não a suposta:
  *
  *   1. a home            `RepresentadasGaleria` — a galeria das marcas
- *   2. `/quem-somos`       `AcervoRepresentado`, bloco 05 — o ledger
+ *   2. `/quem-somos`       `FabricasRepresentadas` — a lista de ficha
  *   3. `/representadas`    `PranchaAreaExterna` + `RegistrosDasRepresentadas`
  *   4. a própria página   `/representadas/[marca]`
  *   5. `/catalogos`        `documentosDeCatalogo` — vista sobre o mesmo dado,
@@ -49,7 +49,8 @@
 /** A galeria da home (`components/representadas-galeria.tsx`). */
 export const TAG_HOME = "home";
 
-/** O ledger de `/quem-somos`, bloco 05 (`components/quem-somos/acervo-representado.tsx`). */
+/** A lista das fábricas em `/quem-somos`
+ *  (`components/quem-somos/fabricas-representadas.tsx`). */
 export const TAG_QUEM_SOMOS = "quem-somos";
 
 /** A prancha e os registros de `/representadas`
@@ -115,7 +116,7 @@ export function tagDaPaginaLivre(slug: string): string {
 /**
  * ⚠️ **PEÇA, ARQUIVO3D E ACABAMENTO — UM SÓ LUGAR, NÃO SEIS.** Diferente de
  * representada, nenhum dos três aparece em outra rota além da página da PRÓPRIA
- * marca (PRA-120): não há galeria, não há ledger de `/quem-somos`, não há
+ * marca (PRA-120): não há galeria, não há lista em `/quem-somos`, não há
  * `/catalogos` equivalente. O fan-out inteiro é a etiqueta que já existe para a
  * marca — `tagDaRepresentada` — e é por isso que os três casos abaixo convergem
  * para a mesma chamada em vez de ganhar etiquetas próprias. Quando a página que

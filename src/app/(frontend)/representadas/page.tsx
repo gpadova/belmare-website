@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: "Representadas",
-    description: `As ${representadas.length} fábricas de mobiliário de área externa representadas pela Belmare no Paraná, em Santa Catarina e no Rio Grande do Sul: ${representadas.map((r) => r.nome).join(", ")}.`,
+    description: `As ${representadas.length} fábricas de móveis para área externa representadas pela Belmare no Paraná, em Santa Catarina e no Rio Grande do Sul: ${representadas.map((r) => r.nome).join(", ")}.`,
   };
 }
 
@@ -83,7 +83,7 @@ export default async function Representadas() {
             uma decisão comercial interna que ele não perguntou — e explicar
             soa defensivo. O que ele quer saber é quem responde e onde. A regra
             continua valendo e continua escrita no código que a aplica
-            (`components/quem-somos/interlocutor.tsx`). */}
+            (`components/quem-somos/contato.tsx`). */}
         <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
           Quem responde é a Belmare, para qualquer uma das marcas. O
           atendimento cobre {emLista(TERRITORIO)}, sem divisão de região por

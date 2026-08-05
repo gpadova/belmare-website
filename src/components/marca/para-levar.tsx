@@ -6,28 +6,34 @@ import { SecaoDaMarca } from "@/components/marca/secao";
 import type { Representada } from "@/lib/representadas";
 
 /**
- * Para levar — o catálogo da marca.
+ * Para levar — os catálogos da marca.
  *
- * ⚠️ **ESTA SEÇÃO PASSOU A RENDERIZAR, e o motivo não é que o PDF chegou.** Ela
- * ficou em zero pixels enquanto "ter catálogo" e "ter o arquivo" eram a mesma
- * condição. Não são: a Trisol publica a edição 2026 no site dela e a Belmare
- * ainda não recebeu o arquivo. Com `/catalogos` declarando esse documento em
- * público, a página da própria Trisol escondendo-o seria o site sabendo de um
- * fato num lugar e fingindo ignorá-lo no outro — e é o leitor que abre as duas
- * telas em sequência que paga por isso.
+ * ⚠️ **A SEÇÃO É ANULÁVEL, e a condição ficou de novo a mais simples possível:
+ * ela existe quando há PDF para baixar.** Houve um período em que "ter catálogo"
+ * e "ter o arquivo" eram condições diferentes — a fábrica declarava o documento,
+ * a Belmare ainda não o tinha, e a linha virava um pedido pelo WhatsApp. Isso
+ * caiu em 05/08/2026 junto com a reforma de `/catalogos`: um catálogo é um
+ * arquivo, e o que não está hospedado aqui não é listado em lugar nenhum. As
+ * duas telas voltam a dizer exatamente a mesma coisa sobre a mesma fábrica, que
+ * é o que o leitor que abre as duas em sequência precisa.
  *
- * A seção segue anulável, e a regra só ficou mais precisa: ela some quando a
- * fábrica **não declara documento nenhum**, como a Bux. Sem markup vazio, sem
- * título órfão, sem "em breve".
+ * ⚠️ **UMA FÁBRICA TEM N CATÁLOGOS.** O título e a prosa são escritos no plural
+ * quando são vários — a Marê pode ter um PDF por coleção (P22), e um h2 no
+ * singular sobre seis linhas é a página não olhando para o próprio conteúdo.
  *
  * ⚠️ **Peso e formato antes do clique**, sempre — quem está em obra com internet
- * ruim precisa saber o que custa o toque. A linha vem de `LinhaDeCatalogo` e o
- * peso sai de `pesoEmMB()`, compartilhados com `/catalogos` justamente para que
- * a medida não seja formatada duas vezes e comece a divergir: sem a casa decimal
- * fixa, a mesma coluna mostra `24 MB` embaixo de `8,4 MB`.
+ * ruim precisa saber o que custa o toque. A linha vem de `LinhaDeCatalogo`,
+ * compartilhada com `/catalogos` justamente para que a medida não seja formatada
+ * duas vezes e comece a divergir: sem a casa decimal fixa, a mesma coluna mostra
+ * `24 MB` embaixo de `8,4 MB`.
  *
- * ⚠️ O site distribui o catálogo, não o replica: é lá dentro que vivem medida,
- * acabamento e ficha cotada, e é por isso que não existe página de produto.
+ * ⚠️ **A COLUNA DA FÁBRICA NÃO VEM AQUI** — `marca` fica de fora da linha de
+ * propósito. A página inteira é da Trisol; repetir "Trisol" em cada linha de uma
+ * tela que se chama Trisol é ruído, e ainda abriria um vão de onze rem antes de
+ * cada título.
+ *
+ * ⚠️ O site distribui o catálogo, não o replica: é lá dentro que vivem medida e
+ * acabamento, e é por isso que não existe página de produto.
  */
 export function ParaLevarDaMarca({
   representada,
@@ -39,15 +45,21 @@ export function ParaLevarDaMarca({
   const catalogos = representada.catalogos;
   if (!catalogos?.length) return null;
 
+  const varios = catalogos.length > 1;
+
   return (
-    <SecaoDaMarca id="levar" numero={numero} titulo="O catálogo da fábrica.">
+    <SecaoDaMarca
+      id="levar"
+      numero={numero}
+      titulo={varios ? "Os catálogos da fábrica." : "O catálogo da fábrica."}
+    >
       {/* ⚠️ "O site distribui, não reescreve — e é por isso que nenhuma medida
           desta página tenta substituí-lo" saiu inteiro: era a página
           justificando ao visitante uma regra editorial que ele nunca
           questionou. O que ele precisa saber é o que tem dentro do arquivo. */}
       <p className="text-body mt-6 max-w-[60ch] text-pretty text-graphite">
-        É o documento da própria fábrica, com o detalhamento que não cabe nesta
-        página. A Belmare envia para você.
+        {varios ? "São documentos" : "É o documento"} da própria fábrica, com o
+        detalhamento que não cabe nesta página.
       </p>
 
       <ul className={`mt-8 border-t border-line md:mt-10 ${TETO_DA_LISTA}`}>
@@ -58,7 +70,6 @@ export function ParaLevarDaMarca({
                título e sem ano. */
             key={`${representada.slug}-${i}`}
             catalogo={catalogo}
-            representada={representada}
           />
         ))}
       </ul>

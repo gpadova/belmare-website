@@ -4,21 +4,17 @@ import { estaAutenticado } from "@/collections/papeis";
 import { aoPublicarGlobal, VERSOES_DO_GLOBAL } from "@/globals/apoio";
 
 /**
- * `/quem-somos`, dentro do painel — a prosa de cada bloco numerado, e só ela.
+ * `/quem-somos`, dentro do painel — a prosa de cada seção, e só ela.
  *
- * ⚠️ **A SEQUÊNCIA DOS BLOCOS É O ARGUMENTO DA PÁGINA, E ELA NÃO É EDITÁVEL.**
- * A rota conta uma história em ordem — o começo, o nome, o território
- * desenhado, o acervo de hoje, o interlocutor — e ler fora de ordem é ler outra
- * coisa. Por isso não existe aqui um array de blocos, nem um campo de título,
- * nem o número do bloco: só o texto DENTRO de cada um. Ver a espinha fixa em
- * `app/(frontend)/quem-somos/page.tsx` e a decisão 1 da spec.
- *
- * ⚠️ **O CAMPO `atividades` NÃO EXISTE MAIS, JUNTO COM O BLOCO QUE ELE
- * EXPLICAVA.** A tabela dos cinco CNAEs saiu da página: os códigos não dizem
- * nada a um arquiteto e dizem a coisa errada a um lojista, e a ajuda do campo
- * chegava a proibir interpretá-los — um bloco que ninguém podia explicar. Quem
- * quiser conferir o registro tem o CNPJ no rodapé. Ver
- * `components/quem-somos/registro-abertura.tsx` e `lib/registro.ts`.
+ * ⚠️ **A SEQUÊNCIA DAS SEÇÕES CONTINUA FORA DO PAINEL, POR OUTRO MOTIVO QUE
+ * ANTES.** A rota já foi um documento em ordem — o começo, o nome, o
+ * território, o acervo, o interlocutor — e o argumento contra editar a ordem
+ * era que ler fora de ordem era ler outra coisa. A página de agora é
+ * institucional comum e nenhuma seção depende da anterior; o que a mantém em
+ * código é o que ela RECUSA. A lista vinculante abaixo não sobrevive a um
+ * construtor de blocos, porque uma biblioteca de blocos genérica oferece
+ * exatamente foto de equipe, missão/visão/valores e contador animado. Ver
+ * `app/(frontend)/quem-somos/page.tsx` e `collections/blocos.test.ts`.
  *
  * ⚠️ **A LISTA VINCULANTE DO QUE NUNCA ENTRA NESTA PÁGINA CONTINUA VALENDO, E
  * NENHUM CAMPO DAQUI EXISTE PARA CONTORNÁ-LA:** foto de equipe,
@@ -26,16 +22,24 @@ import { aoPublicarGlobal, VERSOES_DO_GLOBAL } from "@/globals/apoio";
  * qualquer obra, cliente, prêmio ou depoimento que não exista. O que não existe
  * fica ausente — não é preenchido.
  *
- * ⚠️ **O BLOCO 03 NÃO TEM CAMPO.** O parágrafo dele nomeia os três estados,
- * conta as representadas e nomeia a cidade da sede — as três coisas saem do
- * dado que DESENHA a prancha logo ao lado. Um campo de texto ali é como a prosa
- * passa a discordar do único gráfico da página.
+ * ⚠️ **DOIS CAMPOS SAÍRAM NESTA REVISÃO, JUNTO COM O QUE ELES ESCREVIAM.**
+ * `registro` legendava o ano de fundação em display, e `nome` era o parágrafo
+ * do bloco que comparava o nome público anterior ao logotipo de hoje. Os dois
+ * blocos saíram da página: em que ano a empresa abriu e como ela se chamava
+ * antes não decidem conversa comercial nenhuma, e gastavam as duas primeiras
+ * telas de uma página que precisa vender. No lugar deles entraram
+ * `apresentacao` — o que a empresa é — e `atuacao` — o que ela faz por quem
+ * chega, que é o que faltava na rota inteira.
  *
- * ⚠️ **DOIS CAMPOS COMEÇAM NO MEIO DA FRASE, E ISSO ESTÁ DITO NA AJUDA DELES.**
- * O bloco 02 abre nomeando a razão social do cadastro e o bloco 04 abre
- * contando as fábricas; as duas aberturas são montadas com o dado, para que
- * trocar a razão social no painel não deixe a prosa nomeando a antiga, e para
- * que a quinta marca não encontre a página dizendo "quatro".
+ * ⚠️ **A SEÇÃO DO TERRITÓRIO NÃO TEM CAMPO.** O parágrafo dela nomeia os três
+ * estados, conta as representadas e nomeia a cidade da sede — as três coisas
+ * saem do dado que DESENHA o mapa logo ao lado. Um campo de texto ali é como a
+ * prosa passa a discordar do único gráfico da página.
+ *
+ * ⚠️ **UM CAMPO COMEÇA NO MEIO DA FRASE, E ISSO ESTÁ DITO NA AJUDA DELE.** A
+ * seção das fábricas abre contando as representadas cadastradas, e essa
+ * abertura é montada com o dado, para que a quinta marca não encontre a página
+ * dizendo "quatro".
  */
 export const QuemSomos: GlobalConfig = {
   slug: "quem-somos",
@@ -44,7 +48,7 @@ export const QuemSomos: GlobalConfig = {
   admin: {
     group: "O site",
     description:
-      "O texto dentro de cada bloco numerado de /quem-somos. Os números, os títulos e a ordem dos blocos são desenho da página e não se editam aqui. Todo campo em branco faz o parágrafo desaparecer, nunca aparecer vazio.",
+      "O texto dentro de cada seção de /quem-somos. Os títulos e a ordem das seções são desenho da página e não se editam aqui. Todo campo em branco faz o parágrafo desaparecer, nunca aparecer vazio.",
   },
 
   access: {
@@ -58,39 +62,39 @@ export const QuemSomos: GlobalConfig = {
 
   fields: [
     {
-      name: "registro",
+      name: "apresentacao",
       type: "textarea",
-      label: "01 · Parágrafo de abertura",
+      label: "Apresentação · Segundo parágrafo",
       admin: {
         description:
-          "Sob o título \"Começou com móvel de jardim.\" O ano, a cidade e o tempo de casa aparecem logo acima e saem do cadastro — não os repita aqui. Este parágrafo conta o que a empresa vendia no começo e o que ela vende hoje; nada de missão, valores ou superlativo.",
+          "Sob o título \"A Belmare é uma representação comercial de mobiliário para área externa.\" ⚠️ O primeiro parágrafo é montado pelo site com o cadastro — a contagem de fábricas, a cidade da sede e o tempo de casa. Escreva aqui o que vem DEPOIS dele: o que a empresa faz de diferente, em uma ou duas frases. Nada de missão, valores ou superlativo, e nenhuma contagem digitada à mão.",
       },
     },
     {
-      name: "nome",
+      name: "atuacao",
       type: "textarea",
-      label: "02 · Parágrafo sobre o nome anterior — a partir da segunda frase",
+      label: "O que a Belmare faz · Parágrafo de abertura",
       admin: {
         description:
-          "⚠️ A primeira frase deste parágrafo é montada pelo site — \"No papel, a empresa continua sendo …\" — com a razão social do cadastro, para que ela nunca discorde do painel. Escreva aqui o que vem DEPOIS dela.",
+          "Sob o título \"O que a Belmare faz.\", antes da lista de representação, especificação, pedido e pós-venda. Diga em uma ou duas frases como a Belmare trabalha com a loja e com o escritório de arquitetura. ⚠️ Sem promessa de prazo, de exclusividade ou de condição comercial — a lista abaixo dele descreve trabalho, não serviço contratado.",
       },
     },
     {
       name: "acervo",
       type: "textarea",
-      label: "04 · Parágrafo sobre o acervo — a partir da segunda frase",
+      label: "As fábricas representadas · A partir da segunda frase",
       admin: {
         description:
-          "⚠️ A primeira frase é montada pelo site contando as fábricas cadastradas — \"Quatro fábricas, quatro linhas.\" — e vira sozinha quando uma marca entra ou sai. Escreva aqui o que vem DEPOIS dela.",
+          "⚠️ A primeira frase é montada pelo site contando as fábricas cadastradas — \"São quatro fábricas brasileiras.\" — e vira sozinha quando uma marca entra ou sai. Escreva aqui o que vem DEPOIS dela.",
       },
     },
     {
-      name: "interlocutor",
+      name: "contato",
       type: "textarea",
-      label: "05 · Parágrafo do fecho",
+      label: "Fale com a Belmare · Parágrafo do fecho",
       admin: {
         description:
-          "Sob o título \"Fale com quem representa.\" Diga o que acontece quando alguém chama. ⚠️ Nenhum e-mail de fábrica entra neste site, em lugar nenhum: um representante que se desintermedia do próprio funil está construindo o site do concorrente. Mas isso é regra de bastidor — não a explique ao visitante dentro do parágrafo.",
+          "Sob o título \"Fale com a Belmare.\" Diga o que acontece quando alguém chama. ⚠️ Nenhum e-mail de fábrica entra neste site, em lugar nenhum: um representante que se desintermedia do próprio funil está construindo o site do concorrente. Mas isso é regra de bastidor — não a explique ao visitante dentro do parágrafo.",
       },
     },
   ],

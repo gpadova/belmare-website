@@ -142,6 +142,13 @@ export function pacoteDoPainel(doc: PacoteGerado): Baixavel | undefined {
 /**
  * A biblioteca agrupada por representada, sem grupo vazio.
  *
+ * ⚠️ **O AGRUPAMENTO DEIXOU DE SER O DESENHO DA PÁGINA EM 05/08/2026, e esta
+ * função sobreviveu por outro motivo.** `/arquivos-3d` achata os grupos em uma
+ * lista só (`arquivos3DDoSite`) e recorta por filtro; o que continua a ser feito
+ * aqui é **descartar a fábrica sem arquivo**, e isso não é layout — é a garantia
+ * de que uma marca sem nada em disco não vire opção de filtro que devolve tela
+ * vazia. Ver a nota de `recortesDeMarca`.
+ *
  * ⚠️ **AGRUPAR NÃO É FILTRAR, E A DISTINÇÃO É O PRINCÍPIO 2 DO `PRODUCT.md`
  * INTEIRO.** "O filtro nunca sai da marca" continua valendo ao pé da letra:
  * nenhuma consulta deste projeto pede arquivos de duas fábricas ao mesmo tempo
@@ -151,10 +158,11 @@ export function pacoteDoPainel(doc: PacoteGerado): Baixavel | undefined {
  * pura e recebe os grupos prontos: não existe aqui um lugar onde um `where`
  * transversal pudesse nascer.
  *
- * ⚠️ **UMA FÁBRICA SEM ARQUIVO NÃO VIRA TÍTULO ÓRFÃO.** Seção anulável
- * (`CONTEXT.md`): hoje NENHUMA das quatro tem arquivo 3D cadastrado, então a
- * implementação literal — um `<h2>` por representada — renderiza quatro
- * cabeçalhos sobre nada. Menos página, nunca página quebrada.
+ * ⚠️ **UMA FÁBRICA SEM ARQUIVO NÃO VIRA OPÇÃO ÓRFÃ.** Seção anulável
+ * (`CONTEXT.md`) na forma que a lista plana lhe deu: enquanto a página agrupava,
+ * a marca sem arquivo virava um `<h2>` sobre nada; agora ela viraria um botão de
+ * filtro que zera a tela. É o mesmo defeito com outra cara, e morre no mesmo
+ * lugar. Hoje NENHUMA das quatro tem arquivo 3D cadastrado.
  */
 export function bibliotecaPorRepresentada<M>(
   grupos: readonly { marca: M; arquivos: Arquivo3D[] }[],
@@ -162,55 +170,241 @@ export function bibliotecaPorRepresentada<M>(
   return grupos.filter((grupo) => grupo.arquivos.length > 0);
 }
 
-/** Um formato e os arquivos de UMA fábrica que estão nele — o segundo eixo do
- *  agrupamento de `/arquivos-3d`. */
-export type GrupoDeFormato = {
-  formato: string;
-  arquivos: Arquivo3D[];
+/**
+ * A fábrica, reduzida ao que uma lista de arquivos precisa saber dela.
+ *
+ * ⚠️ **É PROPOSITALMENTE MAGRO, E O MOTIVO É A FRONTEIRA DO CLIENTE** — a mesma
+ * razão, palavra por palavra, de `lib/representadas.ts#MarcaDoCatalogo`. A lista
+ * de `/arquivos-3d` filtra no navegador, então ela atravessa como props
+ * serializadas; mandar a `Representada` inteira levaria fotografia, ficha, oito
+ * designers e dezenove categorias por linha, dezenas de KB de JSON para desenhar
+ * um nome.
+ *
+ * ⚠️ **NÃO É UM ALIAS DE `MarcaDoCatalogo`, E A DUPLICAÇÃO É DELIBERADA.** As
+ * duas têm hoje os mesmos dois campos por coincidência de necessidade, não por
+ * parentesco: uma é o que a linha de catálogo precisa, a outra é o que a linha
+ * de arquivo precisa. Aliasadas, o dia em que a lista de catálogos precisar do
+ * `slug` de outra coisa reescreve a biblioteca 3D junto — que é exatamente o
+ * acoplamento que `GRADE_DO_ARQUIVO` recusa em
+ * `components/arquivos-3d/linha-de-arquivo.tsx`, pelo mesmo motivo.
+ */
+export type MarcaDoArquivo = {
+  slug: string;
+  nome: string;
 };
 
 /**
- * Os arquivos de uma representada, agrupados por formato — o segundo eixo da
- * biblioteca (PRA-127).
+ * Um arquivo e a fábrica dele — a entrada da lista de `/arquivos-3d`.
  *
- * ⚠️ **AGRUPAR POR FORMATO NÃO É FILTRAR POR FORMATO, E A DISTINÇÃO É A MESMA
- * QUE `bibliotecaPorRepresentada` JÁ FAZ.** O filtro transversal do briefing
- * ("SKETCHUP · DWG · REVIT · 3DS" no topo da página) continua não existindo, e
- * continua morto pelas duas razões registradas em
- * `docs/classificacao-de-texto.md`: ele exigiria uma leitura de arquivos 3D SEM
- * pai — a porta por onde "o filtro nunca sai da marca" deixaria de valer — e
- * ele desenharia quatro botões sobre zero arquivo. Esta função não abre nem uma
- * coisa nem a outra: ela é pura, recebe os arquivos de UMA fábrica que a
- * consulta escopada já devolveu, e arruma na tela o que veio junto.
- *
- * ⚠️ **O EIXO SÓ APARECE PORQUE A MESMA PEÇA VEM EM VÁRIOS FORMATOS.** Uma
- * fábrica que entrega "Cadeira Zuri" em `.skp` e em `.dwg` produz duas linhas
- * com o MESMO nome; numa lista plana elas se alternam com as outras peças e o
- * arquiteto que só usa SketchUp lê a lista inteira duas vezes para achar
- * metade dela. Agrupado, ele desce até o formato que abre e para de ler.
- *
- * ⚠️ **A ORDEM DOS FORMATOS É ALFABÉTICA, E NÃO PODIA SER OUTRA COISA.**
- * `formato` é **gerado** da extensão (não há campo de painel a respeitar, como
- * `Representada.ordem` é lá em cima), e a ordem de chegada dos documentos é a
- * ordem de cadastro — arbitrária na tela. Dentro de cada formato a ordem é a
- * que a consulta já trouxe (`sort: "nome"`), preservada aqui.
+ * ⚠️ **A LISTA FICOU PLANA EM 05/08/2026, e isso reverte o agrupamento por
+ * fábrica que esta biblioteca nasceu tendo.** O argumento antigo era que
+ * "Cadeira Zuri" não diz de quem é, e ele continua verdadeiro — o que mudou é
+ * quem responde: **a fábrica virou uma coluna da linha**, como já é em
+ * `/catalogos`. Um `<h2>` por marca e uma coluna `FÁBRICA` respondem à mesma
+ * pergunta; a coluna responde em toda linha, e a lista plana ainda pode ser
+ * recortada por um filtro, que blocos empilhados não podem.
  */
-export function arquivosPorFormato(
-  arquivos: readonly Arquivo3D[],
-): GrupoDeFormato[] {
-  const grupos = new Map<string, Arquivo3D[]>();
+export type ItemDaBiblioteca = {
+  arquivo: Arquivo3D;
+  marca: MarcaDoArquivo;
+};
 
-  for (const arquivo of arquivos) {
-    const doFormato = grupos.get(arquivo.formato);
-    if (doFormato === undefined) grupos.set(arquivo.formato, [arquivo]);
-    else doFormato.push(arquivo);
+/**
+ * A biblioteca inteira numa lista só, na ordem em que a página a apresenta.
+ *
+ * A ordem é **fábrica, depois nome da peça, depois formato** — e o desempate
+ * final é o formato justamente para o caso que motivava o agrupamento antigo:
+ * "Cadeira Zuri" em `.skp` e em `.dwg` são duas linhas com o mesmo nome, e aqui
+ * elas saem **encostadas uma na outra**, diferindo só na medida à direita. A
+ * ordem das fábricas é a que chegou do painel (campo `ordem`), a mesma da
+ * galeria da home: uma segunda ordenação por nome aqui faria a mesma marca
+ * aparecer em terceiro num lugar e em primeiro no outro.
+ *
+ * ⚠️ **A ORDENAÇÃO É ESCRITA AQUI, e não herdada do `sort: "nome"` da consulta.**
+ * A consulta ordena por nome e não tem como expressar o desempate por formato —
+ * e uma ordem que depende de duas metades, uma no Payload e outra em lugar
+ * nenhum, é uma ordem que ninguém consegue afirmar por teste. Esta função
+ * declara a ordem inteira e é pura.
+ *
+ * ⚠️ A marca é **estreitada** para dois campos na saída, e não repassada como
+ * veio: ver a nota de `MarcaDoArquivo`.
+ */
+export function arquivos3DDoSite(
+  grupos: readonly { marca: MarcaDoArquivo; arquivos: readonly Arquivo3D[] }[],
+): ItemDaBiblioteca[] {
+  return grupos.flatMap(({ marca, arquivos }) =>
+    [...arquivos]
+      .sort((a, b) => {
+        const porNome = a.nome.localeCompare(b.nome, "pt-BR");
+        if (porNome !== 0) return porNome;
+        return a.formato.localeCompare(b.formato, "pt-BR");
+      })
+      .map((arquivo) => ({
+        arquivo,
+        marca: { slug: marca.slug, nome: marca.nome },
+      })),
+  );
+}
+
+/** Uma opção de filtro: a chave que recorta, o que ela se chama na tela, e
+ *  quantos arquivos ela devolve. */
+export type OpcaoDeRecorte = {
+  chave: string;
+  rotulo: string;
+  quantidade: number;
+};
+
+/**
+ * As opções de um eixo do filtro, contadas sobre a lista que recebem.
+ *
+ * ⚠️ **A QUANTIDADE É O RESULTADO DO CLIQUE, NÃO UM TOTAL DE CATÁLOGO — e é por
+ * isso que a lista entra por parâmetro em vez de ser lida aqui dentro.** Quem
+ * chama passa a biblioteca **já recortada pelo outro eixo**, então o número ao
+ * lado de `SKP` é literalmente quantas linhas sobram se você clicar em `SKP`
+ * agora. É a regra do `SKP · 8,4 MB` aplicada a um controle: declarar o custo do
+ * clique antes do clique. Contadas sobre a lista inteira, as duas facetas
+ * ofereceriam combinações que devolvem tela vazia — o botão morto de novo, em
+ * miniatura.
+ */
+function contarRecortes(
+  entradas: readonly { chave: string; rotulo: string }[],
+): OpcaoDeRecorte[] {
+  const porChave = new Map<string, OpcaoDeRecorte>();
+
+  for (const { chave, rotulo } of entradas) {
+    const existente = porChave.get(chave);
+    if (existente) existente.quantidade += 1;
+    else porChave.set(chave, { chave, rotulo, quantidade: 1 });
   }
 
-  // Um grupo de formato nasce de pelo menos um arquivo — não existe aqui o
-  // caso do grupo vazio que `bibliotecaPorRepresentada` precisa descartar.
-  return [...grupos]
-    .map(([formato, doFormato]) => ({ formato, arquivos: doFormato }))
-    .sort((a, b) => a.formato.localeCompare(b.formato, "pt-BR"));
+  return [...porChave.values()];
+}
+
+/**
+ * As fábricas que o filtro oferece — só as que têm arquivo na lista recebida.
+ *
+ * A ordem é a de aparição, que é a do painel: as opções ficam na mesma ordem das
+ * linhas que elas recortam.
+ */
+export function recortesDeMarca(
+  lista: readonly ItemDaBiblioteca[],
+): OpcaoDeRecorte[] {
+  return contarRecortes(
+    lista.map(({ marca }) => ({ chave: marca.slug, rotulo: marca.nome })),
+  );
+}
+
+/**
+ * Os formatos que o filtro oferece — só os que têm arquivo na lista recebida.
+ *
+ * ⚠️ **ESTE EIXO É A REVERSÃO DECLARADA DE 05/08/2026, e ele foi recusado duas
+ * vezes por escrito antes de entrar.** As duas recusas estavam certas sobre o
+ * filtro que elas viram, e nenhuma das duas alcança este:
+ *
+ *   1. *"Exigiria uma leitura de arquivos 3D sem pai"* — a porta por onde "o
+ *      filtro nunca sai da marca" (princípio 2 do `PRODUCT.md`) deixaria de
+ *      valer. **Não exige.** `buscarBiblioteca3D` continua sendo N leituras
+ *      escopadas por `representada.slug`, sem um `where` transversal em lugar
+ *      nenhum; o recorte é `Array.filter` no navegador, sobre a lista que a
+ *      página já tinha desenhado. É exatamente a construção que `/catalogos`
+ *      publicou para o filtro por fábrica, e pelo mesmo argumento: **filtrar na
+ *      tela não é filtrar na consulta.**
+ *   2. *"Desenharia quatro botões sobre zero arquivo"* — a matriz vazia. **Não
+ *      desenha.** As opções saem da lista, então um formato sem arquivo não vira
+ *      opção, e uma biblioteca vazia não tem eixo nenhum para mostrar.
+ *
+ * O que muda de verdade é a frase *"o filtro cabe dentro de um grupo — nunca por
+ * cima deles"*, que esta função contradiz: com a lista plana não há grupo, e o
+ * formato passa a recortar as fábricas todas de uma vez. É o recorte certo para
+ * o eixo: quem só abre SketchUp quer os `.skp` **das quatro**, não os `.skp` de
+ * uma. Agrupar por formato dentro da marca nunca deu isso.
+ *
+ * ⚠️ **A ORDEM É ALFABÉTICA, E NÃO PODIA SER OUTRA COISA.** `formato` é gerado
+ * da extensão — não há campo de painel a respeitar, como `Representada.ordem` é
+ * para as fábricas — e a ordem de aparição seria a ordem de cadastro, arbitrária
+ * na tela.
+ */
+export function recortesDeFormato(
+  lista: readonly ItemDaBiblioteca[],
+): OpcaoDeRecorte[] {
+  return contarRecortes(
+    lista.map(({ arquivo }) => ({
+      chave: arquivo.formato,
+      rotulo: arquivo.formato,
+    })),
+  ).sort((a, b) => a.chave.localeCompare(b.chave, "pt-BR"));
+}
+
+/** O recorte que não recorta. Não é slug de marca nem sigla de formato — o
+ *  formato de um slug de painel proíbe o valor vazio, e uma extensão vazia não
+ *  produz `Arquivo3D` nenhum (ver `formatoDoArquivo`). */
+export const SEM_RECORTE = "";
+
+/** O estado inteiro da lista filtrada: o que está ativo, o que cada eixo
+ *  oferece, e o que sobra na tela. */
+export type RecorteDaBiblioteca = {
+  marca: string;
+  formato: string;
+  marcas: OpcaoDeRecorte[];
+  formatos: OpcaoDeRecorte[];
+  visiveis: ItemDaBiblioteca[];
+};
+
+/**
+ * A biblioteca vista através dos dois eixos do filtro.
+ *
+ * ⚠️ **É UMA FUNÇÃO PURA, E É POR ISSO QUE O COMPONENTE DE LISTA NÃO TEM
+ * LÓGICA.** O que o navegador guarda são duas strings — a INTENÇÃO de quem
+ * clicou. Tudo o que aparece na tela (as opções de cada eixo, as contagens delas
+ * e as linhas visíveis) é derivado daqui, de uma vez, e pode ser afirmado por
+ * teste comum sem montar React.
+ *
+ * ⚠️ **CADA EIXO CONTA SOBRE A LISTA JÁ RECORTADA PELO OUTRO.** É o que impede a
+ * combinação morta: escolhida a Trisol, `formatos` só oferece os formatos que a
+ * Trisol tem, e o número ao lado de cada um é quantas linhas sobram se você
+ * clicar nele. Sem isso, `Trisol + DWG` seria oferecido por dois controles que
+ * concordam em levar a uma tela vazia — o botão morto que esta rota e
+ * `/catalogos` já mataram uma vez cada.
+ *
+ * ⚠️ **A INTENÇÃO NÃO PODE PRENDER A TELA NUM RECORTE QUE DEIXOU DE EXISTIR.**
+ * Uma marca que perde o último arquivo entre duas renderizações, ou um formato
+ * que some quando o `.dwg` é despublicado, deixariam o estado apontando para uma
+ * chave sem correspondente. Por isso a cascata: tenta o recorte pedido; depois
+ * abre mão da marca; depois abre mão do formato; e só então mostra tudo. Quem
+ * escolheu duas coisas e perdeu uma fica com a outra, em vez de voltar à estaca
+ * zero — e a função termina sempre, porque o último degrau não filtra nada.
+ */
+export function recorteDaBiblioteca(
+  lista: readonly ItemDaBiblioteca[],
+  marcaPretendida: string,
+  formatoPretendido: string,
+): RecorteDaBiblioteca {
+  const daMarca = (chave: string) => (item: ItemDaBiblioteca) =>
+    chave === SEM_RECORTE || item.marca.slug === chave;
+
+  const doFormato = (chave: string) => (item: ItemDaBiblioteca) =>
+    chave === SEM_RECORTE || item.arquivo.formato === chave;
+
+  const recortar = (marca: string, formato: string): RecorteDaBiblioteca => ({
+    marca,
+    formato,
+    marcas: recortesDeMarca(lista.filter(doFormato(formato))),
+    formatos: recortesDeFormato(lista.filter(daMarca(marca))),
+    visiveis: lista.filter(daMarca(marca)).filter(doFormato(formato)),
+  });
+
+  const cascata: [string, string][] = [
+    [marcaPretendida, formatoPretendido],
+    [SEM_RECORTE, formatoPretendido],
+    [marcaPretendida, SEM_RECORTE],
+  ];
+
+  for (const [marca, formato] of cascata) {
+    const tentativa = recortar(marca, formato);
+    if (tentativa.visiveis.length > 0) return tentativa;
+  }
+
+  return recortar(SEM_RECORTE, SEM_RECORTE);
 }
 
 /**

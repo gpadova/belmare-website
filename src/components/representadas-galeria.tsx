@@ -19,9 +19,19 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  *
  * ⚠️ **O TÍTULO CONTA AS MARCAS, O PARÁGRAFO É CAMPO.** A frase do título é
  * fixa e o número dentro dela é gerado das representadas publicadas: cadastrar
- * a quinta fábrica muda "As quatro" para "As cinco" sem ninguém editar nada. O
+ * a quinta fábrica muda "quatro" para "cinco" sem ninguém editar nada. O
  * parágrafo abaixo dele é o ÚNICO campo de texto da home inteira (global
  * `Home`) — e some quando está em branco, em vez de abrir um vão.
+ *
+ * ⚠️ **O TÍTULO ERA "As quatro fábricas que a Belmare representa." E MUDOU EM
+ * 05/08/2026, POR CAUSA DA ABERTURA.** Desde que o h1 passou a ser
+ * "Representação comercial de móveis para área externa." e a linha de apoio a
+ * dizer "A Belmare representa Marê Mobília, GDA Móveis, Bux Garden e Trisol",
+ * este h2 repetia "a Belmare representa" uma tela depois — a mesma frase duas
+ * vezes na mesma rolagem. O título de agora anuncia o trabalho que a seção de
+ * fato faz, que é dizer a LINHA de cada fábrica, e não repetir a relação
+ * comercial que a abertura já estabeleceu. Mexer na abertura pede reler esta
+ * frase.
  *
  * ⚠️ O aviso do pé da seção continua fixo: ele é a marcação de imagem de
  * referência exigida por desenho, não prosa de marketing sobre as fábricas.
@@ -34,8 +44,7 @@ export async function RepresentadasGaleria() {
     <section aria-labelledby="representadas" className="px-5 py-16 md:px-8 md:py-24">
       <div className="max-w-[46ch]">
         <h2 id="representadas" className="text-h1 font-normal">
-          As {porExtenso(representadas.length)} fábricas que a Belmare
-          representa.
+          O que cada uma das {porExtenso(representadas.length)} fábricas faz.
         </h2>
         {galeria !== undefined && (
           <p className="text-body mt-4 text-graphite">{galeria}</p>

@@ -26,16 +26,11 @@ import type {
  * representável dentro do componente, e é lá que ele quebra a página.
  *
  * ⚠️ **O CASO QUE JUSTIFICA A CAMADA INTEIRA É O CATÁLOGO.** O tipo gerado tem
- * quatro estados; o domínio tem dois, e é aqui que quatro viram dois:
- *
- *   1. sem anexo                                → a pedir
- *   2. anexo só como referência (profundidade 0) → a pedir
- *   3. anexo carregado, sem endereço ou sem tamanho medido → a pedir
- *   4. anexo carregado, com endereço e tamanho medido      → publicado
- *
- * Só o quarto vira link. Um link sem peso medido é a promessa que este site
- * existe para não quebrar, e depois desta função ele é IRREPRESENTÁVEL — não
- * desencorajado, não validado em outro lugar: impossível de escrever.
+ * quatro estados; o domínio tem UM, e é aqui que quatro viram um — ver
+ * `catalogoDoPainel`, no fim do arquivo. Um catálogo sem PDF em mãos é
+ * IRREPRESENTÁVEL depois desta função: não desencorajado, não validado em outro
+ * lugar — impossível de escrever. É o que garante que a lista de `/catalogos`
+ * contenha exatamente os arquivos que alguém subiu, e nada além.
  *
  * ⚠️ **AUSENTE É AUSENTE, NUNCA VAZIO.** Array vazio, string em branco e `null`
  * do banco viram `undefined` aqui, porque é `undefined` que faz a seção sumir
@@ -219,42 +214,53 @@ function grupoDoPainel(
 function catalogosDoPainel(
   linhas: RepresentadaGerada["catalogos"],
 ): Catalogo[] | undefined {
-  return lista(
-    (linhas ?? [])
-      .map((linha) => {
-        const titulo = texto(linha.titulo);
-        return titulo === undefined ? undefined : catalogoDoPainel(linha, titulo);
-      })
-      .filter(presente),
-  );
+  return lista((linhas ?? []).map(catalogoDoPainel).filter(presente));
 }
 
 /**
- * Onde quatro estados viram dois.
+ * Onde quatro estados viram um — e três viram `undefined`.
  *
- * ⚠️ A ordem das recusas é a ordem em que os estados aparecem no mundo real, e
- * nenhuma delas lança: um catálogo que não pode ser baixado continua sendo um
- * catálogo declarado — vira pedido pela Belmare, com o documento e a fábrica
- * nomeados. É a diferença entre a página dizer a verdade e a página fingir que
- * a fábrica não tem catálogo.
+ * O tipo gerado admite quatro:
+ *
+ *   1. sem anexo                                          → não é catálogo
+ *   2. anexo só como referência (profundidade 0)           → não é catálogo
+ *   3. anexo carregado, sem endereço ou sem tamanho medido → não é catálogo
+ *   4. anexo carregado, com endereço e tamanho medido      → catálogo
+ *
+ * ⚠️ **SÓ O QUARTO ATRAVESSA, e é aqui que a regra "catálogo é arquivo" deixa de
+ * ser intenção e vira impossibilidade.** Até 05/08/2026 os três primeiros viravam
+ * um catálogo "a pedir" — e era isso que enchia `/catalogos` de linhas sem
+ * nenhum upload, uma para cada fábrica que alguém tinha cadastrado. Devolver
+ * `undefined` faz a linha não existir, o que faz o filtro não oferecer a
+ * fábrica, o que faz a página contar certo. Um estado só, decidido uma vez, na
+ * fronteira.
+ *
+ * ⚠️ Nenhuma recusa lança. Um catálogo pela metade no painel não derruba a
+ * página da marca — ele some da lista, e quem repara é o operador, no painel,
+ * onde a validação do campo explica o que falta.
  */
 function catalogoDoPainel(
   linha: NonNullable<RepresentadaGerada["catalogos"]>[number],
-  titulo: string,
-): Catalogo {
-  const base = { titulo, ...opcional("ano", ano(linha.ano)) };
+): Catalogo | undefined {
+  const titulo = texto(linha.titulo);
+  if (titulo === undefined) return undefined;
 
   const arquivo = linha.arquivo;
   // Estados 1 e 2: sem anexo, ou anexo que veio só como identificador.
-  if (!arquivo || typeof arquivo !== "object") return base;
+  if (!arquivo || typeof arquivo !== "object") return undefined;
 
   const endereco = enderecoDoArquivo(arquivo);
   const mb = pesoDoArquivo(arquivo);
   // Estado 3: o anexo existe e não pode ser prometido.
-  if (endereco === undefined || mb === undefined) return base;
+  if (endereco === undefined || mb === undefined) return undefined;
 
   // Estado 4: em mãos e medido.
-  return { ...base, arquivo: endereco, mb };
+  return {
+    titulo,
+    ...opcional("ano", ano(linha.ano)),
+    arquivo: endereco,
+    mb,
+  };
 }
 
 function ano(valor: number | null | undefined): number | undefined {

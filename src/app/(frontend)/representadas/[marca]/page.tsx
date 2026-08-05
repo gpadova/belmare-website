@@ -77,7 +77,7 @@ export async function generateMetadata({
 
   return {
     title: representada.nome,
-    description: `${representada.nome} — ${origem}${representada.fato}. Representada pela Belmare no Paraná, em Santa Catarina e no Rio Grande do Sul.`,
+    description: `${representada.nome}. ${origem}${representada.fato}. Representada pela Belmare no Paraná, em Santa Catarina e no Rio Grande do Sul.`,
   };
 }
 

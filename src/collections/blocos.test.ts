@@ -13,12 +13,16 @@ import { QuemSomos } from "@/globals/quem-somos";
  *
  * ⚠️ **É A GUARDA DE UMA RECUSA, NÃO DE UMA FUNCIONALIDADE.** O construtor de
  * blocos existe em exatamente uma coleção, e a lista das que NÃO o têm é o que
- * o ticket protege: a sequência de `/quem-somos` é o argumento daquela página, e
- * ela carrega uma lista vinculante do que nunca pode aparecer nela — foto de
- * equipe, missão/visão/valores, contador animado. Uma biblioteca de blocos
- * genérica oferece exatamente esses três, e um array de blocos ali seria a
- * ferramenta que contorna a lista sem contrariá-la em lugar nenhum. Ver
- * `CONTEXT.md`, "Composição de página".
+ * o ticket protege: `/quem-somos` carrega uma lista vinculante do que nunca
+ * pode aparecer nela — foto de equipe, missão/visão/valores, contador animado.
+ * Uma biblioteca de blocos genérica oferece exatamente esses três, e um array
+ * de blocos ali seria a ferramenta que contorna a lista sem contrariá-la em
+ * lugar nenhum. Ver `CONTEXT.md`, "Composição de página".
+ *
+ * ⚠️ O outro motivo desta recusa — "a sequência de `/quem-somos` é o argumento
+ * daquela página" — deixou de valer em 05/08/2026, quando a rota foi refeita e
+ * perdeu a numeração. O teste continua igual porque a lista vinculante nunca
+ * dependeu de ordem nenhuma.
  *
  * Hoje a fronteira vale por construção — nenhuma outra superfície declara o
  * campo. É por isso que ela precisa de teste: "ninguém escreveu ainda" some no
