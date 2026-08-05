@@ -1233,7 +1233,7 @@ export interface Home {
   createdAt?: string | null;
 }
 /**
- * O texto dentro de cada seção de /quem-somos. Os títulos e a ordem das seções são desenho da página e não se editam aqui. Todo campo em branco faz o parágrafo desaparecer, nunca aparecer vazio.
+ * Todo o texto de /quem-somos, na ordem em que ele aparece na página. Título em branco volta para o texto padrão; parágrafo em branco faz o parágrafo desaparecer, nunca aparecer vazio. A ordem das seções é desenho da página e não se edita aqui.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "quem-somos".
@@ -1241,21 +1241,73 @@ export interface Home {
 export interface QuemSomos {
   id: number;
   /**
-   * Sob o título "A Belmare é uma representação comercial de mobiliário para área externa." ⚠️ O primeiro parágrafo é montado pelo site com o cadastro — a contagem de fábricas, a cidade da sede e o tempo de casa. Escreva aqui o que vem DEPOIS dele: o que a empresa faz de diferente, em uma ou duas frases. Nada de missão, valores ou superlativo, e nenhuma contagem digitada à mão.
+   * A primeira linha que o visitante lê. Diga em quem a Belmare atende e onde. ⚠️ Não repita o título da home ("Representação comercial de mobiliário de área externa."): quem chega aqui já leu aquilo duas rolagens atrás. Em branco, volta para o texto padrão.
+   */
+  titulo?: string | null;
+  /**
+   * Uma ou duas frases sobre o que a empresa é e há quanto tempo. ⚠️ Sem missão, valores ou superlativo. Marcadores disponíveis, e o site troca cada um pelo dado de hoje: {anos} = o tempo de casa, contado da data de abertura — 27 · {fabricas} = quantas fábricas estão publicadas, por extenso — quatro · {cidade} = a cidade da sede, como está no cadastro — Florianópolis · {estados} = o território por extenso — Paraná, Santa Catarina e Rio Grande do Sul · {quantosEstados} = quantos estados o território tem, por extenso — três. Não digite o número à mão: escrito à mão ele para de mudar.
    */
   apresentacao?: string | null;
   /**
-   * Sob o título "O que a Belmare faz.", antes da lista de representação, especificação, pedido e pós-venda. Diga em uma ou duas frases como a Belmare trabalha com a loja e com o escritório de arquitetura. ⚠️ Sem promessa de prazo, de exclusividade ou de condição comercial — a lista abaixo dele descreve trabalho, não serviço contratado.
+   * Em branco, volta para o texto padrão.
+   */
+  atuacaoTitulo?: string | null;
+  /**
+   * Em uma ou duas frases, como a Belmare trabalha com a loja e com o escritório de arquitetura. ⚠️ Sem promessa de prazo, de exclusividade ou de condição comercial. Marcadores disponíveis, e o site troca cada um pelo dado de hoje: {anos} = o tempo de casa, contado da data de abertura — 27 · {fabricas} = quantas fábricas estão publicadas, por extenso — quatro · {cidade} = a cidade da sede, como está no cadastro — Florianópolis · {estados} = o território por extenso — Paraná, Santa Catarina e Rio Grande do Sul · {quantosEstados} = quantos estados o território tem, por extenso — três. Não digite o número à mão: escrito à mão ele para de mudar.
    */
   atuacao?: string | null;
   /**
-   * ⚠️ A primeira frase é montada pelo site contando as fábricas cadastradas — "São quatro fábricas brasileiras." — e vira sozinha quando uma marca entra ou sai. Escreva aqui o que vem DEPOIS dela.
+   * A lista sob o parágrafo, uma linha por etapa do trabalho. ⚠️ Cada linha descreve o que a empresa FAZ, não o que o cliente ganha — "acompanha o pedido junto com a loja" é trabalho, "atendimento diferenciado" é autoelogio. Sem nenhuma etapa, a lista inteira desaparece e a seção fica só com o parágrafo.
+   */
+  atuacaoLinhas?:
+    | {
+        /**
+         * Uma ou duas palavras, na coluna da esquerda — "Representação", "Especificação", "Pedido", "Pós-venda".
+         */
+        rotulo: string;
+        /**
+         * Marcadores disponíveis, e o site troca cada um pelo dado de hoje: {anos} = o tempo de casa, contado da data de abertura — 27 · {fabricas} = quantas fábricas estão publicadas, por extenso — quatro · {cidade} = a cidade da sede, como está no cadastro — Florianópolis · {estados} = o território por extenso — Paraná, Santa Catarina e Rio Grande do Sul · {quantosEstados} = quantos estados o território tem, por extenso — três. Não digite o número à mão: escrito à mão ele para de mudar.
+         */
+        texto: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Em branco, volta para o texto padrão.
+   */
+  acervoTitulo?: string | null;
+  /**
+   * A lista das fábricas é montada sozinha logo abaixo deste parágrafo, com o que está cadastrado em Representadas. ⚠️ Nada aqui pode descrever o contrato das fábricas — exclusividade é termo comercial de terceiro. Marcadores disponíveis, e o site troca cada um pelo dado de hoje: {anos} = o tempo de casa, contado da data de abertura — 27 · {fabricas} = quantas fábricas estão publicadas, por extenso — quatro · {cidade} = a cidade da sede, como está no cadastro — Florianópolis · {estados} = o território por extenso — Paraná, Santa Catarina e Rio Grande do Sul · {quantosEstados} = quantos estados o território tem, por extenso — três. Não digite o número à mão: escrito à mão ele para de mudar.
    */
   acervo?: string | null;
   /**
-   * Sob o título "Fale com a Belmare." Diga o que acontece quando alguém chama. ⚠️ Nenhum e-mail de fábrica entra neste site, em lugar nenhum: um representante que se desintermedia do próprio funil está construindo o site do concorrente. Mas isso é regra de bastidor — não a explique ao visitante dentro do parágrafo.
+   * Em branco, volta para o texto padrão.
+   */
+  territorioTitulo?: string | null;
+  /**
+   * ⚠️ O mapa ao lado é a malha oficial do IBGE e desenha exatamente três estados; ele não se edita no painel. Escreva o território com {estados} e {quantosEstados}, nunca com os nomes digitados — é assim que a prosa não passa a dizer "quatro estados" ao lado de um desenho com três. Marcadores disponíveis, e o site troca cada um pelo dado de hoje: {anos} = o tempo de casa, contado da data de abertura — 27 · {fabricas} = quantas fábricas estão publicadas, por extenso — quatro · {cidade} = a cidade da sede, como está no cadastro — Florianópolis · {estados} = o território por extenso — Paraná, Santa Catarina e Rio Grande do Sul · {quantosEstados} = quantos estados o território tem, por extenso — três. Não digite o número à mão: escrito à mão ele para de mudar.
+   */
+  territorio?: string | null;
+  /**
+   * ⚠️ A seção inteira só aparece com três projetos publicados ou mais — com menos, nem o título nem o parágrafo vão ao ar. Em branco, volta para o texto padrão.
+   */
+  projetosTitulo?: string | null;
+  /**
+   * O que a lista de fotos abaixo mostra. ⚠️ Toda obra citada tem que existir e ter sido de fato entregue: as fotos e os créditos vêm de Projetos, e o que não existe fica ausente. Marcadores disponíveis, e o site troca cada um pelo dado de hoje: {anos} = o tempo de casa, contado da data de abertura — 27 · {fabricas} = quantas fábricas estão publicadas, por extenso — quatro · {cidade} = a cidade da sede, como está no cadastro — Florianópolis · {estados} = o território por extenso — Paraná, Santa Catarina e Rio Grande do Sul · {quantosEstados} = quantos estados o território tem, por extenso — três. Não digite o número à mão: escrito à mão ele para de mudar.
+   */
+  projetos?: string | null;
+  /**
+   * Em branco, volta para o texto padrão.
+   */
+  contatoTitulo?: string | null;
+  /**
+   * Diga o que acontece quando alguém chama. ⚠️ Nenhum e-mail de fábrica entra neste site, em lugar nenhum: um representante que se desintermedia do próprio funil está construindo o site do concorrente. Mas isso é regra de bastidor — não a explique ao visitante dentro do parágrafo. Marcadores disponíveis, e o site troca cada um pelo dado de hoje: {anos} = o tempo de casa, contado da data de abertura — 27 · {fabricas} = quantas fábricas estão publicadas, por extenso — quatro · {cidade} = a cidade da sede, como está no cadastro — Florianópolis · {estados} = o território por extenso — Paraná, Santa Catarina e Rio Grande do Sul · {quantosEstados} = quantos estados o território tem, por extenso — três. Não digite o número à mão: escrito à mão ele para de mudar.
    */
   contato?: string | null;
+  /**
+   * A linha em maiúsculas sob a foto larga do fecho. ⚠️ Ela existe porque a imagem é de banco e cai no lugar onde um arquiteto espera obra entregue — sem a legenda, a foto vira portfólio de trabalho que não foi feito. Em branco, volta para o texto padrão em vez de sumir; se a fotografia um dia for de uma obra real e creditada, a legenda muda aqui.
+   */
+  contatoLegenda?: string | null;
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1368,10 +1420,26 @@ export interface HomeSelect<T extends boolean = true> {
  * via the `definition` "quem-somos_select".
  */
 export interface QuemSomosSelect<T extends boolean = true> {
+  titulo?: T;
   apresentacao?: T;
+  atuacaoTitulo?: T;
   atuacao?: T;
+  atuacaoLinhas?:
+    | T
+    | {
+        rotulo?: T;
+        texto?: T;
+        id?: T;
+      };
+  acervoTitulo?: T;
   acervo?: T;
+  territorioTitulo?: T;
+  territorio?: T;
+  projetosTitulo?: T;
+  projetos?: T;
+  contatoTitulo?: T;
   contato?: T;
+  contatoLegenda?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;

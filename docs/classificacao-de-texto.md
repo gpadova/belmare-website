@@ -143,34 +143,55 @@ deploy para corrigir um telefone.
 
 ## Global `quem-somos` (`src/globals/quem-somos.ts`) — PRA-122
 
-> **Reescrita de 05/08/2026.** A página deixou de ser um documento de arquivo com seis blocos
-> numerados e virou uma página institucional comum, com seções não numeradas. Dois campos saíram
-> com os blocos que eles escreviam e dois entraram; `interlocutor` só mudou de nome. A migração é
-> `src/migrations/20260805_130547_refaz_quem_somos.ts`. **A camada de nenhum campo mudou** — os
-> quatro continuam Campo, e o parágrafo do território continua sem campo nenhum.
+> **Reescrita de 05/08/2026, e ela mudou a CAMADA, não só o texto.** `/quem-somos` era a rota com
+> mais texto fixo do site: os seis títulos de seção viviam em código, três parágrafos eram metade
+> fixos — o site montava a primeira oração contando o dado e o campo era o que vinha depois dela —
+> e o parágrafo do território não tinha campo nenhum. **Hoje não há uma linha de texto fixo nesta
+> rota.** Migração: `src/migrations/20260805_172941_refaz_quem_somos_editavel.ts`.
+
+O que destravou a edição foi `lib/marcadores.ts`. O conflito nunca foi entre editar e não editar, e
+sim entre editar e **congelar**: um "quatro" digitado num textarea continua dizendo quatro no dia
+em que a quinta fábrica entra pelo painel, três centímetros acima de uma lista com cinco linhas.
+Com marcador, a frase inteira é do operador e o número continua sendo contado a cada renderização.
+
+| Marcador | Vem de |
+|---|---|
+| `{anos}` | `lib/empresa.ts#anosDeMercado`, contado com dia e mês a partir da data de abertura |
+| `{fabricas}` | quantas representadas estão publicadas, por extenso (`lib/frase.ts`) |
+| `{cidade}` | a cidade do endereço cadastrado |
+| `{estados}` | `lib/empresa.ts#TERRITORIO`, que sai da mesma malha do IBGE que desenha o mapa |
+| `{quantosEstados}` | o tamanho da mesma lista, por extenso |
 
 | Campo | Camada | Por quê |
 |---|---|---|
-| `apresentacao` | Campo **a partir do segundo parágrafo** | O primeiro é montado com o cadastro — a contagem de fábricas, a cidade da sede e o tempo de casa. O campo é o que vem depois dele. |
-| `atuacao` | Campo | Parágrafo de abertura de "O que a Belmare faz.", antes da lista de representação, especificação, pedido e pós-venda — que é **fixa**, e está na tabela do que não virou campo. |
-| `acervo` | Campo **a partir da segunda frase** | A primeira frase conta as fábricas ("São quatro fábricas brasileiras.") e abre a lista que mostra as marcas logo abaixo. Texto livre ali congelaria em "quatro" no dia da quinta marca. |
-| `contato` | Campo | Parágrafo do fecho, sob "Fale com a Belmare." Era `interlocutor`, e mudou de nome junto com o título da seção. |
+| `titulo` | Campo | O h1. A ajuda pede que ele não repita o h1 da home, que continua **fixo** — mudar aquele é reposicionamento, mudar este é escrever. |
+| `apresentacao` | Campo | O parágrafo de abertura, inteiro. Eram dois — um gerado, um do painel — e a emenda dos dois era três frases de sujeito repetido antes de a página dizer algo útil. |
+| `atuacaoTitulo`, `atuacao` | Campo | "O que a Belmare faz" — a seção que faltava na rota inteira. |
+| `atuacaoLinhas` | Campo (lista) | As etapas: representação, especificação, pedido, pós-venda. Eram quatro linhas em código, e descrevem uma operação comercial que muda sem que o site mude. Lista vazia não desenha ficha nenhuma. |
+| `acervoTitulo`, `acervo` | Campo | O parágrafo acima da lista de fábricas. A contagem entra por `{fabricas}`; a lista abaixo continua sendo montada com o cadastro. |
+| `territorioTitulo`, `territorio` | Campo | **Era o único parágrafo sem campo nenhum.** O argumento estava certo — texto livre ali deixa a prosa dizer "quatro estados" ao lado de um desenho com três — e o marcador o resolve: quem escreve usa `{estados}`, e a lista continua vindo da malha. |
+| `projetosTitulo`, `projetos` | Campo | A seção inteira só vai ao ar com três projetos publicados ou mais, então estes dois só aparecem junto com as fotos. |
+| `contatoTitulo`, `contato` | Campo | O fecho. |
+| `contatoLegenda` | Campo **que não some** | A legenda da foto larga. É a única exceção à seção anulável nesta rota, junto com os títulos: sem ela, uma imagem de banco no vão onde um arquiteto espera obra entregue passa a valer como portfólio de trabalho que a Belmare não fez. Em branco, cai no padrão. |
 
-Os campos `registro` e `nome` **deixaram de existir**, junto com os blocos que eles escreviam.
-`registro` legendava o ano de fundação em display, sozinho na primeira tela; `nome` era o
-parágrafo do bloco que mostrava o nome público anterior ao lado do logotipo de hoje. Em que ano a
-empresa abriu e como ela se chamava antes não decidem conversa comercial nenhuma — e o segundo
-ainda contava ao arquiteto que a Belmare vendia móvel de jardim e tapete. Com o bloco saiu também
-`lib/registro.ts`, que guardava a citação do nome antigo.
+**Título em branco cai no padrão; parágrafo em branco some.** As duas regras são opostas de
+propósito, e a diferença é acessibilidade: um parágrafo a menos é uma seção mais curta, e um `h2`
+vazio é um cabeçalho que o leitor de tela anuncia sem nome. Os padrões estão em
+`lib/quem-somos-consulta.ts`, que é o único lugar que sabe montar o texto desta rota.
 
-A seção do território **não tem campo nenhum** — ver a tabela de gerado abaixo.
+**O que continua fora do painel:** a ordem das seções e o mapa. A ordem, porque um construtor de
+blocos genérico oferece exatamente foto de equipe, missão/visão/valores e contador animado, que é
+item por item a lista do que esta página recusa publicar (`collections/blocos.test.ts`). O mapa,
+porque ele é malha oficial do IBGE reprojetada — expandir território é regerar a geometria, e
+nenhum campo de texto desenha um quarto contorno.
 
-O campo `atividades` **deixou de existir** antes dos dois acima, junto com o bloco que ele legendava: a tabela dos
-cinco CNAEs saiu de `/quem-somos`. Os códigos não dizem nada ao arquiteto que a página precisa
-convencer — e dois deles ("consultoria em gestão empresarial", "tapeçaria, persianas e cortinas")
-fazem uma representação de móvel de autor parecer atacado genérico. A ajuda do campo chegava a
-proibir interpretá-los (P1), o que deixava na página um bloco que ninguém podia explicar. Quem
-quiser conferir o registro tem o CNPJ no rodapé.
+Os campos `registro` e `nome` **deixaram de existir** em 05/08/2026, junto com os blocos que eles
+escreviam: um legendava o ano de fundação em display, sozinho na primeira tela, e o outro
+comparava o nome público anterior ao logotipo de hoje. Em que ano a empresa abriu e como ela se
+chamava antes não decidem conversa comercial nenhuma. Saiu junto `lib/registro.ts`. O campo
+`atividades` havia saído antes, com a tabela dos cinco CNAEs: os códigos não dizem nada ao
+arquiteto que a página precisa convencer, e dois deles fazem uma representação de móvel de autor
+parecer atacado genérico. Quem quiser conferir o registro tem o CNPJ no rodapé.
 
 ## Global `prancha` (`src/globals/prancha.ts`) — PRA-123
 

@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { Secao } from "@/components/quem-somos/secao";
 import { buscarProjetosPublicaveis } from "@/lib/projetos-consulta";
+import { textosDeQuemSomos } from "@/lib/quem-somos-consulta";
 
 /**
  * Projetos realizados — a seção anulável de `/quem-somos`, servida pelo painel
@@ -25,13 +26,15 @@ export async function ProjetosRealizados() {
   const projetos = await buscarProjetosPublicaveis();
   if (projetos.length === 0) return null;
 
+  const { projetosTitulo, projetos: texto } = await textosDeQuemSomos();
+
   return (
-    <Secao titulo="Projetos entregues no Sul.">
-      <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-        Obras em que peças das representadas foram especificadas e instaladas.
-        Cada uma com ano, cidade, as marcas envolvidas e o crédito de quem
-        assinou o projeto.
-      </p>
+    <Secao titulo={projetosTitulo}>
+      {texto !== undefined && (
+        <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
+          {texto}
+        </p>
+      )}
 
       <ul className="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 md:mt-14 lg:grid-cols-3">
         {projetos.map((projeto) => (

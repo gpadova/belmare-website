@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-31T01:34:26Z",
+  "generatedAt": "2026-08-05T19:00:00Z",
   "title": "Design System: Belmare Representações",
   "extensions": {
     "colorMeta": {
@@ -83,15 +83,15 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Duas ocorrências no site inteiro: o h1 da abertura da home sobre a foto e o ano 1999 no bloco 01 de /quem-somos. Gesto de abertura, nunca de seção."
+        "purpose": "Gesto de abertura, duas vezes no site inteiro, e as duas são h1: o da home sobre fotografia sangrada (em peso 300, aplicado na chamada) e o nome da fábrica em /representadas/[marca] (em 400). Subiu de 34–56px para 40–72px em 05/08/2026, com a troca de mundo. 72px é o teto."
       },
       "h1": {
         "displayName": "Título de seção",
-        "purpose": "Título de seção e rótulo das portas. Sempre com teto de medida em ch (14–22ch) e text-balance em duas linhas."
+        "purpose": "Título de seção e rótulo das portas, e o tamanho de TODO h2 de seção do site — o token nomeia tamanho, não nível. Teto de medida em ch (14–24ch) e text-balance quando tem duas linhas."
       },
       "h2": {
         "displayName": "Título de ação",
-        "purpose": "Uma ocorrência: o rótulo da ação de fecho. É o tamanho que faz um link de contato pesar sem virar botão."
+        "purpose": "Usada uma vez: o rótulo da faixa de ação (\"Falar pelo WhatsApp\"). É o tamanho que faz um link de contato pesar sem virar botão."
       },
       "h3": {
         "displayName": "Nome de item",
@@ -107,7 +107,11 @@
       },
       "mono": {
         "displayName": "Mono técnica",
-        "purpose": "Rótulo, código, sigla, número de bloco, ano, medida, navegação e cabeçalho de coluna. A caixa alta NÃO vem embutida: é aplicada item a item, e o teste é de classe da string — medida, código, sigla, rótulo de campo e estado de campo declarado vão em versal; nome próprio, frase e legenda ficam fora, mesmo curtos. Numerais tabulares embutidos."
+        "purpose": "Rótulo, código, sigla, número de bloco, ano, medida, navegação e nome de canal. Nunca frase inteira. Recuou com a troca de mundo: deixou de ser a voz de rótulo geral do site e ficou onde há medida real."
+      },
+      "display-leve": {
+        "displayName": "Display Leve",
+        "purpose": "A mesma display com font-light (300), aplicada na chamada e não no token. Existe só no h1 da home: 400 nesse corpo sobre fotografia fecha os contornos e lê como anúncio, e o segundo consumidor da display precisa de 400."
       }
     },
     "shadows": [],
@@ -115,12 +119,12 @@
       {
         "name": "escala-imagem",
         "value": "transform 700ms cubic-bezier(0, 0, 0.2, 1); scale(1.03)",
-        "purpose": "Hover de imagem na galeria de representadas e nas duas portas, com overflow-hidden recortando."
+        "purpose": "Hover de imagem no trilho de representadas, nas duas portas e na grade de projetos, com overflow-hidden recortando."
       },
       {
         "name": "avanco-seta",
         "value": "transform 300ms cubic-bezier(0, 0, 0.2, 1); translateX(0.375rem)",
-        "purpose": "Hover de grupo em todo link com seta — links de ação, linha de ledger, linha de documento e ação de fecho. O texto não se move, só a seta."
+        "purpose": "Hover de grupo em todo link com seta — links de ação, linha de ledger, linha de documento, caminho de página livre e faixa de ação. O texto não se move, só a seta."
       },
       {
         "name": "avanco-seta-curto",
@@ -130,23 +134,37 @@
       {
         "name": "troca-de-cor",
         "value": "color/background-color/text-decoration-color 150ms cubic-bezier(0.4, 0, 0.2, 1)",
-        "purpose": "Grafite para tinta na navegação e nos links; fio para tinta no sublinhado; papel para superfície no fundo de ledger, de linha de documento e da ação de fecho."
+        "purpose": "Grafite para tinta na navegação e nos links; fio para tinta no sublinhado e no fio do campo em foco; papel para superfície no fundo de ledger, de linha de documento e da faixa de ação; e a inversão do envio de formulário no hover."
+      },
+      {
+        "name": "revelacao-por-rolagem",
+        "value": "animation: revelar-entrada cubic-bezier(0.16, 1, 0.3, 1) both; animation-timeline: view(); animation-range: entry 10% cover 28%; @keyframes { from { transform: translateY(1.5rem) } to { transform: none } }",
+        "purpose": "O ÚNICO movimento por rolagem do site, e ele mora no trilho das representadas da home — utilidade `revelar` em globals.css. Entrou em 05/08/2026 revogando em parte a Regra do Movimento Fechado, por decisão do cliente. CSS puro atrás de @supports, sem JavaScript e sem observador. Anima transform e NUNCA opacity: a primeira versão animava opacidade e sumia com a seção inteira em qualquer contexto em que a linha do tempo existe mas não roda (captura de página inteira, impressão, PDF, documento mais curto que a janela)."
       },
       {
         "name": "reducao-de-movimento",
-        "value": "motion-reduce:transition-none",
-        "purpose": "Acompanha todas as transições de transformação do site. Sem exceção."
+        "value": "motion-reduce:transition-none; @media (prefers-reduced-motion: reduce) { .revelar { animation: none; transform: none } }",
+        "purpose": "Acompanha todas as transições de transformação do site, sem exceção. A revelação por rolagem é desligada inteira, e não reduzida a uma versão curta do mesmo gesto: quem pediu menos movimento recebe nenhum."
       },
       {
         "name": "foco",
         "value": "outline: 2px solid var(--color-ink); outline-offset: 2px",
-        "purpose": "Global, via :focus-visible em @layer base. Não há anel de foco por componente."
+        "purpose": "Global, via :focus-visible em @layer base. Não há anel de foco por componente — a única cessão é o campo de formulário, cujo próprio fio de base vira o anel (outline-none + border-ink no foco)."
       }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "40rem" },
-      { "name": "md", "value": "48rem" },
-      { "name": "lg", "value": "64rem" }
+      {
+        "name": "sm",
+        "value": "40rem"
+      },
+      {
+        "name": "md",
+        "value": "48rem"
+      },
+      {
+        "name": "lg",
+        "value": "64rem"
+      }
     ]
   },
   "components": [
@@ -162,17 +180,25 @@
       "name": "Link de ação com seta",
       "kind": "custom",
       "refersTo": "link-acao",
-      "description": "A saída padrão de seção. Mono caixa alta em tinta, seta de 32×12 no traço de 1px avançando 0,375rem no hover. Não existe botão no sistema.",
+      "description": "A saída padrão de seção. Mono caixa alta em tinta, seta de 32×12 no traço de 1px avançando 0,375rem no hover. Toda ação de navegação é link; os dois <button> do site não navegam.",
       "html": "<a class='ds-link-acao' href='#'>Ver as representadas<svg class='ds-seta' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg></a>",
       "css": ".ds-link-acao { display: inline-flex; align-items: center; gap: 0.75rem; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-ink); text-decoration: none; } .ds-seta { width: 2rem; height: 0.75rem; flex-shrink: 0; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-link-acao:hover .ds-seta { transform: translateX(0.375rem); } .ds-link-acao:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } @media (prefers-reduced-motion: reduce) { .ds-seta { transition: none; } }"
+    },
+    {
+      "name": "Cartão do trilho de representadas",
+      "kind": "card",
+      "refersTo": "cartao-trilho",
+      "description": "O componente de assinatura da home reconstruída: quatro fábricas num trilho horizontal com encaixe, e não numa grade de quatro colunas — uma grade de 4 quebra com 3 ou com 6, e P18 continua aberto. O cartão é 78vw no telefone, 46vw a partir de sm e 24rem a partir de lg (24rem e não 30rem: em 1440px o de 30rem deixava 2,9 cartões visíveis e o trilho parecia ter três marcas). Aspecto 3/2 em toda largura. O indicador é o cartão cortado na borda mais a barra-fio — não há widget de progresso e não há rótulo \"Arraste\".",
+      "html": "<ul class='ds-trilho' aria-label='Representadas'><li class='ds-trilho__item'><a class='ds-trilho__link' href='#'><span class='ds-trilho__foto'></span><span class='ds-trilho__nome'>Marê Mobília</span><span class='ds-trilho__resolve'>Resolve o móvel de autor.</span><span class='ds-trilho__fato'>Cambé · PR</span></a></li><li class='ds-trilho__item'><a class='ds-trilho__link' href='#'><span class='ds-trilho__foto'></span><span class='ds-trilho__nome'>Trisol</span><span class='ds-trilho__resolve'>Resolve o guarda-sol e a sombra.</span><span class='ds-trilho__fato'>Origem não declarada</span></a></li><li class='ds-trilho__item'><a class='ds-trilho__link' href='#'><span class='ds-trilho__foto'></span><span class='ds-trilho__nome'>Bux Garden</span><span class='ds-trilho__resolve'>Resolve o estofado de área externa.</span><span class='ds-trilho__fato'>São Paulo · SP</span></a></li></ul>",
+      "css": ".ds-trilho { display: flex; gap: 1.5rem; overflow-x: auto; list-style: none; margin: 0; padding: 0 1.25rem 1.5rem; scroll-snap-type: x mandatory; scroll-padding-left: 1.25rem; background: var(--color-paper); } .ds-trilho::-webkit-scrollbar { height: 3px; } .ds-trilho::-webkit-scrollbar-track { background-color: transparent; border: 0; } .ds-trilho::-webkit-scrollbar-thumb { background-color: var(--color-graphite); border: 0; } .ds-trilho:hover::-webkit-scrollbar-thumb { background-color: var(--color-ink); } .ds-trilho__item { flex-shrink: 0; width: 78vw; scroll-snap-align: start; } .ds-trilho__link { display: block; text-decoration: none; } .ds-trilho__foto { display: block; aspect-ratio: 3 / 2; background-color: var(--color-ink); background-image: linear-gradient(135deg, #2a2a2e, #17171a 60%); overflow: hidden; transition: transform 700ms cubic-bezier(0, 0, 0.2, 1); } .ds-trilho__link:hover .ds-trilho__foto { transform: scale(1.03); } .ds-trilho__nome { display: block; margin-top: 1.5rem; font-family: var(--font-sans); font-size: 1.375rem; font-weight: 400; line-height: 1.25; color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-line); text-decoration-thickness: 1px; text-underline-offset: 6px; transition: text-decoration-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-trilho__link:hover .ds-trilho__nome { text-decoration-color: var(--color-ink); } .ds-trilho__resolve { display: block; margin-top: 0.75rem; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-graphite); } .ds-trilho__fato { display: block; margin-top: 0.5rem; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-graphite); } .ds-trilho__link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } @media (min-width: 40rem) { .ds-trilho__item { width: 46vw; } } @media (min-width: 64rem) { .ds-trilho { gap: 2rem; padding: 0 2rem 1.5rem; scroll-padding-left: 2rem; } .ds-trilho__item { width: 24rem; } } @media (prefers-reduced-motion: reduce) { .ds-trilho__foto, .ds-trilho__nome { transition: none; } }"
     },
     {
       "name": "Porta",
       "kind": "card",
       "refersTo": "porta",
-      "description": "Campo de imagem sangrada com véu preto em gradiente e texto branco no pé. Raio 0, sombra 0. Duas portas de igual peso, separadas por fio — não um botão e um link.",
+      "description": "Campo de imagem sangrada com véu preto em gradiente e texto branco no pé. Raio 0, sombra 0. Duas portas de igual peso, separadas por fio — não um botão e um link. Cresceram em 05/08/2026 para 30rem/38rem de piso e 1,5rem/3,5rem de padding: com uma abertura de tela cheia e um trilho acima delas, 26rem/32rem passaram a ler como rodapé de página. O texto de apoio carrega min-height de 3lh a partir de md, para os dois títulos alinharem apesar de as duas copies terem alturas diferentes.",
       "html": "<a class='ds-porta' href='#'><span class='ds-porta__veu'></span><span class='ds-porta__texto'><span class='ds-porta__rotulo'>Sou arquiteto ou designer</span><span class='ds-porta__apoio'>Catálogos das quatro marcas, arquivos 3D, cartas de acabamento e o canal direto com quem representa.</span><svg class='ds-porta__seta' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg></span></a>",
-      "css": ".ds-porta { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 26rem; padding: 1.5rem; overflow: hidden; background-color: var(--color-ink); border-radius: 0; text-decoration: none; } .ds-porta__veu { position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.15)); } .ds-porta__texto { position: relative; display: block; } .ds-porta__rotulo { display: block; max-width: 16ch; font-family: var(--font-sans); font-size: clamp(1.75rem, 2.6vw, 2.625rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.025em; color: #fff; } .ds-porta__apoio { display: block; max-width: 44ch; margin-top: 1rem; font-family: var(--font-sans); font-size: 1.0625rem; line-height: 1.55; color: rgb(255 255 255 / 0.85); } .ds-porta__seta { display: block; width: 2rem; height: 0.75rem; margin-top: 2rem; color: #fff; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-porta:hover .ds-porta__seta { transform: translateX(0.375rem); } .ds-porta:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } @media (min-width: 48rem) { .ds-porta { min-height: 32rem; padding: 2.5rem; } } @media (prefers-reduced-motion: reduce) { .ds-porta__seta { transition: none; } }"
+      "css": ".ds-porta { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 30rem; padding: 1.5rem; overflow: hidden; background-color: var(--color-ink); border-radius: 0; text-decoration: none; } .ds-porta__veu { position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.15)); } .ds-porta__texto { position: relative; display: block; } .ds-porta__rotulo { display: block; max-width: 16ch; font-family: var(--font-sans); font-size: clamp(1.75rem, 2.6vw, 2.625rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.025em; color: #fff; } .ds-porta__apoio { display: block; max-width: 44ch; min-height: 3lh; margin-top: 1rem; font-family: var(--font-sans); font-size: 1.0625rem; line-height: 1.55; color: rgb(255 255 255 / 0.85); } .ds-porta__seta { display: block; width: 2rem; height: 0.75rem; margin-top: 2rem; color: #fff; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-porta:hover .ds-porta__seta { transform: translateX(0.375rem); } .ds-porta:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } @media (min-width: 48rem) { .ds-porta { min-height: 38rem; padding: 3.5rem; } } @media (prefers-reduced-motion: reduce) { .ds-porta__seta { transition: none; } }"
     },
     {
       "name": "Linha de ledger",
@@ -186,9 +212,9 @@
       "name": "Linha de documento",
       "kind": "custom",
       "refersTo": "linha-documento",
-      "description": "A linha do arquivo, compartilhada por /catalogos e pela seção \"Para levar\" da página de marca. Duas escritas — publicado (baixa/abre o PDF, medida completa, seta em tinta) e a pedir (abre o WhatsApp, edição declarada, nota em apoio, seta em grafite) — dentro de um markup só. Grade e teto de 52rem são exportados para o cabeçalho de colunas assentar exatamente sobre a linha.",
+      "description": "A linha do arquivo, compartilhada por /catalogos, pela seção \"Para levar\" da página de marca e pela seção de catálogos da home. Duas escritas — publicado (baixa/abre o PDF, medida completa, seta em tinta) e a pedir (abre o WhatsApp, edição declarada, nota em apoio, seta em grafite) — dentro de um markup só. Grade e teto de 64rem são exportados para o cabeçalho de colunas assentar exatamente sobre a linha.",
       "html": "<div class='ds-doc'><div class='ds-doc__cabecalho' aria-hidden='true'><span>Documento</span><span class='ds-doc__cabecalho-medida'>Edição</span></div><ul class='ds-doc__lista' aria-label='Documentos declarados'><li class='ds-doc__item'><a class='ds-doc__link' href='#' target='_blank' rel='noopener noreferrer' download><span class='ds-doc__titulo'>Catálogo Trisol</span><span class='ds-doc__medida'><span class='ds-doc__valor'>PDF · 24,0 MB · 2026</span></span><svg class='ds-doc__seta ds-doc__seta--publicado' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg><span class='ds-doc__sr'>(abre o PDF)</span></a></li><li class='ds-doc__item'><a class='ds-doc__link' href='#' target='_blank' rel='noopener noreferrer'><span class='ds-doc__titulo'>Catálogo Marê Mobília</span><span class='ds-doc__medida'><span class='ds-doc__valor'>Edição não declarada</span><span class='ds-doc__nota'>Envio pela Belmare</span></span><svg class='ds-doc__seta ds-doc__seta--pedir' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg><span class='ds-doc__sr'>(abre o WhatsApp)</span></a></li></ul></div>",
-      "css": ".ds-doc { max-width: 52rem; background: var(--color-paper); } .ds-doc__cabecalho { display: grid; grid-template-columns: minmax(0, 1fr) 2rem; column-gap: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-line); font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; text-transform: uppercase; color: var(--color-graphite); } .ds-doc__cabecalho-medida { display: none; } .ds-doc__lista { list-style: none; margin: 0; padding: 0; } .ds-doc__item { border-bottom: 1px solid var(--color-line); } .ds-doc__link { display: grid; grid-template-columns: minmax(0, 1fr) 2rem; align-items: baseline; column-gap: 1rem; row-gap: 0.5rem; padding: 1.25rem 0; text-decoration: none; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-doc__link:hover { background-color: var(--color-surface); } .ds-doc__link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-doc__titulo { grid-column-start: 1; font-family: var(--font-sans); font-size: 1.375rem; line-height: 1.25; font-weight: 400; color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-line); text-decoration-thickness: 1px; text-underline-offset: 6px; transition: text-decoration-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-doc__link:hover .ds-doc__titulo { text-decoration-color: var(--color-ink); } .ds-doc__medida { grid-column-start: 1; margin-top: 0.25rem; } .ds-doc__valor { display: block; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; text-transform: uppercase; color: var(--color-graphite); } .ds-doc__nota { display: block; margin-top: 0.25rem; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-graphite); } .ds-doc__seta { grid-column-start: 2; grid-row-start: 1; align-self: center; width: 2rem; height: 0.75rem; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-doc__seta--publicado { color: var(--color-ink); } .ds-doc__seta--pedir { color: var(--color-graphite); transition: transform 300ms cubic-bezier(0, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-doc__link:hover .ds-doc__seta { transform: translateX(0.375rem); } .ds-doc__link:hover .ds-doc__seta--pedir { color: var(--color-ink); } .ds-doc__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } @media (min-width: 48rem) { .ds-doc__cabecalho, .ds-doc__link { grid-template-columns: minmax(0, 1fr) minmax(0, 13rem) 2rem; column-gap: 2rem; } .ds-doc__cabecalho-medida { display: block; } .ds-doc__medida { grid-column-start: 2; margin-top: 0; } .ds-doc__seta { grid-column-start: 3; } } @media (prefers-reduced-motion: reduce) { .ds-doc__seta { transition: none; } }"
+      "css": ".ds-doc { max-width: 64rem; background: var(--color-paper); } .ds-doc__cabecalho { display: grid; grid-template-columns: minmax(0, 1fr) 2rem; column-gap: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-line); font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; text-transform: uppercase; color: var(--color-graphite); } .ds-doc__cabecalho-medida { display: none; } .ds-doc__lista { list-style: none; margin: 0; padding: 0; } .ds-doc__item { border-bottom: 1px solid var(--color-line); } .ds-doc__link { display: grid; grid-template-columns: minmax(0, 1fr) 2rem; align-items: baseline; column-gap: 1rem; row-gap: 0.5rem; padding: 1.25rem 0; text-decoration: none; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-doc__link:hover { background-color: var(--color-surface); } .ds-doc__link:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-doc__titulo { grid-column-start: 1; font-family: var(--font-sans); font-size: 1.375rem; line-height: 1.25; font-weight: 400; color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-line); text-decoration-thickness: 1px; text-underline-offset: 6px; transition: text-decoration-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-doc__link:hover .ds-doc__titulo { text-decoration-color: var(--color-ink); } .ds-doc__medida { grid-column-start: 1; margin-top: 0.25rem; } .ds-doc__valor { display: block; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; text-transform: uppercase; color: var(--color-graphite); } .ds-doc__nota { display: block; margin-top: 0.25rem; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-graphite); } .ds-doc__seta { grid-column-start: 2; grid-row-start: 1; align-self: center; width: 2rem; height: 0.75rem; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-doc__seta--publicado { color: var(--color-ink); } .ds-doc__seta--pedir { color: var(--color-graphite); transition: transform 300ms cubic-bezier(0, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-doc__link:hover .ds-doc__seta { transform: translateX(0.375rem); } .ds-doc__link:hover .ds-doc__seta--pedir { color: var(--color-ink); } .ds-doc__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } @media (min-width: 48rem) { .ds-doc__cabecalho, .ds-doc__link { grid-template-columns: minmax(0, 1fr) minmax(0, 13rem) 2rem; column-gap: 2rem; } .ds-doc__cabecalho-medida { display: block; } .ds-doc__medida { grid-column-start: 2; margin-top: 0; } .ds-doc__seta { grid-column-start: 3; } } @media (prefers-reduced-motion: reduce) { .ds-doc__seta { transition: none; } }"
     },
     {
       "name": "Ficha (rótulo / valor)",
@@ -199,20 +225,44 @@
       "css": ".ds-ficha { margin: 0; border-top: 1px solid var(--color-line); background: var(--color-paper); } .ds-ficha__linha { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.75rem 0; border-bottom: 1px solid var(--color-line); } .ds-ficha__rotulo { flex-shrink: 0; padding-top: 0.15rem; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; text-transform: uppercase; color: var(--color-graphite); } .ds-ficha__valor { min-width: 0; margin: 0; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-ink); } @media (min-width: 40rem) { .ds-ficha__linha { flex-direction: row; gap: 2rem; padding: 1rem 0; } .ds-ficha__rotulo { width: 9rem; } }"
     },
     {
+      "name": "Campo de formulário",
+      "kind": "input",
+      "refersTo": "campo",
+      "description": "O único campo do sistema. Sem caixa e sem fundo: rótulo em apoio grafite acima, input transparente com fio de 1px só embaixo. O foco troca a borda para tinta com outline-none — o próprio fio é o anel de foco, e é a única vez em que o :focus-visible global cede o lugar. A recusa também escurece o fio e escreve em tinta: não há vermelho, porque a Regra da Cromia Zero não abre exceção para estado e o que carrega o erro é o aria-describedby, não a cor.",
+      "html": "<div class='ds-campo'><label class='ds-campo__rotulo' for='ds-campo-email'>E-mail</label><input class='ds-campo__input' id='ds-campo-email' type='email' autocomplete='email' value='' /></div><div class='ds-campo ds-campo--recusado'><label class='ds-campo__rotulo' for='ds-campo-cidade'>Cidade</label><input class='ds-campo__input' id='ds-campo-cidade' type='text' aria-invalid='true' aria-describedby='ds-campo-cidade-recusa' value='' /><p class='ds-campo__recusa' id='ds-campo-cidade-recusa'>Escreva a cidade para a Belmare indicar a loja mais próxima.</p></div>",
+      "css": ".ds-campo { display: flex; flex-direction: column; gap: 0.5rem; max-width: 36rem; margin-bottom: 1.5rem; } .ds-campo__rotulo { font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-graphite); } .ds-campo__input { font-family: var(--font-sans); font-size: 1.0625rem; line-height: 1.55; color: var(--color-ink); background: transparent; border: 0; border-bottom: 1px solid var(--color-line); border-radius: 0; padding: 0 0 0.5rem; outline: none; transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-campo__input:focus { border-bottom-color: var(--color-ink); } .ds-campo--recusado .ds-campo__input { border-bottom-color: var(--color-ink); } .ds-campo__recusa { margin: 0; font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; color: var(--color-ink); } @media (prefers-reduced-motion: reduce) { .ds-campo__input { transition: none; } }"
+    },
+    {
+      "name": "Envio de formulário",
+      "kind": "button",
+      "refersTo": "envio",
+      "description": "O único elemento preenchido do sistema, e só no hover. Apoio em versal com tracking aberto, 1rem/2rem de padding, fio de 1px em tinta em repouso; no hover inverte para fundo tinta e texto papel. É um <button> e não fura a Regra do Link: a regra fala de navegação, e este envia. Desabilitado enquanto envia, a 50% de opacidade.",
+      "html": "<button class='ds-envio' type='submit'>Enviar proposta</button> <button class='ds-envio' type='submit' disabled>Enviando…</button>",
+      "css": ".ds-envio { font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.45; text-transform: uppercase; letter-spacing: 0.025em; color: var(--color-ink); background: transparent; border: 1px solid var(--color-ink); border-radius: 0; padding: 1rem 2rem; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-envio:hover:not(:disabled) { background-color: var(--color-ink); color: var(--color-paper); } .ds-envio:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-envio:disabled { opacity: 0.5; cursor: default; } @media (prefers-reduced-motion: reduce) { .ds-envio { transition: none; } }"
+    },
+    {
+      "name": "Faixa de ação",
+      "kind": "custom",
+      "refersTo": "acao-fecho",
+      "description": "O mais próximo de um botão primário que o sistema tem — e ainda assim é fio, não preenchimento. Fio em tinta acima e abaixo, glifo de WhatsApp mais rótulo em h2 à esquerda, seta à direita, hover elevando o fundo para branco. Sem número cadastrado, a faixa inteira não é desenhada: menos página, nunca página quebrada.",
+      "html": "<a class='ds-acao-fecho' href='#'><span class='ds-acao-fecho__esquerda'><svg class='ds-acao-fecho__glifo' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9'/><path d='M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1'/></svg><span class='ds-acao-fecho__rotulo'>Falar pelo WhatsApp</span></span><svg class='ds-acao-fecho__seta' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg></a>",
+      "css": ".ds-acao-fecho { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.75rem 0; border-top: 1px solid var(--color-ink); border-bottom: 1px solid var(--color-ink); border-radius: 0; text-decoration: none; color: var(--color-ink); background: var(--color-paper); transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-acao-fecho:hover { background-color: var(--color-surface); } .ds-acao-fecho:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-acao-fecho__rotulo { font-family: var(--font-sans); font-size: clamp(1.375rem, 1.9vw, 1.875rem); font-weight: 400; line-height: 1.2; letter-spacing: -0.02em; } .ds-acao-fecho__esquerda { display: flex; align-items: center; gap: 1rem; min-width: 0; } .ds-acao-fecho__glifo { flex-shrink: 0; width: 1.5rem; height: 1.5rem; } .ds-acao-fecho__seta { flex-shrink: 0; width: 2rem; height: 0.75rem; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-acao-fecho:hover .ds-acao-fecho__esquerda { display: flex; align-items: center; gap: 1rem; min-width: 0; } .ds-acao-fecho__glifo { flex-shrink: 0; width: 1.5rem; height: 1.5rem; } .ds-acao-fecho__seta { transform: translateX(0.375rem); } @media (prefers-reduced-motion: reduce) { .ds-acao-fecho__esquerda { display: flex; align-items: center; gap: 1rem; min-width: 0; } .ds-acao-fecho__glifo { flex-shrink: 0; width: 1.5rem; height: 1.5rem; } .ds-acao-fecho__seta { transition: none; } }"
+    },
+    {
+      "name": "Balão de WhatsApp",
+      "kind": "custom",
+      "refersTo": "balao-whatsapp",
+      "description": "Ação persistente sobre o conteúdo, em toda rota, no canto inferior direito. É QUADRADO, não redondo: o balão de WordPress de toda representada é um círculo verde preenchido, e --radius-* está initial de propósito. É também o único elemento permanentemente elevado do sistema — fundo em superfície sempre, porque ele flutua tanto sobre papel quanto sobre fotografia. Sem número cadastrado, ele não existe.",
+      "html": "<a class='ds-balao' href='#' aria-label='Falar pelo WhatsApp'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9'/><path d='M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1'/></svg></a>",
+      "css": ".ds-balao { display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; background-color: var(--color-surface); color: var(--color-ink); border: 1px solid var(--color-ink); border-radius: 0; text-decoration: none; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-balao:hover { background-color: var(--color-paper); } .ds-balao:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-balao svg { width: 1.5rem; height: 1.5rem; } @media (prefers-reduced-motion: reduce) { .ds-balao { transition: none; } }"
+    },
+    {
       "name": "Bloco numerado",
       "kind": "custom",
       "refersTo": "bloco",
-      "description": "A espinha das rotas de arquivo: fio de 1px abrindo a seção, número em mono na coluna de margem de 5rem, conteúdo com teto de 64rem e margem direita aberta. O número é aria-hidden.",
+      "description": "Fio de 1px abrindo a seção, número em mono na coluna de margem de 5rem, conteúdo com teto de 64rem e margem direita aberta. O número é aria-hidden. Desde 05/08/2026 existe numa superfície só — a página de marca —, onde a numeração é calculada sobre o que de fato renderizou. /quem-somos perdeu a dela junto com a história que ela ordenava, e a seção de página livre nasceu sem número: numerar seções que não são sequência empresta autoridade de documento a um índice.",
       "html": "<section class='ds-bloco'><div class='ds-bloco__grade'><p class='ds-bloco__numero' aria-hidden='true'>04</p><div class='ds-bloco__conteudo'><h2 class='ds-bloco__titulo'>Três estados. Um interlocutor.</h2><p class='ds-bloco__corpo'>Paraná, Santa Catarina e Rio Grande do Sul — o mesmo território para as quatro representadas, sem recorte por marca.</p></div></div></section>",
       "css": ".ds-bloco { border-top: 1px solid var(--color-line); padding: 3rem 1.25rem 3.5rem; background: var(--color-paper); } .ds-bloco__grade { display: grid; row-gap: 1.5rem; } .ds-bloco__numero { height: fit-content; margin: 0; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; color: var(--color-graphite); } .ds-bloco__conteudo { min-width: 0; } .ds-bloco__titulo { max-width: 18ch; margin: 0; font-family: var(--font-sans); font-size: clamp(1.75rem, 2.6vw, 2.625rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.025em; text-wrap: balance; color: var(--color-ink); } .ds-bloco__corpo { max-width: 52ch; margin: 1.5rem 0 0; font-family: var(--font-sans); font-size: 1.0625rem; line-height: 1.55; text-wrap: pretty; color: var(--color-graphite); } @media (min-width: 48rem) { .ds-bloco { padding: 4rem 2rem 6rem; } .ds-bloco__grade { grid-template-columns: 5rem minmax(0, 64rem); column-gap: 2rem; } }"
-    },
-    {
-      "name": "Ação de fecho",
-      "kind": "custom",
-      "refersTo": "acao-fecho",
-      "description": "O mais próximo de um botão primário que o sistema tem — e ainda assim é fio, não preenchimento. Único fio em tinta do sistema, rótulo em h2, hover eleva o fundo para branco.",
-      "html": "<a class='ds-acao-fecho' href='#'><span class='ds-acao-fecho__rotulo'>Pedir os catálogos num pedido só</span><svg class='ds-acao-fecho__seta' viewBox='0 0 32 12' fill='none' stroke='currentColor' stroke-width='1' aria-hidden='true'><path d='M0 6 H31'/><path d='M25.5 0.5 L31 6 L25.5 11.5'/></svg></a>",
-      "css": ".ds-acao-fecho { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.75rem 0; border-top: 1px solid var(--color-ink); border-bottom: 1px solid var(--color-ink); border-radius: 0; text-decoration: none; color: var(--color-ink); background: var(--color-paper); transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-acao-fecho:hover { background-color: var(--color-surface); } .ds-acao-fecho:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-acao-fecho__rotulo { font-family: var(--font-sans); font-size: clamp(1.375rem, 1.9vw, 1.875rem); font-weight: 400; line-height: 1.2; letter-spacing: -0.02em; } .ds-acao-fecho__seta { flex-shrink: 0; width: 2rem; height: 0.75rem; transition: transform 300ms cubic-bezier(0, 0, 0.2, 1); } .ds-acao-fecho:hover .ds-acao-fecho__seta { transform: translateX(0.375rem); } @media (prefers-reduced-motion: reduce) { .ds-acao-fecho__seta { transition: none; } }"
     },
     {
       "name": "Pular para o conteúdo",
@@ -224,126 +274,177 @@
     }
   ],
   "narrative": {
-    "northStar": "A Prancha de Arquivo",
-    "overview": "O sistema é uma folha técnica, não uma peça de campanha. Fundo de papel off-white, tinta quase preta, um fio de 1px como único ornamento, e duas famílias tipográficas dividindo o trabalho: a grotesca fala, a mono mede. Não há cor de acento em lugar nenhum do código — a energia cromática inteira vem da fotografia, e o resto da página sai da frente para deixá-la falar.\n\nA densidade é de amostrário: alinhamento visível e sem exceção, números de bloco na margem, fichas de rótulo e valor, tabelas regradas, um ledger de quatro linhas e uma prancha de território desenhada sobre malha oficial do IBGE. O que dá identidade é a grade, não a decoração. O teste que o projeto aplica em si mesmo: tire tudo menos tipografia, fio e foto — o site ainda tem que ficar de pé.\n\nO sistema recusa, em código e não só em intenção: raio, sombra, gradiente (exceto o véu de legibilidade sobre foto), matiz, terceira família tipográfica, textura de fundo, movimento por rolagem, botão. Cinco superfícies existem hoje — /, /quem-somos, /representadas, o template /representadas/[marca] e /catalogos. A segunda introduziu os padrões de composição de arquivo; a terceira os estendeu para a prancha chaveada sobre fotografia; a quarta acrescentou o único elemento fixo do sistema além do cabeçalho, a faixa de índice, mais o padrão de seção anulável com numeração calculada — a seção some quando o dado não existe, e a numeração fecha sem buraco; e a quinta acrescentou a linha de documento, primeira linha do sistema com duas escritas dentro de um markup só.\n\n/catalogos é a primeira superfície sem uma única imagem, e isso é direção, não falta de acervo: numa rota em que o visitante veio buscar um arquivo, fotografia de ambiente é ruído entre ele e o arquivo. O teste que o parágrafo acima declara passa a ter uma página que o cumpre com dois dos três elementos — ela fica de pé só com tipografia e fio, sem foto, sem prancha e sem gráfico: duas colunas partidas por um fio vertical de altura total, cabeçalho de colunas em mono e linhas regradas com a medida à direita. Não é licença para o resto do site. Onde há fotografia, ela continua sendo a única cor.",
+    "northStar": "O Padrão da Categoria, no Teto do Segmento",
+    "overview": "A estrela mudou em 05/08/2026, e a antiga não foi apagada — foi reduzida de escopo. Este documento abria com \"A Prancha de Arquivo\": o site como folha técnica, e a home como a primeira página dela. O cliente escolheu outra coisa numa página de decisão de direção (semente b95c2020), com a designada e três desafiantes à vista, e ele escolheu a saída permanente — o padrão da categoria, jogado reto —, executado no acabamento de Gandiablasco, Tribù, Paola Lenti, Kettal, Artefacto, Breton, Sollos e Micasa. A escolha está gravada como CONTRATO_DE_DIRECAO em app/(frontend)/layout.tsx. A prancha continua governando onde a página É um índice ou um registro: /catalogos, /arquivos-3d, /representadas e a página de cada marca. A matéria não mudou em nenhuma das duas pontas — mesma paleta, mesmo fio, mesmas duas famílias, raio 0 e sombra 0. O que mudou foi a composição, não o material.\n\nA convenção é o compromisso. O que separa esta home da home das concorrentes não é a estrutura — é o acabamento. Fotografia sangrando por 100svh, uma display de 72px em peso leve sobre o pé dela, um trilho de fábricas que rola em vez de uma grade que quebra, e duas portas do tamanho da escolha que elas oferecem. Onde a página é registro, a densidade continua sendo de amostrário: alinhamento visível e sem exceção, fichas de rótulo e valor, listas regradas com a medida à direita, blocos numerados na página de marca e uma prancha chaveada sobre fotografia.\n\nO sistema recusa, em código e não só em intenção: raio, sombra, gradiente (exceto o véu de legibilidade sobre foto), matiz fora do logotipo, terceira família tipográfica, textura de fundo, carrossel automático, loader, parallax e scroll-jacking. Movimento por rolagem saiu dessa lista em 05/08/2026, por decisão do cliente: há exatamente um, no trilho das representadas, e ele custou três travas.",
     "keyCharacteristics": [
-      "Acromático absoluto: cinco valores neutros, zero matiz",
+      "Acromático na interface: cinco valores neutros; o matiz existe numa classe de objeto só, o logotipo — o da Belmare e o das fábricas representadas",
       "Fio de 1px #C9C6C0 como único ornamento, e estrutural",
       "Raio 0 e sombra 0 impostos por deleção de namespace, não por convenção",
-      "Duas famílias: grotesca para fala, mono para medida",
+      "Duas famílias: grotesca para fala, mono para medida — e a mono recuou para medida real",
       "Elevação só por tom: #FFFFFF sobre #F5F3F0",
-      "Vocabulário de movimento fechado em quatro gestos, todos por ponteiro",
-      "Toda ação é link; não existe botão no sistema",
+      "Movimento fechado em cinco gestos: quatro por ponteiro, e um por rolagem",
+      "Toda ação é link; o preenchimento existe num lugar só do site, e é o hover do envio de formulário",
       "Dado ausente é declarado por extenso, nunca inventado nem travessão",
-      "A fotografia é a única cor — e não é requisito: /catalogos fica de pé sem nenhuma",
+      "A fotografia é a cor das superfícies — e não é requisito: /catalogos fica de pé sem nenhuma",
       "Formato, peso e edição declarados antes do clique, formatados por uma função só"
     ],
     "rules": [
       {
         "name": "A Regra da Cromia Zero",
-        "body": "Nenhum matiz entra em nenhuma superfície. Não há cor primária, não há cor de estado, não há verde de sucesso nem vermelho de erro. Estado se comunica por tom (grafite → tinta), por peso de fio e por posição. Atenção: diferente de raio e sombra, o namespace de cor padrão do Tailwind não foi deletado — text-red-500 ainda compila. A disciplina aqui é convenção, e a única guarda é a revisão.",
-        "section": "colors"
+        "section": "colors",
+        "body": "Nenhum matiz entra em nenhuma superfície. Não há cor primária, não há cor de estado, não há verde de sucesso nem vermelho de erro. Estado se comunica por tom (grafite → tinta), por peso de fio e por posição. O glifo de WhatsApp é o teste que a regra passou: ele entrou em 04/08/2026 sem o verde oficial e sem preenchimento, traçado em currentColor como a seta. Atenção: diferente de raio e sombra, o namespace de cor padrão do Tailwind NÃO foi deletado — text-red-500 ainda compila. A disciplina aqui é convenção, e a única guarda é a revisão."
       },
       {
         "name": "A Regra do Papel",
-        "body": "#F5F3F0 é fundo; #FFFFFF é superfície. Inverter os dois quebra a única forma de elevação que o sistema tem.",
-        "section": "colors"
+        "section": "colors",
+        "body": "#F5F3F0 é fundo; #FFFFFF é superfície. Inverter os dois quebra a única forma de elevação que o sistema tem."
+      },
+      {
+        "name": "A Regra do Indicador Visível",
+        "section": "colors",
+        "body": "Nova em 05/08/2026. Um elemento que o sistema usa para dizer que há mais conteúdo tem que passar dos 3:1 que a WCAG 1.4.11 pede para objeto gráfico necessário à compreensão. O polegar da barra-fio era #C9C6C0 sobre papel: ~1,54:1. Um indicador que ninguém enxerga não é um indicador discreto, é um indicador ausente. Ele foi para grafite (~9,8:1), e o hover em tinta continua marcando o alvo. Discrição não é licença para invisibilidade."
+      },
+      {
+        "name": "A Regra do Peso na Chamada",
+        "section": "typography",
+        "body": "O token da display não carrega peso, e isso é decisão, não esquecimento: ela tem dois consumidores com necessidades opostas. O h1 da home é font-light (300) porque 400 nesse corpo sobre fotografia fecha os contornos e lê como anúncio; o h1 da página de marca fica em 400 porque é um nome próprio sobre papel, e ali o ultraleve some. Peso que só serve a uma das chamadas mora na chamada."
       },
       {
         "name": "A Regra da Divisão de Trabalho",
-        "body": "A grotesca fala, a mono mede. Material, formato, contador, código, ano, medida e sigla vão em mono. Frase inteira não é medida — vai na grotesca.",
-        "section": "typography"
+        "section": "typography",
+        "body": "A grotesca fala, a mono mede. Material, formato, contador, código, ano, medida e sigla vão em mono. Frase inteira não é medida — vai na grotesca. A mono recuou com a troca de mundo: deixou de ser a voz de rótulo geral do site e ficou onde há medida real — formato, peso, CNPJ, sigla de estado, item de navegação e carimbo de prancha."
       },
       {
         "name": "A Regra da Caixa Alta",
-        "body": "Versal é aplicada explicitamente, item a item. O teste é de classe da string, não de tamanho: medida, código, sigla, rótulo de campo e estado de campo declarado vão em versal (PDF · 24,0 MB · 2026, EDIÇÃO NÃO DECLARADA, NÃO DECLARADA); nome próprio, frase e legenda ficam fora mesmo curtos — razão social, porte, endereço, descrição de CNAE, nome de coleção e nome de fábrica vão na grotesca em caixa baixa. A utilidade mono deliberadamente não carrega text-transform. A regra sobreviveu a uma violação real neste build: a primeira linha de documento punha o nome da fábrica em mono versal numa linha própria sob o título. A correção não foi trocar a caixa — foi apagar a linha, e a atribuição entrou dentro do título, em h3 caixa baixa (\"Catálogo Trisol\"). Se a solução for baixar a caixa e manter o elemento, quase sempre o elemento é que estava errado.",
-        "section": "typography"
+        "section": "typography",
+        "body": "Versal é aplicada explicitamente, item a item. O teste é de classe da string, não de tamanho: medida, código, sigla, rótulo de campo e estado de campo declarado vão em versal; nome próprio, frase e legenda ficam fora mesmo curtos. A utilidade mono deliberadamente não carrega text-transform. Se a solução for baixar a caixa e manter o elemento, quase sempre o elemento é que estava errado."
       },
       {
         "name": "A Regra das Duas Famílias",
-        "body": "Duas, e só duas. Uma terceira família é o primeiro sintoma de que alguém tentou resolver hierarquia com fonte em vez de com grade.",
-        "section": "typography"
+        "section": "typography",
+        "body": "Duas, e só duas. Uma terceira família é o primeiro sintoma de que alguém tentou resolver hierarquia com fonte em vez de com grade."
       },
       {
         "name": "A Regra da Margem Única",
-        "body": "Tudo pendura na mesma margem esquerda — fio, rótulo, parágrafo, tabela e a prancha. A prancha em particular não leva mx-auto: numa página em que a grade é o argumento, o único gráfico centralizado seria a única coisa fora do lugar.",
-        "section": "layout"
+        "section": "layout",
+        "body": "Tudo pendura na mesma margem esquerda — fio, rótulo, parágrafo, tabela e prancha. A exceção é uma só, e é de composição, não de conteúdo: a fotografia de abertura sangra. A prancha em particular não leva mx-auto: numa página em que a grade é o argumento, o único gráfico centralizado seria a única coisa fora do lugar."
       },
       {
         "name": "A Regra do Teto de 64rem",
-        "body": "A coluna de conteúdo tem teto; a margem direita fica aberta. Nada é centralizado para preencher tela larga.",
-        "section": "layout"
+        "section": "layout",
+        "body": "A coluna de conteúdo tem teto; a margem direita fica aberta. Nada é centralizado para \"preencher\" tela larga."
       },
       {
         "name": "A Regra da Elevação por Tom",
-        "body": "Se algo precisa parecer acima do papel, ele fica branco. Não existe segunda opção — e quem tentar acrescentar uma vai descobrir que a utilidade não existe.",
-        "section": "elevation"
+        "section": "elevation",
+        "body": "Se algo precisa parecer acima do papel, ele fica branco. Não existe segunda opção — e quem tentar acrescentar uma vai descobrir que a utilidade não existe."
+      },
+      {
+        "name": "A Regra do Chrome Fixo",
+        "section": "elevation",
+        "body": "A elevação por tom é transitória — aparece no hover e some. A exceção é o chrome fixo sobre conteúdo arbitrário, e ela tem um membro: o balão de WhatsApp, que fica em superfície sempre. Ele flutua tanto sobre papel quanto sobre fotografia, e um fundo que só aparecesse no hover deixaria o ícone ilegível toda vez que passasse por cima de uma imagem clara. A exceção é do CONTEXTO, não uma reversão da regra."
       },
       {
         "name": "A Regra do Fio Estrutural",
-        "body": "Um fio de 1px em #C9C6C0 só entra onde há separação real de conteúdo. Fio decorativo, fio duplo e fio alinhado a nada estão fora: no bloco numerado, o fio sob o número foi removido justamente porque caía 27px acima do primeiro fio de conteúdo e lia como pendência.",
-        "section": "elevation"
+        "section": "elevation",
+        "body": "Um fio de 1px em #C9C6C0 só entra onde há separação real de conteúdo. Fio decorativo, fio duplo e fio alinhado a nada estão fora."
       },
       {
         "name": "A Regra do Raio Zero",
-        "body": "Não é preferência, é ausência de utilidade. Quem precisar de canto arredondado terá que reabrir o @theme — e essa é exatamente a conversa que a deleção do namespace existe para forçar.",
-        "section": "shapes"
+        "section": "shapes",
+        "body": "Não é preferência, é ausência de utilidade. Quem precisar de canto arredondado terá que reabrir o @theme — e essa é exatamente a conversa que a deleção do namespace existe para forçar."
       },
       {
         "name": "A Regra do Cabeçalho de Coluna",
-        "body": "Um cabeçalho de coluna assenta sobre a coluna que nomeia — por isso a grade é importada, não redigitada — e nomeia o que a coluna de fato carrega hoje: enquanto nenhum documento está publicado ela leva edição e estado de entrega, e se chama EDIÇÃO; vira ARQUIVO sozinha no dia em que houver arquivo. Na largura em que a coluna não existe, o rótulo dela também não existe: no telefone a linha empilha e só DOCUMENTO fica. Cabeçalho que promete coluna inexistente é pior que cabeçalho nenhum.",
-        "section": "components"
+        "section": "components",
+        "body": "Um cabeçalho de coluna assenta sobre a coluna que nomeia — por isso a grade é importada, não redigitada — e nomeia o que a coluna de fato carrega hoje. Na largura em que a coluna não existe, o rótulo dela também não existe. Cabeçalho que promete coluna inexistente é pior que cabeçalho nenhum."
+      },
+      {
+        "name": "A Regra do Portão",
+        "section": "components",
+        "body": "/arquivos-3d gateia exatamente uma coisa: o pacote com as quatro fábricas juntas. Todo arquivo avulso baixa aberto. Não é generosidade, é economia: a Casoca é gratuita, dominante e já distribui a GDA, então um formulário na frente de um arquivo que ela entrega de graça não captura o lead, doa o lead. E o portão não compra o direito de esconder a medida: ZIP · 62,4 MB aparece acima dos campos, nunca depois do envio."
+      },
+      {
+        "name": "A Regra do Eixo que Pode Mudar a Tela",
+        "section": "components",
+        "body": "Um eixo de filtro só é desenhado quando tem mais de uma opção, e cada opção só existe se devolve pelo menos uma linha. Uma biblioteca inteira em .skp desenharia TODOS 12 · SKP 12 — dois controles que fazem a mesma coisa, que é nada."
+      },
+      {
+        "name": "A Regra da Contagem no Recorte",
+        "section": "components",
+        "body": "O número ao lado de cada opção é quantas linhas sobram se você clicar nela — contado sobre a lista já recortada pelo outro eixo, nunca sobre o acervo inteiro. É o SKP · 8,4 MB aplicado a um controle: declarar o custo do clique antes do clique."
+      },
+      {
+        "name": "A Regra do Campo Fechado",
+        "section": "components",
+        "body": "A lista de campos do formulário de proposta é fixa em código — nome, e-mail, cidade, escritório — num painel cujo propósito inteiro é deixar a Belmare decidir o que é campo. Um construtor de formulário é exatamente a ferramenta que deixaria um operador bem-intencionado acrescentar CPF porque uma fábrica pediu, e isso é violação de minimização de dado criada por acidente. Acrescentar um campo aqui é PR, não clique."
       },
       {
         "name": "A Regra da Chamada",
-        "body": "A seta nomeia a função, nunca o produto — e é a legenda, fora do desenho, que atribui a função à fábrica. Sobre fotografia gerada, uma seta com nome de marca afirma que aquele objeto é produto daquela marca. Efeito colateral que vale o desenho inteiro: como a chave é a função, o mesmo desenho aceita N marcas.",
-        "section": "components"
+        "section": "components",
+        "body": "A seta nomeia a função, nunca o produto — e é a legenda, fora do desenho, que atribui a função à fábrica. Sobre fotografia gerada, uma seta com nome de marca afirma que aquele objeto é produto daquela marca. Efeito colateral que vale o desenho inteiro: como a chave é a função, o mesmo desenho aceita N marcas."
       },
       {
         "name": "A Regra do Movimento Fechado",
-        "body": "Não existe movimento por rolagem em lugar nenhum do código — nem revelação suave, nem parallax, nem traço que se desenha. Isso é regra, não omissão: o arquiteto volta muitas vezes, e o que encanta na primeira visita irrita na décima. Movimento novo entra só se couber na tabela de quatro gestos.",
-        "section": "components"
+        "section": "components",
+        "body": "Revogada em parte, em 05/08/2026, pelo cliente. O texto anterior era: \"Não existe movimento por rolagem em lugar nenhum do código — nem revelação suave, nem parallax, nem traço que se desenha. O arquiteto volta muitas vezes, e o que encanta na primeira visita irrita na décima.\" O argumento continua bom, e não foi ele que caiu: caiu o veto, porque na barra de qualidade escolhida a revelação suave é gramática nativa da categoria. A revogação cobrou três travas, e elas são o que sobrou da regra: (1) UM MOMENTO SÓ — o trilho das representadas, e nada mais na página, num gesto só; (2) SEM JAVASCRIPT E SEM OBSERVADOR — animation-timeline: view() atrás de um @supports; (3) O CONTEÚDO NUNCA DESAPARECE. O que a revogação NÃO liberou: parallax, scroll-jacking, loader, carrossel automático, contador animado, scroll-behavior: smooth e traço que se desenha ao rolar."
+      },
+      {
+        "name": "A Regra do Conteúdo Sem Opacidade",
+        "section": "components",
+        "body": "Conteúdo primário não se pendura em opacidade animada. A primeira versão da revelação animava opacity de 0 a 1 com fill-mode: both e o comentário afirmava que o @supports a tornava segura — não tornava: o @supports cobre o navegador que não CONHECE a linha do tempo, e não o contexto em que ela existe mas não roda (captura de página inteira, impressão, PDF, documento mais curto que a janela). Nesses casos o quadro from congela em opacity: 0 e a seção mais importante da home simplesmente não existe, o que apareceu em duas das cinco capturas da revisão. Anime transform; deixe a opacidade em paz."
       },
       {
         "name": "A Regra do Link",
-        "body": "Toda ação é link. Se algo precisar de mais peso, ganha fio em tinta e corpo maior — nunca preenchimento e canto.",
-        "section": "components"
+        "section": "components",
+        "body": "Toda ação é link. Se algo precisar de mais peso, ganha fio em tinta e corpo maior — nunca preenchimento e canto. Os dois <button> do site não são ações de navegação: o recorte muda o que já está na tela, e o envio manda o formulário. Só o envio preenche, e só no hover."
       }
     ],
     "dos": [
-      "Do construir profundidade com #FFFFFF sobre #F5F3F0 e com o fio de 1px. É a elevação inteira do sistema.",
-      "Do aplicar caixa alta explicitamente, e só em medida, código, sigla, rótulo de campo e estado de campo declarado. Nome próprio e frase vão na grotesca em caixa baixa por curtos que sejam — razão social, endereço, porte, descrição de CNAE, nome de fábrica.",
-      "Do limitar medida de texto em ch (título 14–24ch, corpo 44–68ch) e deixar a margem direita aberta.",
-      "Do pendurar todo elemento novo na margem única (1.25rem / 2rem), inclusive gráficos.",
+      "Do construir profundidade com superfície sobre papel e com o fio de 1px. É a elevação inteira do sistema, e ela é transitória em todo lugar menos no chrome fixo.",
+      "Do aplicar caixa alta explicitamente, e só em medida, código, sigla, rótulo de campo e estado de campo declarado. Nome próprio e frase vão na grotesca em caixa baixa por curtos que sejam.",
+      "Do limitar medida de texto em ch (título 14–27ch, corpo 44–78ch) e deixar a margem direita aberta. Reescrever a copy de uma abertura pede reconferir o teto dela.",
+      "Do pendurar todo elemento novo na margem única (1,25rem / 2rem), inclusive gráficos. A única coisa que sangra é a fotografia de abertura.",
+      "Do deixar o peso na chamada quando ele só serve a uma das chamadas. font-light mora no h1 da home, e não no token da display, porque o segundo consumidor da display precisa de 400.",
+      "Do repetir scroll-padding sempre que houver snap-mandatory numa lista com margem de página. Os dois valores andam juntos; mexer num sem o outro encosta a primeira imagem na borda da janela.",
       "Do usar tabular-nums em qualquer coluna, ficha, tabela ou contador. Já vem embutido na utilidade mono.",
-      "Do acompanhar toda transição de transformação com motion-reduce:transition-none.",
-      "Do terminar o alt de toda imagem mock em \"imagem de referência\", e centralizar as referências em src/lib/acervo.ts — trocar o acervo não pode virar caça a URL espalhada.",
-      "Do acrescentar legenda visível quando a posição da imagem sugerir obra entregue. alt não resolve: ninguém que enxerga lê alt. É o que a foto de fecho de /quem-somos faz, e é a única legenda visível de foto do site.",
+      "Do acompanhar toda transição de transformação com motion-reduce:transition-none, e desligar movimento por rolagem inteiro sob prefers-reduced-motion — não uma versão curta dele.",
+      "Do animar transform numa revelação por rolagem, nunca opacity. O pior caso de uma linha do tempo que não roda tem que ser conteúdo deslocado, não conteúdo invisível.",
+      "Do garantir 3:1 em qualquer elemento que o sistema usa como indicador de que há mais conteúdo. Um indicador que ninguém enxerga é um indicador ausente.",
+      "Do terminar o alt de toda imagem mock em \"imagem de referência\", e centralizar as referências em src/lib/acervo.ts.",
+      "Do acrescentar legenda visível quando a posição da imagem sugerir obra entregue. alt não resolve: ninguém que enxerga lê alt.",
       "Do escrever campo sem dado por extenso — \"não declarada\" — em vez de travessão, que o leitor confunde com erro de digitação.",
-      "Do manter seção sem conteúdo real renderizando null. projetos-realizados.tsx está construída inteira e no ar em zero pixels até existirem três projetos completos: sem markup vazio, sem título órfão, sem \"em breve\".",
-      "Do traçar toda linha de chamada sobre fotografia duas vezes — encamisamento de 3px em papel sob o traço de 1px em tinta. Um traço só não passa dos 3:1 que a WCAG pede para objeto gráfico, e a chamada vira decoração.",
+      "Do manter seção sem conteúdo real renderizando null. Duas seções do site estão construídas inteiras e no ar em zero pixels por isso: os projetos de /quem-somos e os catálogos da home.",
+      "Do traçar toda linha de chamada sobre fotografia duas vezes — encamisamento de 3px em papel sob o traço de 1px em tinta.",
       "Do dar à prancha o mesmo aspecto do arquivo em toda largura. Qualquer outro aspecto recorta por dentro e move a chamada para fora do objeto.",
       "Do derivar contagem de sumário de itens distintos, e derivar o próprio sumário da mesma função que monta as seções.",
-      "Do formatar toda medida por uma função só, nunca inline. pesoEmMB() fixa uma casa decimal para PDF · 24,0 MB assentar embaixo de SKP · 8,4 MB numa coluna de numeral tabular; toLocaleString solto em cada chamada devolve \"24\" num lugar e \"8,4\" no outro, e a coluna deixa de ler como medida.",
-      "Do compartilhar o componente de linha entre as superfícies que declaram o mesmo documento, desde a primeira linha escrita. Peso e edição são a promessa que a linha faz antes do clique, e promessa formatada em dois lugares diverge. O componente exporta a própria grade e o próprio teto, para o cabeçalho de colunas cair exatamente sobre ela.",
-      "Do derivar o rótulo de um cabeçalho de coluna do dado que a coluna carrega hoje — EDIÇÃO enquanto nada está publicado, ARQUIVO quando houver arquivo — e esconder o rótulo na largura em que a coluna não existe.",
-      "Do dar target=\"_blank\" a todo link de arquivo. O atributo download é ignorado em URL de outra origem, e os arquivos são servidos de storage: sem o target, o dia em que o primeiro PDF chegar o clique deixa de baixar e leva o visitante para fora da página, sem sintoma nenhum em revisão porque hoje não há arquivo para testar. A copy acompanha o fato — \"abre\", não \"baixa\".",
-      "Do derivar número exibido de função, nunca de literal. anosDeMercado() conta com dia e mês, e a rota declara revalidate = 86400 para o número não congelar entre builds."
+      "Do formatar toda medida por uma função só, nunca inline.",
+      "Do compartilhar o componente de linha entre as superfícies que declaram o mesmo documento, desde a primeira linha escrita. O componente exporta a própria grade e o próprio teto.",
+      "Do desenhar um eixo de filtro só quando ele pode mudar a tela, e uma opção só quando ela devolve pelo menos uma linha.",
+      "Do derivar o rótulo de um cabeçalho de coluna do dado que a coluna carrega hoje, e esconder o rótulo na largura em que a coluna não existe.",
+      "Do dar target=\"_blank\" a todo link de arquivo. O atributo download é ignorado em URL de outra origem.",
+      "Do derivar número exibido de função, nunca de literal.",
+      "Do apagar o elemento inteiro quando o dado que o sustenta não existe — a faixa de ação sem número, o balão sem número, o caminho de WhatsApp sem número. Menos página, nunca página quebrada."
     ],
     "donts": [
       "Don't reabrir --radius-*, --shadow-* ou --drop-shadow-*. Eles estão em initial de propósito: as utilidades não existem, e essa impossibilidade é o sistema.",
-      "Don't introduzir matiz. Sem cor primária, sem cor de acento, sem verde de sucesso, sem vermelho de erro. O namespace de cor padrão do Tailwind continua compilando — a disciplina é sua.",
+      "Don't introduzir matiz. Sem cor primária, sem acento, sem verde de sucesso, sem vermelho de erro — nem na recusa de um campo de formulário, que é onde a tentação é maior.",
+      "Don't publicar um ícone de terceiro na cor de marca dele. O glifo de WhatsApp entrou em currentColor e sem preenchimento, e é assim que ele fica.",
       "Don't usar branco puro como fundo de página, nem papel como superfície elevada.",
-      "Don't tirar a hachura do logotipo. Ela não vira padrão de fundo, não vira textura de seção, não representa material e não tem irmãs.",
-      "Don't acrescentar uma terceira família tipográfica, nem substituir a pilha de fonte: Söhne já é a primeira da pilha, e Geist entra como fallback dentro dela.",
-      "Don't criar movimento disparado por rolagem, parallax, scroll-jacking, loader longo ou contador animado.",
-      "Don't desenhar botão preenchido. Toda ação é link.",
+      "Don't tirar as cores de dentro do logotipo. Um matiz da marca aparecendo fora do lockup é o sistema quebrado, não estendido.",
+      "Don't acrescentar uma terceira família tipográfica, nem substituir a pilha de fonte.",
+      "Don't acrescentar um segundo momento de movimento por rolagem. A revogação da Regra do Movimento Fechado comprou um, no trilho, e a segunda seção que o pedir é a que devolve a regra inteira.",
+      "Don't criar parallax, scroll-jacking, loader longo, contador animado, carrossel automático ou scroll-behavior: smooth. A revogação não os alcançou.",
+      "Don't desenhar botão preenchido. Toda ação é link; os dois <button> do site não navegam, e só um deles preenche — no hover, e é o envio do formulário.",
+      "Don't numerar seções que não são sequência. O número empresta autoridade de documento a um índice, e /quem-somos perdeu o dele junto com a história que ele ordenava.",
       "Don't centralizar o único gráfico de uma página, nem qualquer bloco de conteúdo, para \"preencher\" tela larga.",
       "Don't apresentar imagem mock como foto real de produto, fábrica ou projeto entregue — nem em copy, nem em alt, nem em legenda.",
-      "Don't escrever nome próprio, frase ou legenda em mono versal, nem quando são curtos. Versal é medida, código, sigla, rótulo de campo e estado de campo declarado; nome de fábrica, nome de coleção, nota de modelo e legenda de figura vão na grotesca em caixa baixa. Quando a saída for \"baixar a caixa e manter o elemento\", o elemento é que estava errado.",
-      "Don't tirar de uma célula o prefixo que a descreve só porque o cabeçalho da coluna repete a palavra. EDIÇÃO sobre três células que começam com EDIÇÃO repete a palavra quatro vezes, e a correção óbvia quebra o telefone: ali o cabeçalho está hidden e a célula precisa se descrever sozinha — \"2026\" solto não diz o que é. A repetição custa menos que uma máquina de prefixo condicional por breakpoint.",
+      "Don't escrever nome próprio, frase ou legenda em mono versal, nem quando são curtos.",
+      "Don't tirar de uma célula o prefixo que a descreve só porque o cabeçalho da coluna repete a palavra.",
       "Don't nomear uma marca numa seta apontando para fotografia gerada. A chamada nomeia a função; a legenda, fora do desenho, é que atribui.",
-      "Don't preencher campo vazio com dado plausível. O que não existe fica ausente."
+      "Don't desenhar sobre o próprio desenho. Moldura, carimbo, graticula e escala gráfica só entram onde o quadro é requisito do gráfico — foi por isso que a prancha de território virou mapa.",
+      "Don't preencher campo vazio com dado plausível. O que não existe fica ausente.",
+      "Don't acrescentar campo ao formulário de proposta pelo painel. A lista é fixa em código, e um campo a mais é PR, não clique."
     ]
   }
 }

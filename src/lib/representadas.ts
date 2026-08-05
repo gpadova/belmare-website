@@ -169,9 +169,17 @@ export const REPRESENTADAS: Representada[] = [
   {
     slug: "mare-mobilia",
     nome: "Marê Mobília",
-    /* A linha nas palavras da própria Marê: a declaração de posicionamento logo
-       abaixo diz "Mobiliário externo, em coleções assinadas". */
-    resolve: "Mobiliário externo em coleções assinadas",
+    /* ⚠️ **"MÓVEIS" AQUI, "MOBILIÁRIO" NA DECLARAÇÃO LOGO ABAIXO — e a diferença
+       é de quem está falando.** `resolve` é a voz DO SITE: é a linha que a home
+       imprime sob o cartão da fábrica, e ela obedece a regra que derrubou a
+       palavra no h1 em 05/08/2026 — "mobiliário" é palavra de catálogo e de
+       release, e ninguém do ramo a diz em voz alta (`components/abertura.tsx`).
+       `declaracoes` é outra coisa: ali a Marê fala, e o valor é transcrição da
+       declaração de posicionamento dela, que diz "Mobiliário externo, em
+       coleções assinadas". Transcrição não se reescreve, pela mesma razão que a
+       razão social não vira nome fantasia. Alinhado com `PRODUCT.md`, onde o
+       que a Marê resolve é "o móvel de autor". */
+    resolve: "Móveis externos em coleções assinadas",
     parte: "Móvel",
     base: "Cambé · PR",
     fato: "Mais de 30 coleções, 8 designers assinantes",
@@ -260,7 +268,9 @@ export const REPRESENTADAS: Representada[] = [
        mesa, espreguiçadeira, externo e interno, como o vocabulário dela lista
        aqui embaixo. O que a separa da Marê é a matéria, e é a matéria que a
        linha nomeia. */
-    resolve: "Mobiliário em alumínio fundido",
+    /* "Móveis", e não "mobiliário", pela mesma razão da Marê acima: esta é a
+       voz do site, e a palavra do ramo é a que o ramo escreve na própria porta. */
+    resolve: "Móveis em alumínio fundido",
     parte: "Estrutura",
     base: "Cláudio · MG",
     /* "Até 30 dias" — é o que a fábrica publica, e é o que a declaração logo

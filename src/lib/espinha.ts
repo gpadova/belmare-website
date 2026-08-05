@@ -1,4 +1,4 @@
-import { opcional, texto } from "@/lib/campo-opcional";
+import { lista, opcional, presente, texto } from "@/lib/campo-opcional";
 import type { Home as HomeGerada, QuemSomos as QuemSomosGerada } from "@/payload-types";
 
 /**
@@ -15,32 +15,26 @@ import type { Home as HomeGerada, QuemSomos as QuemSomosGerada } from "@/payload
  *     — **fixo**, e defendido em `components/abertura.tsx` contra quatro
  *     alternativas rejeitadas entre 30/07 e 05/08/2026. Mudá-lo é
  *     reposicionamento, e reposicionamento é conversa, não edição.
- *   · os títulos das seções de `/quem-somos` — **fixo**. Os rótulos numerados
- *     (`01`…`06`) não estão nesta lista porque deixaram de existir: a página
- *     foi refeita em 05/08/2026 e a numeração saiu junto com a história que ela
- *     ordenava. O que mantém os títulos em código não é mais a sequência, é a
- *     lista do que aquela página recusa publicar.
  *   · o nome e o apoio das duas portas — **fixo** por decisão 3 da spec.
- *   · o tempo de casa, a lista "A, B, C e D" de representadas e toda contagem
- *     em prosa ("as quatro fábricas") — **gerado**. Ver `lib/empresa.ts` e
- *     `lib/frase.ts`. A contagem saiu da abertura em 05/08/2026 e vive só no
- *     título da galeria; duas na mesma rolagem era redundância, não prova.
- *   · a legenda de imagem de referência — **gerada** da marcação de mock.
+ *   · a legenda de imagem de referência da home — **gerada** da marcação de
+ *     mock. A de `/quem-somos` virou campo, porque lá a foto é a única da rota
+ *     e cai no vão onde um arquiteto espera obra entregue.
  *
- * ⚠️ **UMA FRASE É METADE FIXA E METADE CAMPO, E ISSO É DELIBERADO.** A seção
- * das fábricas de `/quem-somos` abre contando as representadas cadastradas; se
- * o parágrafo inteiro fosse campo, a quinta marca entraria pelo painel e a
- * frase três centímetros acima da lista continuaria dizendo "quatro". A
- * primeira frase é montada com o dado; o campo é o que vem depois dela, e o
- * rótulo e a ajuda dizem isso com todas as letras.
- *
- * A segunda frase assim — a que abria o parágrafo do nome com a razão social do
- * cadastro — saiu em 05/08/2026 junto com o bloco inteiro que comparava o nome
- * público anterior ao logotipo de hoje.
+ * ⚠️ **`/QUEM-SOMOS` SAIU DESSA LISTA INTEIRA EM 05/08/2026.** Os títulos das
+ * seções eram fixos e três parágrafos eram metade fixos — o site montava a
+ * primeira oração contando o dado e o campo era o que vinha depois dela. O
+ * argumento era bom (a quinta fábrica não pode encontrar a página dizendo
+ * "quatro") e a forma era ruim: quem editava via meia frase no painel, e trocar
+ * o próprio título da página dependia de deploy. `lib/marcadores.ts` resolve os
+ * dois lados — a frase inteira é campo, e `{fabricas}`, `{anos}`, `{cidade}` e
+ * `{estados}` continuam sendo contados a cada renderização. A montagem final,
+ * com padrão de título e troca de marcador, mora em `lib/quem-somos-consulta.ts`.
  *
  * ⚠️ **TODO CAMPO É OPCIONAL — SEÇÃO ANULÁVEL.** Campo em branco faz o
  * parágrafo sumir, nunca renderizar vazio: "o pior resultado de um campo em
- * branco é menos página, nunca página quebrada" (`CONTEXT.md`).
+ * branco é menos página, nunca página quebrada" (`CONTEXT.md`). Título é a
+ * exceção, e ela está explicada em `lib/quem-somos-consulta.ts`: um `h2` vazio
+ * não é menos página, é página quebrada.
  */
 
 /** Os vãos editáveis da home. */
@@ -49,27 +43,84 @@ export type Home = {
   galeria?: string;
 };
 
-/** A prosa dentro de cada seção de `/quem-somos`. */
+/** Uma etapa da lista de "O que a Belmare faz". */
+export type EtapaDeAtuacao = {
+  rotulo: string;
+  texto: string;
+};
+
+/**
+ * O texto de `/quem-somos` como o painel o gravou — ainda cru.
+ *
+ * ⚠️ **NADA AQUI ESTÁ PRONTO PARA IR À TELA.** Os marcadores continuam escritos
+ * (`"São {anos} anos de atuação…"`) e os títulos em branco continuam ausentes,
+ * em vez de já terem caído no padrão. A montagem é de
+ * `lib/quem-somos-consulta.ts`, e a separação é a mesma de toda camada de
+ * tradução do projeto: aqui só se afirma o que o operador digitou.
+ */
 export type QuemSomos = {
-  /** A apresentação. Continua o parágrafo gerado com o cadastro. */
+  /** O h1 da página. */
+  titulo?: string;
+  /** O parágrafo sob o h1. */
   apresentacao?: string;
-  /** O que a Belmare faz — abre a seção, antes da lista de quatro linhas. */
+  atuacaoTitulo?: string;
+  /** O que a Belmare faz — abre a seção, antes da lista de etapas. */
   atuacao?: string;
-  /** As fábricas representadas. Continua a frase que conta as fábricas. */
+  /** As etapas do trabalho, na ordem em que o painel as ordenou. */
+  atuacaoLinhas?: EtapaDeAtuacao[];
+  acervoTitulo?: string;
+  /** O parágrafo acima da lista de fábricas. */
   acervo?: string;
-  /** O fecho, sob "Fale com a Belmare." */
+  territorioTitulo?: string;
+  /** O parágrafo ao lado do mapa. */
+  territorio?: string;
+  projetosTitulo?: string;
+  /** O parágrafo acima das fotos de obra. */
+  projetos?: string;
+  contatoTitulo?: string;
+  /** O fecho. */
   contato?: string;
+  /** A legenda da fotografia larga do fecho. */
+  contatoLegenda?: string;
 };
 
 export function homeDoPainel(doc: HomeGerada): Home {
   return { ...opcional("galeria", texto(doc.galeria)) };
 }
 
+/**
+ * Uma etapa só entra com rótulo E texto.
+ *
+ * Os dois campos são `required` no painel, então a linha meio preenchida não
+ * nasce por lá — mas ela nasce de um rascunho salvo antes de o campo virar
+ * obrigatório, e uma etapa sem texto desenha um rótulo com o vão vazio ao lado.
+ */
+function etapa(linha: NonNullable<QuemSomosGerada["atuacaoLinhas"]>[number]): EtapaDeAtuacao | undefined {
+  const rotulo = texto(linha.rotulo);
+  const conteudo = texto(linha.texto);
+
+  return rotulo === undefined || conteudo === undefined
+    ? undefined
+    : { rotulo, texto: conteudo };
+}
+
 export function quemSomosDoPainel(doc: QuemSomosGerada): QuemSomos {
+  const etapas = (doc.atuacaoLinhas ?? []).map(etapa).filter(presente);
+
   return {
+    ...opcional("titulo", texto(doc.titulo)),
     ...opcional("apresentacao", texto(doc.apresentacao)),
+    ...opcional("atuacaoTitulo", texto(doc.atuacaoTitulo)),
     ...opcional("atuacao", texto(doc.atuacao)),
+    ...opcional("atuacaoLinhas", lista(etapas)),
+    ...opcional("acervoTitulo", texto(doc.acervoTitulo)),
     ...opcional("acervo", texto(doc.acervo)),
+    ...opcional("territorioTitulo", texto(doc.territorioTitulo)),
+    ...opcional("territorio", texto(doc.territorio)),
+    ...opcional("projetosTitulo", texto(doc.projetosTitulo)),
+    ...opcional("projetos", texto(doc.projetos)),
+    ...opcional("contatoTitulo", texto(doc.contatoTitulo)),
     ...opcional("contato", texto(doc.contato)),
+    ...opcional("contatoLegenda", texto(doc.contatoLegenda)),
   };
 }

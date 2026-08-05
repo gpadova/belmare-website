@@ -75,30 +75,25 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const CONTRATO_DE_DIRECAO = `<!--
-THESIS: A primeira linha diz o RAMO, com o nome que o ramo usa, porque quem
-lê já é do ramo. Recusa o herói de categoria pura ("móveis para área externa",
-que descreve uma fábrica), o grid de logos, o jargão de contar fábricas e
-interlocutores (30/07/2026) e a promessa de posicionamento sem verbo
-(05/08/2026). O que sobra no h1 é o que um lojista precisa saber em dois
-segundos: é uma representação, e o produto é área externa.
-OWN-WORLD: Papel #F5F3F0, tinta #17171A, grafite #3D3D40, fio #C9C6C0. Raio 0,
-sombra 0. A interface é acromática; o matiz existe em um único objeto, o
-logotipo (azul #00339A, verde #009A34, vermelho #FE0100), e não sai dele —
-não vira acento, nem estado, nem fio, nem fundo. A interface é invisível: a
-fotografia carrega a página. A mono é rótulo, não linguagem. Nenhuma textura,
-nenhum padrão de fundo — a identidade é tipografia, grade e o fio de 1px.
-STORY: O visitante se reconhece — especifica ou revende —, descobre que uma só
-empresa responde pelas quatro fábricas que montam a área externa inteira, e
-escolhe uma das duas portas. O site fala com loja e com escritório, nunca com
-consumidor final.
-FIRST VIEWPORT: cabeçalho 72px em papel; fotografia sangrando na altura da
-tela; sobre o pé da imagem, "Representação comercial de móveis para área
-externa." e a linha que nomeia Marê, GDA, Bux e Trisol, o território e o tempo
-de casa. Nada define a categoria nem nomeia o leitor de volta para ele — o
-comprador de loja já sabe as duas coisas. WhatsApp persistente no topo.
-FORM: Direção A — editorial/arquivo. Revisado em 30/07/2026: o eixo de
-material foi cancelado por falta de dado (4 de 32 células), e com ele saíram a
-marca-sistema generativa e a anatomia de etiqueta. Ver briefing/estrutura.md §4.
+THESIS: A convenção é o compromisso. Esta home é o padrão da categoria
+executado no teto do segmento — o que a separa dos sites das concorrentes não é
+a estrutura, é o acabamento. Recusa o gesto de autor: nada de instrumento, de
+diagrama, de trilho conceitual contrabandeado. A escolha foi do cliente, na
+página de decisão, com as alternativas à vista.
+OWN-WORLD: Off-white quente #F5F3F0, tinta #17171A, grafite #3D3D40, fio
+#C9C6C0. Raio 0. A fotografia carrega toda a cor; o matiz de interface continua
+zero, e o único matiz do projeto segue dentro de um logotipo. Söhne em peso
+leve na escala grande, e a mono recua para medida real — formato, peso, CNPJ.
+Elevação por tom, nunca por sombra dura.
+STORY: O visitante entende em segundos que isto é uma representação, vê as
+quatro fábricas lado a lado, e escolhe uma das duas portas.
+FIRST VIEWPORT: cabeçalho fino em papel; fotografia sangrando de ponta a ponta
+por 100svh; no pé dela, sob véu, o h1 em duas linhas e a linha que nomeia as
+marcas, o território e o tempo de casa.
+FORM: a saída permanente — o padrão da categoria —, escolhida na página de
+decisão sobre a semente b95c2020. Barra de qualidade: Gandiablasco, Tribù,
+Paola Lenti, Kettal, Artefacto, Breton, Sollos, Micasa.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->`;
 
 export default async function RootLayout({

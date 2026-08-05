@@ -34,15 +34,13 @@ import { cnpjFormatado, emailComercial, numeroDeWhatsapp } from "@/lib/empresa";
  * Um campo de texto deixaria o operador escrever um quarto estado que o único
  * gráfico da página não sabe desenhar.
  *
- * ⚠️ **O NOME PÚBLICO ANTERIOR NÃO EXISTE MAIS EM LUGAR NENHUM DO PROJETO, NEM
- * COMO CAMPO NEM COMO CÓDIGO.** Ele morava em `lib/registro.ts` e alimentava um
- * bloco de `/quem-somos` que mostrava "Bello Mare — Móveis para Jardim,
- * Ombrellones, Móveis de Design e Tapetes" ao lado do logotipo de hoje, como
- * prova de continuidade. O bloco saiu na reescrita de 05/08/2026 e o arquivo
- * saiu com ele: contar ao arquiteto que a empresa vendia móvel de jardim e
- * tapete provava a coisa errada, e como a empresa se chamava em 1999 não decide
- * conversa comercial nenhuma. Os cinco CNAEs moravam ali ao lado e já haviam
- * saído antes, junto com a tabela que os exibia.
+ * ⚠️ **O NOME PÚBLICO ANTERIOR NÃO EXISTE EM LUGAR NENHUM DO PROJETO, NEM COMO
+ * CAMPO NEM COMO CÓDIGO, E NÃO SE ACRESCENTA.** Ele morava em `lib/registro.ts`
+ * e alimentava um bloco de `/quem-somos`; o bloco saiu em 05/08/2026 e o
+ * arquivo saiu com ele. Como a empresa se chamava antes não decide conversa
+ * comercial nenhuma. A razão social continua no rodapé porque é o registro, e
+ * registro é obrigação legal, não história. Os cinco CNAEs moravam ali ao lado
+ * e já haviam saído antes, junto com a tabela que os exibia.
  *
  * ⚠️ **`porte` SAIU, E SAIU PORQUE NÃO TINHA ONDE APARECER.** "Empresa de
  * pequeno porte" abria `/quem-somos` numa faixa de identificação, e era o

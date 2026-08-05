@@ -57,5 +57,6 @@ next-env.d.ts
 .impeccable/shots/
 .impeccable/mocks/
 .impeccable/questions/
+.impeccable/sketches/
 .impeccable/hook.cache.json
 .impeccable/config.local.json

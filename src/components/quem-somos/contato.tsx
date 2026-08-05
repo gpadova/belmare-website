@@ -6,7 +6,7 @@ import { Secao } from "@/components/quem-somos/secao";
 import { FECHO } from "@/lib/acervo";
 import { linkDeTelefone, linkDeWhatsapp } from "@/lib/empresa";
 import { buscarEmpresa } from "@/lib/empresa-consulta";
-import { buscarQuemSomos } from "@/lib/espinha-consulta";
+import { textosDeQuemSomos } from "@/lib/quem-somos-consulta";
 
 /**
  * O fecho de `/quem-somos` — a fotografia e a ação.
@@ -34,7 +34,7 @@ import { buscarQuemSomos } from "@/lib/espinha-consulta";
  */
 export async function Contato() {
   const empresa = await buscarEmpresa();
-  const { contato } = await buscarQuemSomos();
+  const { contatoTitulo, contato, contatoLegenda } = await textosDeQuemSomos();
 
   const whatsapp = linkDeWhatsapp(empresa.whatsapp, "estava em quem somos");
   const telefones = empresa.telefones ?? [];
@@ -54,13 +54,20 @@ export async function Contato() {
         </div>
         {/* A única legenda visível de foto no site inteiro, e ela existe por
             causa da posição: esta imagem cai no vão que a seção de projetos
-            deixa vazio, e sem legenda um arquiteto lê obra entregue. */}
+            deixa vazio, e sem legenda um arquiteto lê obra entregue.
+
+            ⚠️ É campo do painel, e é o único campo desta rota que NÃO some
+            quando fica em branco — apagá-lo cai no texto padrão. A regra é a
+            mesma dos títulos e pelo mesmo motivo: a ausência aqui não é menos
+            página, é a foto de banco passando a valer como portfólio de obra
+            que a Belmare não entregou. Se a fotografia um dia for de uma obra
+            real e creditada, a legenda muda no painel. */}
         <figcaption className="mono uppercase px-5 pt-3 text-graphite md:px-8">
-          Imagem de referência, não é obra entregue pela Belmare
+          {contatoLegenda}
         </figcaption>
       </figure>
 
-      <Secao titulo="Fale com a Belmare.">
+      <Secao titulo={contatoTitulo}>
         {contato !== undefined && (
           <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
             {contato}

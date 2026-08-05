@@ -1,6 +1,8 @@
 import config from "@payload-config";
 import { getPayload, type Payload } from "payload";
 
+import { QUEM_SOMOS } from "@/seed/quem-somos-texto";
+
 /**
  * O seed dos três globais de PRA-122 — `Empresa`, `Home` e `QuemSomos`.
  *
@@ -82,52 +84,23 @@ const EMPRESA = {
  *
  * ⚠️ Sem número aqui. A quinta fábrica entra pelo painel e esta frase continua
  * verdadeira sozinha — era esse o defeito de "para as quatro".
+ *
+ * ⚠️ **CORRIGIDO OUTRA VEZ EM 05/08/2026: A FRASE ANTERIOR ERA FALSA.** Ela
+ * dizia "Nenhuma delas repete a linha da outra.", e a revisão de acabamento a
+ * derrubou com o próprio `PRODUCT.md` na mão: a tabela de categorias lista
+ * sofás, poltronas, cadeiras, espreguiçadeiras e mesas na Marê **e** na GDA, e
+ * a Bux é estofado de área externa como as duas. As linhas se cruzam, sim — o
+ * que não se repete é o PAPEL de cada fábrica no projeto, e papel é outra
+ * coisa. Era uma afirmação de não-sobreposição que o registro contradiz, numa
+ * página cuja regra declarada é dado antes de adjetivo.
+ *
+ * A frase de agora diz o que o modelo de dados já afirma: o campo `parte` de
+ * `lib/representadas.ts` guarda "Móvel", "Estrutura", "Estofado" e "Sombra" —
+ * uma parte por fábrica. Ela manda ler as quatro como conjunto, continua sem
+ * número, e não promete que os catálogos não se encostam.
  */
 const HOME = {
-  galeria: "Nenhuma delas repete a linha da outra.",
-};
-
-/**
- * A prosa que mora dentro das seções de `/quem-somos`.
- *
- * ⚠️ `acervo` começa na SEGUNDA frase do parágrafo. A primeira é montada pelo
- * site contando as representadas cadastradas, para que a prosa não congele num
- * "quatro" no dia da quinta marca. Ver `globals/quem-somos.ts`.
- *
- * ⚠️ **A PÁGINA FOI REFEITA EM 05/08/2026, E DOIS DESTES CAMPOS SUMIRAM COM OS
- * BLOCOS QUE ELES ESCREVIAM.** `registro` legendava o ano de fundação em
- * display; `nome` era o parágrafo do bloco que comparava o nome público
- * anterior ao logotipo de hoje. Os dois contavam de onde a empresa veio para um
- * visitante que veio perguntar outra coisa — em que ano a Belmare abriu e como
- * ela se chamava antes não decidem conversa comercial nenhuma. No lugar deles
- * entram `apresentacao` (o que a empresa é) e `atuacao` (o que ela faz por quem
- * chega).
- *
- * ⚠️ **O REGISTRO É O DE UM SITE BRASILEIRO, NÃO O DE UM PORTFÓLIO DE DESIGN.**
- * Uma tentativa anterior de reescrita caiu num estilo pior que o original:
- * fragmentos sem sujeito e substantivo no singular sem artigo ("móvel de
- * jardim, ombrelone, móvel de design"), antíteses de duas frases nominais,
- * travessão a cada parágrafo. Ninguém escreve assim em português. O polo
- * oposto, que a lista vinculante desta página já proíbe, é o "somos mais do que
- * uma representação comercial: somos parceiros estratégicos da indústria" que a
- * categoria escreve.
- *
- * Ao editar estes campos, o teste é ler em voz alta: se soar como legenda de
- * catálogo ou como slogan, está errado nos dois casos.
- *
- * ⚠️ **NENHUMA CONTAGEM EM PROSA AQUI.** "Quatro fábricas" e "três estados" são
- * gerados pelo site (`lib/frase.ts`), e digitá-los dentro de um destes campos é
- * como a página congela em "quatro" no dia da quinta marca.
- */
-const QUEM_SOMOS = {
-  apresentacao:
-    "A Belmare não fabrica e não vende ao consumidor final: ela representa as fábricas junto de quem revende e de quem especifica. Quem compra trata das marcas todas na mesma conversa, com a mesma pessoa.",
-  atuacao:
-    "A Belmare trabalha junto da loja e do escritório de arquitetura, do primeiro desenho até a peça instalada. A venda é sempre fechada pela loja, e o contato com as fábricas passa pela Belmare.",
-  acervo:
-    "Cada uma cobre uma parte da área externa, e as linhas não se sobrepõem. O catálogo completo de cada fábrica está na página dela.",
-  contato:
-    "Quem atende é quem representa as fábricas. A mesma pessoa responde à primeira dúvida de especificação, acompanha o pedido na loja e resolve a assistência três anos depois, para qualquer uma das marcas.",
+  galeria: "Cada uma entra por uma parte diferente da área externa.",
 };
 
 async function semearGlobal(

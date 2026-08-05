@@ -35,20 +35,17 @@ export function generateMetadata(): Metadata {
  *
  * ⚠️ **A PÁGINA FOI REFEITA DO ZERO, E A DIREÇÃO ANTERIOR NÃO SE HERDA.** Ela
  * era um documento de arquivo: seis blocos numerados de `01` a `06`, com o ano
- * de fundação em display na primeira tela, um bloco inteiro comparando o nome
- * público anterior ao logotipo de hoje, e o território numa prancha de
- * arquitetura completa — moldura, carimbo, graticula e escala gráfica com o
- * paralelo declarado. O desenho era coerente e o argumento não: a página
- * contava uma história (o começo, o nome, o território, o acervo) para um
- * visitante que veio fazer outra pergunta, e gastava as duas primeiras telas
- * com assunto interno — em que ano a empresa abriu, como ela se chamava antes.
- * Nada disso decide uma conversa comercial, e o que decide não estava escrito
- * em lugar nenhum: o que a Belmare faz por quem chega.
+ * de fundação em display na primeira tela, um bloco inteiro sobre o nome que a
+ * empresa usava antes, e o território numa prancha de arquitetura completa —
+ * moldura, carimbo, graticula e escala gráfica. O desenho era coerente e o
+ * argumento não: a página contava a biografia da empresa para um visitante que
+ * veio fazer outra pergunta, e o que decide a conversa dele não estava escrito
+ * em lugar nenhum — o que a Belmare faz por quem chega.
  *
  * A sequência de agora é a de uma página institucional comum, e é essa a
  * intenção:
  *
- *   · a apresentação      o que a empresa é, em duas frases
+ *   · a apresentação      o que a empresa é, e há quanto tempo
  *   · o que ela faz       representação, especificação, pedido, pós-venda
  *   · as fábricas         as representadas de hoje, em lista de ficha
  *   · o território        os três estados, desenhados
@@ -57,6 +54,18 @@ export function generateMetadata(): Metadata {
  *
  * A ordem ajuda a leitura, mas não é mais o argumento: nenhuma seção depende de
  * ter sido lida depois da anterior, e nenhuma delas some se a outra sumir.
+ *
+ * ⚠️ **NENHUM TEXTO DESTA ROTA MORA NESTE ARQUIVO, NEM NOS COMPONENTES.**
+ * Título, parágrafo e etapa são campos do painel; a montagem — padrão de título
+ * e troca de marcador — é de `lib/quem-somos-consulta.ts`. Os componentes daqui
+ * recebem string pronta e não sabem que existe painel. Escrever uma frase nova
+ * direto no JSX é recriar o problema que esta revisão desfez: texto que o dono
+ * do negócio não consegue corrigir sem pedir deploy.
+ *
+ * ⚠️ **O QUE FICOU FORA DO PAINEL É ESTA ORDEM, E O MOTIVO NÃO É APEGO.** A
+ * lista vinculante abaixo não sobrevive a um construtor de blocos: uma
+ * biblioteca genérica oferece exatamente foto de equipe, missão/visão/valores e
+ * contador animado, que é a lista item por item. Ver `collections/blocos.test.ts`.
  *
  * ⚠️ **O QUE NÃO ENTRA NESTA PÁGINA, e a lista é vinculante:** foto de equipe,
  * missão/visão/valores, contador animando até 26, prosa em superlativo, e
@@ -82,19 +91,21 @@ THESIS: Uma página institucional comum, e isso é a decisão. A empresa diz o
 que é, o que faz, o que representa e onde atende — nessa ordem, em frases
 inteiras. Recusa o "sobre nós" da categoria (foto de equipe, missão/visão/
 valores, contador animado); recusa também a direção anterior desta rota, o
-documento de arquivo, que abria com o ano de fundação em display, comparava o
-nome público antigo ao logotipo de hoje e desenhava o território numa prancha
-técnica com carimbo e escala gráfica. As duas erram do mesmo jeito: falam da
-empresa em vez de falar com quem chegou.
+documento de arquivo, que abria com o ano de fundação em display e gastava a
+segunda tela com a biografia da empresa. As duas erram do mesmo jeito: falam
+da empresa em vez de falar com quem chegou.
 OWN-WORLD: o mundo do site, inalterado. Papel #F5F3F0, tinta #17171A, fio
 #C9C6C0, raio 0, sombra 0, cor 0. Título na grotesca, rótulo de ficha em mono,
 um fio de 1px abrindo cada seção.
-FIRST VIEWPORT: sem foto e sem número solto. Um h1 que diz o ramo, um
-parágrafo gerado com a contagem de fábricas, a sede e o tempo de casa, e o
-parágrafo do painel. O LCP é tipográfico.
+FIRST VIEWPORT: sem foto e sem número solto. Um h1 que diz a quem a empresa
+atende e onde, e um parágrafo que diz o que ela é e há quanto tempo. O LCP é
+tipográfico.
 FORM: a página institucional tradicional, com seções não numeradas. A
 numeração saiu junto com a história que ela ordenava: nenhuma seção depende de
 ter sido lida depois da anterior.
+EDITÁVEL: todo título e todo parágrafo desta rota são campo do painel; o
+tempo de casa e a contagem de fábricas entram na prosa por marcador e seguem
+sendo contados a cada renderização. O que não se edita é esta ordem e o mapa.
 -->`;
 
 export default function QuemSomos() {

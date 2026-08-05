@@ -124,7 +124,7 @@ function porcentagem(valor: number | null | undefined): number {
  */
 export const ABERTURA: Imagem = {
   src: "/acervo/abertura.jpg",
-  alt: "Área externa de alto padrão com sofá, mesa baixa, ombrelone e estrutura em alumínio sobre deck de madeira, imagem de referência.",
+  alt: "Área externa de alto padrão ao fim da tarde, com sofá modular, mesa baixa em alumínio e ombrelone lateral sobre deck de madeira, e o mar ao fundo, imagem de referência.",
 };
 
 /**
@@ -174,28 +174,66 @@ export const IMAGEM_DA_PORTA: Record<string, Imagem> = {
 };
 
 /**
+ * A faixa editorial da home — a seção que diz o que uma representação faz.
+ *
+ * ⚠️ **NÃO É AMBIENTE, E ISSO É O PONTO.** Todas as outras fotografias do site
+ * mostram a peça montada num deck. Esta mostra a MESA DE TRABALHO de quem
+ * especifica — catálogo aberto, cartelas de tecido, chips de acabamento, um
+ * pedaço de corda. A seção fala do trabalho da Belmare, não do produto das
+ * fábricas, e repetir mais um deck ali seria a quarta fotografia de varanda numa
+ * rolagem só.
+ *
+ * ⚠️ Nenhum objeto do quadro é peça de catálogo de nenhuma das quatro fábricas,
+ * e o `alt` não nomeia produto nem marca. Nomear seria inventar acervo.
+ */
+export const FAIXA_REPRESENTACAO: Imagem = {
+  src: "/acervo/faixa-representacao.jpg",
+  alt: "Mesa de trabalho com catálogo impresso aberto, cartelas de tecido de performance, chips de acabamento em alumínio anodizado e um trecho de corda náutica, imagem de referência.",
+};
+
+/**
  * Uma imagem por representada, ilustrando O QUE ELA RESOLVE.
  *
  * ⚠️ Não é uma peça do catálogo da fábrica — nenhum alt nomeia produto, porque
  * nomear seria inventar acervo. A seção declara isso em texto visível.
  * A chave é o slug da marca; ver `representadas.ts`.
  */
+/* ⚠️ **AS QUATRO FOTOGRAFIAS FORAM REFEITAS EM 05/08/2026, E O QUE MUDOU FOI O
+   CENÁRIO, NÃO O ASSUNTO.** A revisão de acabamento derrubou o conjunto
+   anterior com um argumento de composição: eram "quatro placas cinzentas quase
+   idênticas, um assento contra concreto cinza sobre deck cinza, indistinguíveis
+   à primeira vista". Numa página cuja regra é que a fotografia é a única cor, o
+   trilho inteiro não tinha nenhuma — e quatro cartões que se parecem leem como
+   uma fábrica só, o oposto do que o h2 pergunta.
+
+   Agora cada marca tem um AMBIENTE e uma LUZ próprios, e a diferença é
+   reconhecível na miniatura: a Marê ao entardecer sobre deck de madeira com o
+   mar atrás; a GDA em pedra clara à beira de piscina, sol a pino; a Bux em
+   terraço sombreado dentro da vegetação; a Trisol sob sol duro, onde o assunto
+   é a sombra projetada. O assunto de cada uma continua sendo o que a fábrica
+   resolve — não mudou nenhuma atribuição.
+
+   ⚠️ O `alt` acompanhou a troca, e não é enfeite: ele é a descrição real da
+   cena E é SEO de imagem, que é como o arquiteto encontra fotografia no Google
+   (`PRODUCT.md → Accessibility`). O da GDA em particular ESTAVA ERRADO depois
+   da troca — dizia "poltrona" para uma espreguiçadeira. `alt` que descreve
+   outra peça é pior do que `alt` genérico. */
 export const IMAGEM_DA_MARCA: Record<string, Imagem> = {
   "mare-mobilia": {
     src: "/acervo/marca-mare-mobilia.jpg",
-    alt: "Poltrona de área externa trançada em corda náutica, imagem de referência.",
+    alt: "Poltrona de área externa com assento e encosto trançados em corda náutica, sozinha num deck de madeira ao fim da tarde, com o mar ao fundo, imagem de referência.",
   },
   "gda-moveis": {
     src: "/acervo/marca-gda-moveis.jpg",
-    alt: "Poltrona de área externa com estrutura em alumínio fundido, imagem de referência.",
+    alt: "Espreguiçadeira de área externa com estrutura em alumínio fundido e tela tensionada, sobre piso de pedra clara à beira de uma piscina, imagem de referência.",
   },
   "bux-garden": {
     src: "/acervo/marca-bux-garden.jpg",
-    alt: "Sofá modular de área externa estofado em tecido de performance, imagem de referência.",
+    alt: "Sofá modular de área externa estofado em tecido de performance, num terraço sombreado cercado de vegetação densa, imagem de referência.",
   },
   trisol: {
     src: "/acervo/marca-trisol.jpg",
-    alt: "Ombrelone lateral de área externa com lona técnica, imagem de referência.",
+    alt: "Ombrelone lateral de lona escura aberto sobre piso de pedra clara ao sol forte, com a mesa e as cadeiras inteiramente dentro da sombra projetada, imagem de referência.",
   },
 };
 

@@ -43,13 +43,12 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  *
  *    ⚠️ **É "MÓVEIS", E NUNCA "MOBILIÁRIO" — 05/08/2026.** O h1 nasceu dizendo
  *    "mobiliário de área externa" e o cliente derrubou a palavra na leitura:
- *    "quem que fala isso". Ele está certo, e o registro da própria empresa
- *    prova — a Belmare se anuncia como "Móveis para Jardim, Ombrellones,
- *    Móveis de Design e Tapetes" (`briefing/empresa.md`), a Bux Garden vende
- *    "móveis de luxo para área externa", a GDA "móveis de alto padrão".
- *    "Mobiliário" é palavra de catálogo e de release; ninguém do ramo a diz em
- *    voz alta. **O termo do setor é o que o setor escreve sobre a própria
- *    porta, e isso se confere no briefing, não no bom gosto de quem edita.**
+ *    "quem que fala isso". Ele está certo, e as fábricas provam: a Bux Garden
+ *    vende "móveis de luxo para área externa", a GDA "móveis de alto padrão"
+ *    (`briefing/empresa.md`). "Mobiliário" é palavra de catálogo e de release;
+ *    ninguém do ramo a diz em voz alta. **O termo do setor é o que o setor
+ *    escreve sobre a própria porta, e isso se confere no briefing, não no bom
+ *    gosto de quem edita.**
  *
  *    ⚠️ **O TESTE DO OBJETO NÃO VALE PARA ESTE H1, E ISSO É DELIBERADO.** A
  *    regra que derrubou "Quatro fábricas. Um interlocutor." era "a frase põe um
@@ -97,10 +96,19 @@ export async function Abertura() {
   const anos = anosDeMercado(abertura);
   const tempoDeCasa = anos === undefined ? "" : ` há ${anos} anos`;
 
+  /* ⚠️ **A ALTURA PASSOU A FECHAR EXATAMENTE NA TELA — 05/08/2026.** Era
+     `100svh-9rem` no telefone contra um cabeçalho de 6rem (3,5rem da faixa da
+     marca mais 2,5rem da navegação): sobravam 3rem de propósito, deixando
+     aparecer uma tira da seção seguinte como convite à rolagem. No mundo de
+     arquivo aquilo era coerente — a página se anunciava como documento, e
+     documento não finge ser tela cheia. Na barra de qualidade escolhida pelo
+     cliente o herói ocupa a tela e a rolagem se descobre rolando; uma tira de
+     off-white no pé de uma fotografia sangrada lê como imagem cortada curta,
+     não como convite. Os dois valores agora são o cabeçalho e nada mais. */
   return (
     <section
       aria-labelledby="promessa"
-      className="relative flex h-[calc(100svh-9rem)] min-h-[30rem] flex-col justify-end overflow-hidden bg-ink md:h-[calc(100svh-4.5rem)]"
+      className="relative flex h-[calc(100svh-6rem)] min-h-[32rem] flex-col justify-end overflow-hidden bg-ink md:h-[calc(100svh-4.5rem)]"
     >
       <Image
         src={ABERTURA.src}
@@ -112,24 +120,47 @@ export async function Abertura() {
       />
 
       {/* Véu de legibilidade, não ornamento: sem ele o texto claro cai sobre o
-          deck iluminado em parte das telas. Ele escurece só o pé da imagem. */}
+          deck iluminado em parte das telas. Ele escurece só o pé da imagem.
+
+          ⚠️ **SUBIU DE 70/30 PARA 80/42 EM 05/08/2026, E O NÚMERO SAIU DE
+          MEDIÇÃO, NÃO DE OLHO.** A fotografia de abertura foi refeita em luz de
+          fim de tarde, e o deck iluminado que ela trouxe é MUITO mais claro do
+          que o da versão cinzenta anterior. Medindo o fundo real sob os glifos
+          do h1 na captura de 1440×900 — com o texto escondido, para não medir a
+          própria letra —, o véu antigo entregava média de 9,8:1 e **2,39:1 no
+          pior pixel**, contra os 3:1 que a WCAG pede para texto grande. A média
+          passar não basta: a palavra que cai no ponto claro é a que ninguém lê.
+          A linha de apoio já passava com folga (9,1:1 no percentil 95) e passa
+          com mais agora.
+
+          ⚠️ **TROCAR A FOTOGRAFIA DE ABERTURA PEDE REMEDIR ISTO.** O véu é
+          calibrado contra uma imagem específica; uma foto mais clara torna
+          estes dois números insuficientes de novo, e o defeito é invisível em
+          revisão porque a média continua ótima. */}
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-black/70 via-black/30 to-transparent"
+        className="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-black/80 via-black/42 to-transparent"
       />
 
-      <div className="relative px-5 pb-10 md:px-8 md:pb-14">
+      <div className="relative px-5 pb-14 md:px-8 md:pb-20">
         {/* ⚠️ A medida acompanha a copy, e mudou com ela em 05/08/2026: 18ch
             quebrava o título antigo, de 62 caracteres, em quatro linhas. A
             frase de agora tem 52 e cabe nas DUAS linhas que a composição pede
-            (`.impeccable/surfaces/src-app-page-tsx.md`) — "Representação
-            comercial de" / "móveis para área externa." Reescrever o h1 sem
-            reconferir este número é como a primeira tela volta a quebrar
-            torto. No telefone o `px-5` do contêiner limita antes deste teto, e
-            a frase quebra sozinha. */}
+            (`.impeccable/surfaces/src-app-frontend-page-tsx.md`) —
+            "Representação comercial de" / "móveis para área externa."
+            Reescrever o h1 sem reconferir este número é como a primeira tela
+            volta a quebrar torto. No telefone o `px-5` do contêiner limita antes
+            deste teto, e a frase quebra sozinha.
+
+            ⚠️ **O PESO É 300 AQUI E SÓ AQUI.** A display subiu para 72px com a
+            troca de mundo, e 400 nesse corpo sobre fotografia fecha os contornos
+            e lê como anúncio. O 300 mora nesta chamada, e não no token, porque
+            `/quem-somos` usa a mesma display para o ano de fundação em numeral
+            tabular — ali o ultraleve some. Ver a nota do token em
+            `globals.css`. */}
         <h1
           id="promessa"
-          className="text-display max-w-[27ch] font-normal text-balance text-white"
+          className="text-display max-w-[27ch] font-light text-balance text-white"
         >
           Representação comercial de móveis para área externa.
         </h1>
@@ -141,7 +172,15 @@ export async function Abertura() {
             junção genérica. Os três estados continuam nomeados por extenso na
             descrição de SEO do layout, no rodapé, em `/quem-somos` e em
             `/representadas` — a home não é o único lugar onde eles aparecem. */}
-        <p className="text-body mt-5 max-w-[62ch] text-pretty text-white/85">
+        {/* ⚠️ **O TETO SUBIU DE 62ch PARA 78ch PARA MATAR UMA VIÚVA.** Com 62ch
+            a frase quebrava em 1440px deixando "27 anos." sozinho numa segunda
+            linha, logo abaixo de uma display de 72px — duas palavras órfãs no
+            lugar mais visível do site. `text-pretty` não resolve sozinho porque
+            o teto é que estava apertado, não o algoritmo de quebra. 78ch cabe a
+            frase inteira numa linha nas larguras de desktop e continua deixando
+            o telefone quebrar sozinho no `px-5`. Reescrever a lista de marcas
+            (ela é gerada, e cresce com a quinta fábrica) pede reconferir isto. */}
+        <p className="text-body mt-5 max-w-[78ch] text-pretty text-white/85">
           A Belmare representa {nomeadas} no Sul do país{tempoDeCasa}.
         </p>
       </div>

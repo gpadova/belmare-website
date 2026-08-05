@@ -83,12 +83,27 @@
   --text-h1--line-height: 1.12;
   --text-h1--letter-spacing: -0.025em;
 
-  /* A display desceu de 88px para 56px e subiu de peso 300 para 400. Ultraleve
-     em corpo enorme é o gesto que fazia a página ler como pôster brutalista; o
-     que se quer aqui é voz editorial calma, com tracking negativo firme. */
-  --text-display: clamp(2.125rem, 3.4vw, 3.5rem);
-  --text-display--line-height: 1.06;
-  --text-display--letter-spacing: -0.035em;
+  /* ⚠️ **A DISPLAY SUBIU DE VOLTA EM 05/08/2026, e é a única medida que a troca
+     de mundo mexeu.** A nota anterior dizia: "a display desceu de 88px para
+     56px e subiu de peso 300 para 400; ultraleve em corpo enorme é o gesto que
+     fazia a página ler como pôster brutalista". O argumento valia para o mundo
+     de arquivo, onde a página inteira era tipografia e fio e a display competia
+     com um fundo de papel vazio.
+
+     Ela não vale mais aqui. O h1 desta home vive SOBRE fotografia sangrada, e
+     nessa barra de qualidade — Gandiablasco, Tribù, Paola Lenti, Kettal — a
+     escala do título é o que separa um herói caro de um banner. 56px sobre uma
+     foto de tela inteira em 1440px lê como legenda, não como abertura.
+
+     72px é o teto, e ele é deliberado: o piso de craft do projeto fecha a
+     display em 6rem, e passar disso é o pôster que a nota antiga temia — dessa
+     vez com razão. O peso volta a 300 e mora na CHAMADA (`font-light` no h1 da
+     home), não no token, porque a display tem um segundo consumidor:
+     `components/marca/abertura.tsx`, o h1 das páginas de fábrica, que a usa em
+     400 sobre fotografia panorâmica. Peso no token levaria os dois juntos. */
+  --text-display: clamp(2.5rem, 4.6vw, 4.5rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.03em;
 
   --tracking-mono: 0.06em;
 
@@ -169,6 +184,16 @@
    ninguém sabe que existem oito matérias. Então em vez de esconder a barra,
    ela vira o próprio fio do sistema — 3px na cor de divisor, sem trilho, que
    escurece ao toque. Um fio que anda. */
+/* ⚠️ **O POLEGAR É GRAFITE EM REPOUSO DESDE 05/08/2026, E ISSO É CONFORMIDADE,
+   NÃO GOSTO.** Ele era `--color-line` (#C9C6C0) sobre papel (#F5F3F0): ~1,54:1,
+   quando a WCAG 1.4.11 pede 3:1 para objeto gráfico necessário à compreensão. E
+   aqui ele é necessário — no trilho das representadas da home, com o rótulo
+   "Arraste" deliberadamente recusado, este fio é metade do que diz que a lista
+   anda; a outra metade é o cartão cortado na borda. Um indicador que ninguém
+   enxerga não é um indicador discreto, é um indicador ausente. Grafite sobre
+   papel dá ~9,8:1, e o `hover` em tinta continua marcando o alvo. A troca vale
+   também para a faixa de índice das páginas de marca, que usa a mesma utilidade
+   e tinha o mesmo problema. */
 @utility barra-fio {
   &::-webkit-scrollbar {
     height: 3px;
@@ -180,17 +205,17 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: var(--color-line);
+    background-color: var(--color-graphite);
     border: 0;
   }
 
   &:hover::-webkit-scrollbar-thumb {
-    background-color: var(--color-graphite);
+    background-color: var(--color-ink);
   }
 
   @supports not selector(::-webkit-scrollbar) {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-line) transparent;
+    scrollbar-color: var(--color-graphite) transparent;
   }
 }
 
@@ -210,4 +235,71 @@
   line-height: 1.35;
   letter-spacing: var(--tracking-mono);
   font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------------
+   A REVELAÇÃO POR ROLAGEM — o único movimento que entrou com o mundo novo.
+
+   ⚠️ **ISTO REVOGA "A REGRA DO MOVIMENTO FECHADO", E A REVOGAÇÃO TEM DONO.** O
+   mundo de arquivo proibia movimento por rolagem em todo o código, com um
+   argumento que continua bom: "o arquiteto volta muitas vezes, e o que encanta
+   na primeira visita irrita na décima". O cliente escolheu o padrão da
+   categoria em 05/08/2026, e nessa barra — Gandiablasco, Tribù, Kettal — a
+   revelação suave é gramática nativa, não enfeite. Ela entra por decisão, e com
+   três travas que o argumento antigo exige que se pague:
+
+     1. **UM MOMENTO SÓ.** Não é a entrada de toda seção. É o trilho das
+        representadas, e nada mais na página. Movimento repetido em cada faixa é
+        exatamente a décima visita que a regra antiga temia. E é o trilho
+        INTEIRO, num gesto só — não há escalonamento entre os cartões, porque
+        `view()` mede contra o scrollport mais próximo e o mais próximo de um
+        cartão é o próprio trilho, que rola na horizontal e nunca dispararia a
+        faixa. Um cartão por vez exigiria observador em JavaScript, e o preço
+        não se paga.
+     2. **SEM JAVASCRIPT E SEM OBSERVADOR.** `animation-timeline: view()` é
+        CSS puro. Não há bundle, não há hidratação, não há custo de INP.
+     3. **O CONTEÚDO NUNCA DESAPARECE — E A PRIMEIRA VERSÃO DISTO ESTAVA
+        ERRADA.** Ela animava `opacity` de 0 a 1 com `fill-mode: both`, atrás de
+        um `@supports`, e o comentário aqui afirmava que era seguro. Não era: o
+        `@supports` só cobre o navegador que não CONHECE a linha do tempo, e não
+        o contexto em que ela existe mas não roda — captura de página inteira,
+        impressão, PDF, documento mais curto que a janela. Nesses casos o quadro
+        `from` congela em `opacity: 0` e a seção mais importante da home
+        simplesmente não existe. Foi exatamente o que apareceu em duas das cinco
+        capturas da revisão: título, um vão de 530px, e a legenda embaixo.
+
+        A correção é estrutural, não um ajuste de faixa: **a opacidade saiu do
+        quadro.** O que anima é só o deslocamento, então o pior caso possível é
+        um cartão 24px abaixo do lugar — visível, legível, clicável. Conteúdo
+        primário não se pendura em opacidade animada.
+
+   `animation-range` começa depois da borda para o cartão não piscar ao entrar
+   por um pixel, e a curva é exponencial de saída: linear num gesto de entrada
+   lê como painel deslizando, não como peça assentando.
+   --------------------------------------------------------------------------- */
+@utility revelar {
+  @supports (animation-timeline: view()) {
+    animation: revelar-entrada cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 28%;
+  }
+}
+
+@keyframes revelar-entrada {
+  from {
+    transform: translateY(1.5rem);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+/* A recusa é total, e não uma versão curta do mesmo gesto: quem pediu menos
+   movimento recebe nenhum. */
+@media (prefers-reduced-motion: reduce) {
+  .revelar {
+    animation: none;
+    transform: none;
+  }
 }

@@ -8,137 +8,167 @@ import { imagemDaRepresentada, paginaDaRepresentada } from "@/lib/representadas"
 import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
- * As quatro representadas.
+ * As representadas — **um trilho horizontal desde 05/08/2026**, e não mais uma
+ * grade de quatro colunas.
  *
- * ⚠️ **ESTA SEÇÃO RECUSOU LOGOTIPO ATÉ 05/08/2026, E A RECUSA FOI REVERTIDA
- * POR DECISÃO DE PRODUTO.** O texto anterior dizia: "cada uma entra com
- * produto, não com logotipo em grade — grade de logo é diretório de fornecedor,
- * e além disso não existe vetor autorizado das fábricas". O segundo argumento
- * nunca foi de desenho: ativo que não chegou é motivo para o campo existir, não
- * para ele não existir — `PRODUCT.md` é explícito em que o painel é o registro
- * do que chegou. O primeiro continua valendo, e é por isso que o que entrou
- * **não é** uma grade de logos: a marca encabeça o cartão e a fotografia segue
- * embaixo dela, respondendo o h2, que pergunta o que cada fábrica FAZ — pergunta
- * que quatro logotipos não respondem.
+ * ⚠️ **A GRADE CAIU COM A TROCA DE MUNDO, MAS O MOTIVO É O MESMO QUE JÁ VALIA.**
+ * A versão anterior era `sm:grid-cols-2 lg:grid-cols-4`, e o comentário dela já
+ * registrava o risco: P18 está aberto — não se sabe se o portfólio cresce — e
+ * uma grade de quatro quebra com três ou com seis. Uma quinta fábrica cadastrada
+ * hoje deixaria a última fileira com um cartão sozinho e três buracos. O trilho
+ * não quebra com nenhuma quantidade: quatro cabem, seis rolam, três param antes
+ * da borda. É a mesma decisão que fez `/catalogos` virar lista plana em vez de
+ * blocos por marca — estrutura que não depende da contagem.
  *
- * ⚠️ **A MARCA NÃO ENCOSTA NO NOME, E ESSA É A CONDIÇÃO DA REVERSÃO.** A regra
- * de `marca/abertura.tsx` proíbe repetir o nome da fábrica imediatamente acima
- * dele — "ler 'TRISOL' logo acima de 'Trisol'" é o leitor gastando um segundo
- * com nada. Aqui a fotografia inteira separa os dois, e o `h3` continua sendo
- * quem carrega o link, o sublinhado e o nome acessível; a marca é publicada com
- * `alt=""`. Encostar um no outro reabre a regra.
+ * ⚠️ **O INDICADOR É O CARTÃO CORTADO NA BORDA, MAIS `barra-fio` — não um widget
+ * de progresso.** O comp aprovado desenha uma trilha fina com um segmento escuro
+ * embaixo do trilho, e ela não foi construída: uma barra de progresso honesta
+ * precisa saber o deslocamento, e saber o deslocamento é JavaScript no cliente
+ * ou uma linha do tempo de rolagem que o Firefox ainda não tem. Trilha que não
+ * anda é pior que trilha nenhuma. O projeto já resolveu este mesmo problema duas
+ * vezes — na navegação do telefone e na faixa de índice das páginas de marca — e
+ * a resposta das duas é a mesma: a barra de rolagem VIRA o fio do sistema
+ * (`barra-fio`, 3px na cor de divisor) e o item cortado na borda diz que há
+ * mais. Zero JavaScript, funciona em todo navegador, e é peça que já existe.
  *
- * ⚠️ As imagens ilustram a LINHA de cada marca; não são peças do catálogo
- * dela. Isso está dito em texto visível no pé da seção, não só no alt: um mock
- * que se passa por acervo real é o tipo de mentira que este projeto não comete.
+ * ⚠️ **NÃO HÁ RÓTULO "ARRASTE".** O comp o desenha, e ele erra o verbo em metade
+ * dos dispositivos: quem está no desktop com mouse não arrasta, rola. Um
+ * controle que descreve errado o próprio gesto custa mais do que a descoberta
+ * que ele compra.
  *
- * ⚠️ **O TÍTULO CONTA AS MARCAS, O PARÁGRAFO É CAMPO.** A frase do título é
- * fixa e o número dentro dela é gerado das representadas publicadas: cadastrar
- * a quinta fábrica muda "quatro" para "cinco" sem ninguém editar nada. O
- * parágrafo abaixo dele é o ÚNICO campo de texto da home inteira (global
- * `Home`) — e some quando está em branco, em vez de abrir um vão.
+ * ⚠️ **A MARCA ENCABEÇA O CARTÃO, E A FAIXA É DECIDIDA PELA SEÇÃO.** As duas
+ * regras sobreviveram inteiras à troca de mundo, e são de produto, não de
+ * desenho: a fotografia responde o h2 (o que a fábrica FAZ), coisa que quatro
+ * logotipos não respondem; e a faixa abre em todos os cartões assim que UMA
+ * fábrica mandar o vetor, porque o estado que vamos viver por meses é "uma
+ * respondeu, três não" — faixa por cartão sairia como fotografias começando em
+ * alturas diferentes, e grade desalinhada lê como defeito de build.
  *
- * ⚠️ **O TÍTULO ERA "As quatro fábricas que a Belmare representa." E MUDOU EM
- * 05/08/2026, POR CAUSA DA ABERTURA.** Desde que o h1 passou a ser
- * "Representação comercial de móveis para área externa." e a linha de apoio a
- * dizer "A Belmare representa Marê Mobília, GDA Móveis, Bux Garden e Trisol",
- * este h2 repetia "a Belmare representa" uma tela depois — a mesma frase duas
- * vezes na mesma rolagem. O título de agora anuncia o trabalho que a seção de
- * fato faz, que é dizer a LINHA de cada fábrica, e não repetir a relação
- * comercial que a abertura já estabeleceu. Mexer na abertura pede reler esta
- * frase.
+ * ⚠️ **A MARCA NÃO ENCOSTA NO NOME.** A fotografia inteira separa os dois. O
+ * `h3` continua carregando o link, o sublinhado e o nome acessível; a marca é
+ * publicada com `alt=""`.
  *
- * ⚠️ O aviso do pé da seção continua fixo: ele é a marcação de imagem de
- * referência exigida por desenho, não prosa de marketing sobre as fábricas.
+ * ⚠️ As imagens ilustram a LINHA de cada marca; não são peças do catálogo dela.
+ * Isso está dito em texto visível no pé da seção, não só no alt.
+ *
+ * ⚠️ **O TÍTULO CONTA AS MARCAS, O PARÁGRAFO É CAMPO.** A frase do título é fixa
+ * e o número dentro dela é gerado das representadas publicadas: cadastrar a
+ * quinta fábrica muda "quatro" para "cinco" sem ninguém editar nada. O parágrafo
+ * abaixo dele é o único campo de texto desta seção (global `Home`) — e some
+ * quando está em branco, em vez de abrir um vão.
  */
 export async function RepresentadasGaleria() {
   const representadas = await representadasDaPagina();
   const { galeria } = await buscarHome();
 
-  /* ⚠️ **A FAIXA DA MARCA É DECIDIDA PELA SEÇÃO, NUNCA PELO CARTÃO.** Se cada
-     cartão desenhasse a própria faixa só quando tem logotipo, o estado que vamos
-     viver por meses — uma fábrica respondeu ao e-mail, três não — sairia como
-     uma fotografia começando 44px abaixo das outras três, e uma grade
-     desalinhada lê como defeito de build, não como acervo incompleto. Com uma
-     marca só no ar, os quatro cartões abrem a faixa; sem nenhuma, ela não
-     existe e a seção fica exatamente como está hoje. É a seção anulável aplicada
-     na altura certa da árvore. */
   const temFaixaDeMarca = representadas.some((r) => r.logotipo !== undefined);
 
   return (
-    <section aria-labelledby="representadas" className="px-5 py-16 md:px-8 md:py-24">
-      <div className="max-w-[46ch]">
-        <h2 id="representadas" className="text-h1 font-normal">
-          O que cada uma das {porExtenso(representadas.length)} fábricas faz.
-        </h2>
-        {galeria !== undefined && (
-          <p className="text-body mt-4 text-graphite">{galeria}</p>
-        )}
+    <section aria-labelledby="representadas" className="py-20 md:py-28">
+      <div className="px-5 md:px-8">
+        <div className="max-w-[46ch]">
+          <h2 id="representadas" className="text-h1 font-normal text-balance">
+            O que cada uma das {porExtenso(representadas.length)} fábricas faz.
+          </h2>
+          {galeria !== undefined && (
+            <p className="text-body mt-5 text-pretty text-graphite">{galeria}</p>
+          )}
+        </div>
       </div>
 
-      <ul className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8">
-        {representadas.map((r) => {
-          const imagem = imagemDaRepresentada(r);
+      {/* ⚠️ **A REVELAÇÃO MORA AQUI, E EM MAIS NENHUM LUGAR DA PÁGINA.** É o "um
+          momento só" que a nota de `globals.css` cobra como preço de ter
+          revogado a Regra do Movimento Fechado. Ela está no trilho inteiro, e
+          não em cada cartão: `view()` mede contra o scrollport mais próximo, e o
+          mais próximo de um `<li>` daqui é o próprio trilho, que rola na
+          horizontal — a faixa nunca dispararia. */}
+      <div className="revelar mt-12 md:mt-16">
+        {/* ⚠️ O recuo lateral abre o trilho na mesma margem do texto acima, e o
+            `pb` reserva a altura da `barra-fio` para ela não comer a última
+            linha do cartão.
 
-          return (
-          <li key={r.slug}>
-            <Link href={paginaDaRepresentada(r)} className="group block">
-              {/* A faixa reserva a altura mesmo quando esta fábrica ainda não
-                  mandou o vetor — ver `temFaixaDeMarca`. Alinhada ao pé para
-                  que marcas de proporções diferentes assentem sobre a mesma
-                  linha em vez de flutuarem cada uma na sua altura. */}
-              {temFaixaDeMarca && (
-                <div className="mb-4 flex h-9 items-end md:h-10">
-                  {r.logotipo && (
-                    <Logotipo
-                      src={r.logotipo}
-                      className="max-h-9 max-w-[9rem] md:max-h-10 md:max-w-[11rem]"
-                    />
+            ⚠️ **`scroll-pl` NÃO É REDUNDANTE COM `px`, E SEM ELE A MARGEM DA
+            PÁGINA SOME.** Encaixe obrigatório (`snap-mandatory`) alinha o
+            cartão à borda da CAIXA DE ROLAGEM, e não à borda do padding: no
+            primeiro repouso o navegador rolava 20px no telefone e 32px no
+            desktop sozinho, encostando a primeira fotografia na borda da janela
+            enquanto o título logo acima continuava na margem. Lia como imagem
+            sangrando por engano. `scroll-padding` é o que informa ao encaixe
+            onde a margem começa, e ele tem que repetir o `px` — os dois valores
+            andam juntos, e mexer num sem o outro traz o defeito de volta. */}
+        <ul className="barra-fio flex snap-x snap-mandatory scroll-pl-5 gap-6 overflow-x-auto px-5 pb-6 md:scroll-pl-8 md:gap-8 md:px-8">
+          {representadas.map((r) => {
+            const imagem = imagemDaRepresentada(r);
+
+            return (
+              <li
+                key={r.slug}
+                /* ⚠️ 24rem, e não 30rem. Em 1440px o cartão de 30rem deixava
+                   2,9 dos quatro visíveis: a quarta fábrica ficava inteira fora
+                   da tela e a terceira cortada pela metade, o que faz o trilho
+                   parecer ter três marcas. Em 24rem cabem 3,5 — a quarta entra
+                   pela borda e diz que há mais, que é exatamente o que o comp
+                   aprovado desenha. É o mesmo raciocínio do item cortado na
+                   navegação do telefone: o corte É o indicador, mas só funciona
+                   quando o que está cortado dá para reconhecer. */
+                className="w-[78vw] shrink-0 snap-start sm:w-[46vw] lg:w-[24rem]"
+              >
+                <Link href={paginaDaRepresentada(r)} className="group block">
+                  {temFaixaDeMarca && (
+                    <div className="mb-5 flex h-9 items-end md:h-10">
+                      {r.logotipo && (
+                        <Logotipo
+                          src={r.logotipo}
+                          className="max-h-9 max-w-[9rem] md:max-h-10 md:max-w-[11rem]"
+                        />
+                      )}
+                    </div>
                   )}
-                </div>
-              )}
 
-              {/* Retrato no desktop, paisagem no telefone: quatro retratos
-                  empilhados em coluna única transformavam a seção num rolo
-                  interminável.
+                  {/* ⚠️ Um aspecto só, em todas as larguras — e isso é mudança.
+                      A grade antiga trocava de 3/2 no telefone para 4/5 a partir
+                      de `sm` porque quatro retratos empilhados viravam um rolo
+                      interminável. Num trilho nada empilha: o cartão tem quase a
+                      largura da tela no telefone e um terço dela no desktop, e a
+                      paisagem serve as duas. Também é o que mantém o ponto focal
+                      do painel válido — um aspecto só, um corte só. */}
+                  <div className="relative aspect-3/2 overflow-hidden bg-ink">
+                    <Image
+                      src={imagem.src}
+                      alt={imagem.alt}
+                      fill
+                      loading="lazy"
+                      sizes="(min-width: 1024px) 24rem, (min-width: 640px) 46vw, 78vw"
+                      style={
+                        imagem.posicao
+                          ? { objectPosition: imagem.posicao }
+                          : undefined
+                      }
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
+                    />
+                  </div>
 
-                  ⚠️ E é justamente por trocar de forma entre as duas telas que
-                  o ponto focal precisa ser aplicado AQUI. 3/2 e 4/5 cortam a
-                  mesma fotografia por eixos diferentes: o que sobra no telefone
-                  não é o que sobra no desktop. `imagemDaRepresentada` já traz a
-                  posição que o operador clicou no painel — ignorá-la era jogar
-                  fora o dado depois de calculá-lo. Sem clique, `posicao` é
-                  `undefined` e o CSS segue centralizando. */}
-              <div className="relative aspect-3/2 overflow-hidden bg-ink sm:aspect-4/5">
-                <Image
-                  src={imagem.src}
-                  alt={imagem.alt}
-                  fill
-                  loading="lazy"
-                  sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
-                  style={imagem.posicao ? { objectPosition: imagem.posicao } : undefined}
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
-                />
-              </div>
+                  <h3 className="text-h3 mt-6 font-normal underline decoration-line decoration-1 underline-offset-[6px] transition-colors group-hover:decoration-ink">
+                    {r.nome}
+                  </h3>
+                  <p className="text-support mt-3 text-graphite">{r.resolve}.</p>
+                  <p className="text-support mt-2 text-graphite">
+                    {r.base ? `${r.base} · ` : ""}
+                    {r.fato}
+                  </p>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
 
-              <h3 className="text-h3 mt-5 font-normal underline decoration-line decoration-1 underline-offset-[6px] transition-colors group-hover:decoration-ink">
-                {r.nome}
-              </h3>
-              <p className="text-support mt-2 text-graphite">{r.resolve}.</p>
-              <p className="text-support mt-3 text-graphite">
-                {r.base ? `${r.base} · ` : ""}
-                {r.fato}
-              </p>
-            </Link>
-          </li>
-          );
-        })}
-      </ul>
-
-      <p className="text-support mt-12 max-w-[68ch] text-graphite">
-        Imagens de referência, para mostrar a linha de cada fábrica. As
-        fotografias das marcas entram no lugar delas assim que chegarem.
-      </p>
+      <div className="px-5 md:px-8">
+        <p className="text-support mt-8 max-w-[68ch] text-graphite">
+          Imagens de referência, para mostrar a linha de cada fábrica. As
+          fotografias das marcas entram no lugar delas assim que chegarem.
+        </p>
+      </div>
     </section>
   );
 }

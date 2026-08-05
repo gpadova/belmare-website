@@ -2,8 +2,8 @@ import Link from "next/link";
 
 import { Seta } from "@/components/icones";
 import { Secao } from "@/components/quem-somos/secao";
-import { buscarQuemSomos } from "@/lib/espinha-consulta";
 import { porExtenso } from "@/lib/frase";
+import { textosDeQuemSomos } from "@/lib/quem-somos-consulta";
 import { paginaDaRepresentada } from "@/lib/representadas";
 import { representadasDaPagina } from "@/lib/representadas-consulta";
 
@@ -35,22 +35,28 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  * o segundo leitor silencioso desta página é o diretor comercial de uma quinta
  * fábrica.
  *
- * ⚠️ **A CONTAGEM É CONTADA, NÃO DIGITADA.** A primeira frase abre uma lista
- * que mostra as marcas logo abaixo dela; se ela fosse texto livre, a quinta
- * representada entraria na lista e a frase três centímetros acima continuaria
- * dizendo quatro. O campo do painel é o que vem DEPOIS dessa primeira frase.
+ * ⚠️ **A CONTAGEM CONTINUA SENDO CONTADA, E AGORA DENTRO DE UMA FRASE DO
+ * PAINEL.** O parágrafo abre uma lista que mostra as marcas logo abaixo dele;
+ * se o número fosse texto livre, a quinta representada entraria na lista e a
+ * frase três centímetros acima continuaria dizendo quatro. Antes, a defesa era
+ * o site montar a primeira oração ("São quatro fábricas brasileiras.") e o
+ * campo começar da segunda — meia frase no painel, meia em código. Agora o
+ * parágrafo é inteiro do operador e o número entra por `{fabricas}`, que é
+ * contado a cada renderização. Ver `lib/marcadores.ts`.
  */
 export async function FabricasRepresentadas() {
   const representadas = await representadasDaPagina();
-  const { acervo } = await buscarQuemSomos();
+  const { acervoTitulo, acervo } = await textosDeQuemSomos();
 
   const quantas = porExtenso(representadas.length);
 
   return (
-    <Secao titulo="As fábricas representadas.">
-      <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
-        São {quantas} fábricas brasileiras. {acervo}
-      </p>
+    <Secao titulo={acervoTitulo}>
+      {acervo !== undefined && (
+        <p className="text-body mt-6 max-w-[64ch] text-pretty text-graphite">
+          {acervo}
+        </p>
+      )}
 
       <ul className="mt-10 border-t border-line md:mt-14">
         {representadas.map((r) => (

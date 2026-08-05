@@ -1,9 +1,6 @@
 import { Secao } from "@/components/quem-somos/secao";
-import { TERRITORIO } from "@/lib/empresa";
-import { buscarEmpresa } from "@/lib/empresa-consulta";
-import { emLista, porExtenso } from "@/lib/frase";
+import { textosDeQuemSomos } from "@/lib/quem-somos-consulta";
 import { ESTADOS, PRANCHA, projetar, SEDE } from "@/lib/territorio";
-import { representadasDaPagina } from "@/lib/representadas-consulta";
 
 /**
  * Onde a Belmare atende.
@@ -34,11 +31,15 @@ import { representadasDaPagina } from "@/lib/representadas-consulta";
  * junto com o desenho — as siglas ficariam com 22px no desktop e 7px no
  * telefone. Fora dele, a mono tem 11px em qualquer largura.
  *
- * ⚠️ **O PARÁGRAFO DESTA SEÇÃO NÃO TEM CAMPO NO PAINEL, e é o único assim.**
- * Ele nomeia os três estados, conta as representadas e nomeia a cidade da sede
- * — e as três coisas saem do mesmo dado que DESENHA o mapa ao lado ou do
- * cadastro da empresa. Um campo de texto aqui é como a prosa passa a dizer
- * "quatro estados" ao lado de um desenho com três.
+ * ⚠️ **O PARÁGRAFO É CAMPO, MAS O TERRITÓRIO CONTINUA SAINDO DA MALHA.** Este
+ * texto era o único da rota sem campo nenhum, e o argumento estava certo: ele
+ * nomeia os três estados, conta as representadas e nomeia a cidade da sede, e
+ * as três coisas saem do mesmo dado que DESENHA o mapa ao lado. Um textarea
+ * livre é como a prosa passa a dizer "quatro estados" ao lado de um desenho com
+ * três. O que destravou a edição foi o marcador: quem escreve usa `{estados}` e
+ * `{quantosEstados}`, e a lista continua vindo de `lib/territorio.ts`. Expandir
+ * território continua sendo regerar a malha — nenhum campo do painel desenha
+ * um quarto contorno.
  */
 
 /* A folha é o desenho mais uma folga de 20 unidades: sem o carimbo e sem a
@@ -81,26 +82,21 @@ function MarcaDeSede({ className }: { className?: string }) {
 }
 
 export async function Territorio() {
-  const representadas = await representadasDaPagina();
-  const { endereco } = await buscarEmpresa();
+  const { territorioTitulo, territorio } = await textosDeQuemSomos();
 
   return (
-    <Secao titulo="Onde a Belmare atende.">
+    <Secao titulo={territorioTitulo}>
       {/* No telefone a ordem é título → texto → mapa → legenda. No desktop o
           mapa ocupa a coluna da direita inteira, com o texto e a lista
           empilhados à esquerda. */}
       <div className="mt-6 grid gap-10 md:grid-cols-[minmax(0,1fr)_26rem] md:grid-rows-[auto_auto] md:gap-x-12 lg:gap-x-16">
-        <div className="order-1 md:col-start-1 md:row-start-1">
-          <p className="text-body max-w-[52ch] text-pretty text-graphite">
-            As {porExtenso(representadas.length)} fábricas representadas atendem
-            o mesmo território: {emLista(TERRITORIO)}. Não há divisão de região
-            por marca, e o atendimento cobre os{" "}
-            {porExtenso(TERRITORIO.length, "m")} estados por inteiro.
-            {endereco?.cidade !== undefined
-              ? ` A sede fica em ${endereco.cidade}.`
-              : ""}
-          </p>
-        </div>
+        {territorio !== undefined && (
+          <div className="order-1 md:col-start-1 md:row-start-1">
+            <p className="text-body max-w-[52ch] text-pretty text-graphite">
+              {territorio}
+            </p>
+          </div>
+        )}
 
         <div className="order-3 md:col-start-1 md:row-start-2">
           <dl className="border-t border-line">
