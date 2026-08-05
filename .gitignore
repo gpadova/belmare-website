@@ -49,3 +49,13 @@ next-env.d.ts
 
 # playwright-mcp scratch
 .playwright-mcp/
+
+# rascunho do impeccable: captura de iteração e comp de conceito. Fica no disco,
+# fora do repositório — eram 65 MB de PNG que nenhum arquivo do site aponta.
+# `design.json`, `live/config.json` e `surfaces/` continuam versionados: o código
+# aponta para as superfícies em quatro lugares.
+.impeccable/shots/
+.impeccable/mocks/
+.impeccable/questions/
+.impeccable/hook.cache.json
+.impeccable/config.local.json
