@@ -30,8 +30,11 @@ lista — nenhum visitante do site enxerga o contato de outra pessoa.
 
 Hoje, depois de gravado, um contato nunca sai dali sozinho: não existe prazo, não existe
 apagamento automático nem manual programado. A própria página de política de privacidade admite
-isso por escrito, na seção "Seus direitos e como exercê-los": o assunto ainda aguarda redação
-jurídica.
+isso por escrito, na seção "Por quanto tempo os dados ficam guardados", reescrita em 06/08/2026:
+ela diz que a Belmare revisa a lista e elimina o que não virou nada, e diz com todas as letras que
+apagamento automático por prazo fixo não existe. **A recomendação de 24 meses abaixo continua sendo
+decisão do cliente, e não está escrita na página** — ver a Parte 2 sobre por que declarar um prazo
+que o sistema não cumpre é exposição nova, não conformidade.
 
 ### Por que isso precisa de um prazo
 

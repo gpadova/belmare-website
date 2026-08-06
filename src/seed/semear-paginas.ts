@@ -2,6 +2,8 @@ import config from "@payload-config";
 import { getPayload, type Payload } from "payload";
 
 import { ROTAS_LIVRES } from "@/lib/site";
+import { PRIVACIDADE } from "@/seed/politica-de-privacidade-texto";
+import { documento, paragrafo } from "@/seed/texto-formatado";
 
 /**
  * O seed das três páginas livres de PRA-124 — `/arquitetos`, `/contato` e
@@ -28,102 +30,18 @@ import { ROTAS_LIVRES } from "@/lib/site";
  * publica — o padrão do campo é `"draft"` (achado de PRA-118). Sem esta linha as
  * três entram como rascunho e as rotas continuam em 404.
  *
- * ⚠️ **A POLÍTICA DE PRIVACIDADE ABAIXO NÃO É TEXTO JURÍDICO, E ELA DIZ ISSO NA
- * PRÓPRIA PÁGINA.** A redação é de advogado e está fora do escopo deste ticket.
- * O que vai ao ar é (a) um aviso inequívoco de que o documento aguarda revisão
- * jurídica e (b) o LEVANTAMENTO FACTUAL do que este site de fato faz — que
- * dados chegam, por onde, o que ele não instala. Nada disso é redação legal
- * fantasiada de revisada: texto legal plausível é justamente o que ninguém
- * confere depois. O advogado cola por cima; a página já existe e já é editável.
+ * ⚠️ **A POLÍTICA DE PRIVACIDADE NÃO MORA MAIS AQUI** — ela é
+ * `seed/politica-de-privacidade-texto.ts`, e a nota longa no topo daquele
+ * arquivo é que explica cada frase dela. Ela saiu deste arquivo em 06/08/2026,
+ * quando a redação deixou de ser um levantamento provisório e passou a ser a
+ * política de fato: um texto compartilhado entre este seed e o script que
+ * atualiza um banco já semeado (`atualizar-politica-de-privacidade.ts`) precisa
+ * de um módulo sem efeito colateral para morar, ou importá-lo passa a semear o
+ * banco de quem só queria ler a constante.
+ *
+ * ⚠️ **OS CONSTRUTORES DO LEXICAL TAMBÉM SAÍRAM, E PELA MESMA RAZÃO** — agora
+ * são `seed/texto-formatado.ts`. Nada mudou no que eles montam.
  */
-
-/* ------------------------------------------------------------------------- *
-   Construtores de texto formatado.
-
-   O editor grava a árvore serializada do lexical, e escrevê-la à mão neste
-   arquivo seria trezentas linhas de JSON em que um `version` errado quebra o
-   campo sem sintoma. Estas quatro funções montam só o que o editor das páginas
-   livres oferece — parágrafo, dois níveis de título, negrito e lista.
- * ------------------------------------------------------------------------- */
-
-/** Negrito no lexical é uma máscara de bits no nó de texto; 1 é o primeiro. */
-const NEGRITO = 1;
-
-type No = Record<string, unknown>;
-
-function textoSimples(valor: string, formato = 0): No {
-  return {
-    type: "text",
-    detail: 0,
-    format: formato,
-    mode: "normal",
-    style: "",
-    text: valor,
-    version: 1,
-  };
-}
-
-/** Um parágrafo. `negrito: true` marca a frase inteira — é o que o aviso de
- *  revisão jurídica usa, e o único negrito de todo o conteúdo semeado. */
-function paragrafo(valor: string, negrito = false): No {
-  return {
-    type: "paragraph",
-    children: [textoSimples(valor, negrito ? NEGRITO : 0)],
-    direction: "ltr",
-    format: "",
-    indent: 0,
-    textFormat: negrito ? NEGRITO : 0,
-    textStyle: "",
-    version: 1,
-  };
-}
-
-function titulo(valor: string, nivel: "h2" | "h3" = "h2"): No {
-  return {
-    type: "heading",
-    tag: nivel,
-    children: [textoSimples(valor)],
-    direction: "ltr",
-    format: "",
-    indent: 0,
-    version: 1,
-  };
-}
-
-function listaDePontos(itens: string[]): No {
-  return {
-    type: "list",
-    listType: "bullet",
-    tag: "ul",
-    start: 1,
-    children: itens.map((item, i) => ({
-      type: "listitem",
-      value: i + 1,
-      children: [textoSimples(item)],
-      direction: "ltr",
-      format: "",
-      indent: 0,
-      version: 1,
-    })),
-    direction: "ltr",
-    format: "",
-    indent: 0,
-    version: 1,
-  };
-}
-
-function documento(nos: No[]) {
-  return {
-    root: {
-      type: "root",
-      children: nos,
-      direction: "ltr" as const,
-      format: "" as const,
-      indent: 0,
-      version: 1,
-    },
-  };
-}
 
 /* ------------------------------------------------------------------------- *
    As três composições.
@@ -200,6 +118,26 @@ const ARQUITETOS = {
  * troca custou uma linha porque a união de `lib/paginas.ts` já previa o membro.
  * "Quero comprar" continua no WhatsApp de propósito — ver a nota no próprio
  * caminho.
+ *
+ * ⚠️ **O BLOCO DE PROSA DE ABERTURA SAIU EM 06/08/2026, POR DECISÃO DO
+ * CLIENTE.** Ele dizia: "A Belmare é representação comercial: ela não fabrica e
+ * não vende ao consumidor. Quem quer comprar é levado até a loja mais próxima
+ * que trabalha com a peça; quem quer revender fala direto com quem responde
+ * pelas fábricas no Sul do Brasil." — e, embaixo, "Os dois caminhos terminam na
+ * mesma pessoa". **Duas descrições do organograma da Belmare no lugar mais caro
+ * da página**, e é a mesma frase que `PRODUCT.md` já registra como rejeitada:
+ * ninguém chega a um site de mobiliário querendo saber como o fornecedor se
+ * organiza. Nada se perdeu, porque nada ali era novo: o h1 já diz as duas coisas
+ * que se pode fazer nesta página ("Onde comprar, e como revender"), e os três
+ * caminhos abaixo dele demonstram cada uma com o destino real. **O que a prosa
+ * de fato fazia era empurrar o formulário de proposta para 1170px do topo.**
+ *
+ * ⚠️ **O TÍTULO DO BLOCO DE CAMINHOS NOMEIA OBJETOS, e é por isso que ele mudou
+ * junto.** Era "Por onde seguir" — tecido conectivo, e um rótulo que se aplicava
+ * igualmente bem a qualquer lista de qualquer site. Com o desenho de duas
+ * colunas ele passou a encabeçar SÓ as duas linhas que sobram ao lado do
+ * formulário, e essas duas linhas têm um objeto atrás de cada uma: a loja mais
+ * próxima e os arquivos das representadas.
  */
 const CONTATO = {
   slug: "contato",
@@ -208,19 +146,8 @@ const CONTATO = {
     "A Belmare não vende direto: ela indica a loja mais próxima que trabalha com a peça, e recebe a proposta de quem quer revender as fábricas que representa no Sul do Brasil.",
   composicao: [
     {
-      blockType: "prosa",
-      corpo: documento([
-        paragrafo(
-          "A Belmare é representação comercial: ela não fabrica e não vende ao consumidor. Quem quer comprar é levado até a loja mais próxima que trabalha com a peça; quem quer revender fala direto com quem responde pelas fábricas no Sul do Brasil.",
-        ),
-        paragrafo(
-          "Os dois caminhos terminam na mesma pessoa, e é por isso que a resposta chega sabendo o que cada fábrica consegue entregar.",
-        ),
-      ]),
-    },
-    {
       blockType: "caminhos",
-      titulo: "Por onde seguir",
+      titulo: "A loja, e os arquivos",
       itens: [
         {
           rotulo: "Quero comprar",
@@ -268,83 +195,6 @@ const CONTATO = {
     {
       blockType: "ficha",
       titulo: "A empresa",
-    },
-  ],
-};
-
-/**
- * `/politica-de-privacidade` — a página existe, a redação é de advogado.
- *
- * ⚠️ Cada afirmação factual abaixo foi conferida contra o código deste
- * repositório em 31/07/2026, e nenhuma delas é conclusão jurídica:
- *
- *   · há UM formulário no site, o de proposta comercial em `/contato`
- *     (PRA-126). Ele pede nome, e-mail, cidade e empresa — nada além disso — e
- *     grava um documento em `leads`, que só é legível com sessão de painel;
- *   · o consentimento de marketing é caixa separada, nunca pré-marcada, e
- *     recusá-lo não impede o contato;
- *   · o único dado que chega da parte do visitante é o que ele escreve numa
- *     conversa de WhatsApp, num e-mail ou num telefonema iniciados por ele;
- *   · não há Google Analytics, tag manager, pixel de rede social nem qualquer
- *     outro rastreador de terceiros — a busca por eles no repositório não
- *     devolve nada;
- *   · as fontes são servidas pelo próprio domínio (`next/font` as baixa no
- *     build), então nem elas geram requisição para terceiro;
- *   · os únicos cookies são a sessão de quem entra no painel e o cookie de
- *     pré-visualização de rascunho do Next — nenhum dos dois existe para o
- *     visitante comum;
- *   · os arquivos pesados (catálogos, fotografias) são servidos de um bucket
- *     Cloudflare R2, que registra acesso como qualquer servidor de arquivos.
- */
-const PRIVACIDADE = {
-  slug: "politica-de-privacidade",
-  titulo: "Política de privacidade",
-  resumo:
-    "Como a Belmare Representações trata os dados de quem entra em contato pelo site. Documento em elaboração: o texto abaixo é o levantamento do que o site faz, e aguarda revisão jurídica.",
-  composicao: [
-    {
-      blockType: "prosa",
-      corpo: documento([
-        paragrafo(
-          "Aviso: este documento ainda não passou por revisão jurídica. O texto abaixo é o levantamento factual do que este site faz com dados. Ele não é, e não deve ser lido como, uma política de privacidade em vigor. A redação definitiva será publicada aqui assim que revisada.",
-          true,
-        ),
-        paragrafo(
-          "Enquanto isso, o que segue descreve o funcionamento real do site, conferido contra o código que o gera. Para qualquer pergunta sobre dados, fale com a Belmare pelos canais listados em Contato.",
-        ),
-
-        titulo("O que este site coleta"),
-        paragrafo(
-          "Este site tem um único formulário, o de proposta comercial em /contato. Ele pede nome, e-mail, cidade e a empresa ou escritório que a pessoa representa, e nada além disso. Não há cadastro, não há login de visitante, não se pede CPF e não se pede telefone. O aceite de novidades por e-mail é uma caixa separada, que nunca vem marcada: deixá-la em branco não muda em nada o atendimento do contato. Fora esse formulário, o único dado pessoal que chega à Belmare é o que a própria pessoa escreve numa conversa iniciada por ela, por WhatsApp, e-mail ou telefone. Esse dado chega pelo aplicativo ou provedor correspondente, não por este site.",
-        ),
-
-        titulo("Rastreamento e cookies"),
-        paragrafo(
-          "O site não instala ferramenta de análise de audiência, gerenciador de tags nem pixel de rede social. As fontes tipográficas são servidas pelo próprio domínio, de modo que a visita não gera requisição para terceiros por causa delas. Existem dois cookies no sistema, e nenhum dos dois alcança o visitante comum:",
-        ),
-        listaDePontos([
-          "a sessão de quem entra no painel de edição, que é da equipe da Belmare;",
-          "o cookie de pré-visualização de rascunho, criado apenas quando alguém do painel abre uma página ainda não publicada.",
-        ]),
-        paragrafo(
-          "Por não haver rastreador a consentir, o site não exibe banner de cookies.",
-        ),
-
-        titulo("Arquivos e registros de acesso"),
-        paragrafo(
-          "Catálogos, fotografias e demais arquivos são servidos a partir de armazenamento em nuvem contratado para este fim. Como qualquer servidor de arquivos, ele registra o acesso (endereço de origem, data e arquivo pedido) para operação e segurança do serviço.",
-        ),
-
-        titulo("Compartilhamento"),
-        paragrafo(
-          "A Belmare é o único interlocutor: nenhum contato recebido é repassado automaticamente às fábricas representadas, e nenhum endereço de e-mail comercial de fábrica é publicado neste site. Quando um pedido precisa chegar à fábrica, é a Belmare quem o encaminha.",
-        ),
-
-        titulo("Seus direitos e como exercê-los"),
-        paragrafo(
-          "Esta seção aguarda a redação jurídica: prazos de guarda, base legal de cada tratamento, encarregado pelo tratamento de dados e o procedimento para pedir acesso, correção ou eliminação. Até lá, qualquer pedido sobre dados pode ser feito pelos canais da página de Contato e será respondido pela Belmare.",
-        ),
-      ]),
     },
   ],
 };
@@ -412,10 +262,11 @@ async function semear(): Promise<void> {
     `\n${resultados.criada} publicada(s), ${resultados.existente} já existia(m) e foi(ram) preservada(s).`,
   );
   console.log(
-    "\n⚠️  A política de privacidade foi publicada com um AVISO de que aguarda\n" +
-      "    revisão jurídica, e o corpo dela é o levantamento do que o site faz —\n" +
-      "    não texto legal. Cole a redação do advogado por cima, no painel, em\n" +
-      "    \"O site › Páginas › Política de privacidade\".",
+    "\n⚠️  A política de privacidade descreve o que ESTE site faz com dados, e\n" +
+      "    cita o artigo de lei de cada obrigação. Se a instalação passar a fazer\n" +
+      "    outra coisa — um rastreador, um operador a mais, um formulário novo —,\n" +
+      "    a página passa a mentir: reescreva-a no painel, em \"O site › Páginas ›\n" +
+      "    Política de privacidade\". O texto ainda não passou por advogado.",
   );
 
   await payload.destroy();
