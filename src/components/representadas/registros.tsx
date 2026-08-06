@@ -39,7 +39,13 @@ export async function RegistrosDasRepresentadas() {
       aria-labelledby="registros"
       className="border-t border-line px-5 py-14 md:px-8 md:py-20"
     >
-      <h2 id="registros" className="mono uppercase text-graphite">
+      {/* ⚠️ Tinta, e não grafite: o rótulo em mono ENCABEÇA esta seção, e o
+          sistema reserva o grafite para quem LEGENDA outra coisa — o "01 · a
+          sombra" de cada ficha abaixo, o rótulo de ficha, a medida. Ela era
+          grafite até 06/08/2026, quando a auditoria a pôs ao lado de
+          `marca/secao.tsx` e do rodapé e viu que era a única encabeçando em
+          cor de legenda. Ver `DESIGN.md → Cabeçalho de seção`. */}
+      <h2 id="registros" className="mono uppercase text-ink">
         As representadas
       </h2>
 

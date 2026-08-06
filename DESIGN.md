@@ -843,14 +843,19 @@ tabela de especificação, e é irmã da faixa de índice e das listas de
 `/catalogos` — as três declaram a mesma coisa: o que existe, e quanto.
 
 - **O rótulo é tinta quando ENCABEÇA, grafite quando LEGENDA.** É a divisão que o
-  código já faz e que este documento não dizia: em tinta ficam os rótulos que
+  código já fazia e que este documento não dizia: em tinta ficam os rótulos que
   abrem uma seção ou uma coluna de conteúdo — `marca/secao.tsx`, as três colunas
-  do rodapé e a coluna de caminhos da banda de proposta. Em grafite ficam os que
-  apoiam outra coisa: o sobretítulo acima de um `h1`, o rótulo de ficha, a medida
-  em `formato · MB`, a legenda da prancha. **Uma exceção conhecida, e ela é
-  divergência e não regra:** `representadas/registros.tsx` encabeça a seção dela
-  em grafite. Encontrada na auditoria de 06/08/2026 e deixada como está — trocar
-  a cor de um `h2` em produção não é trabalho de um passe de documentação.
+  do rodapé, a coluna de caminhos da banda de proposta e `representadas/registros.tsx`.
+  Em grafite ficam os que apoiam outra coisa: o sobretítulo acima de um `h1`, o
+  rótulo de ficha, a medida em `formato · MB`, a legenda da prancha, e o
+  `01 · a sombra` que abre cada ficha de registro. **A regra nasceu de uma
+  exceção, e a exceção foi fechada:** `registros.tsx` era a única seção
+  encabeçada em cor de legenda, achada na auditoria de 06/08/2026 e corrigida no
+  mesmo dia. **Resta um `h2` em mono grafite no site, e ele não é exceção — é a
+  regra:** o `Legenda` da PRANCHA 02 é, por nome e por função, a legenda de um
+  desenho, e quem carrega o conteúdo ali é a fotografia chaveada ao lado. O teste
+  não é o nível do heading, é a pergunta: **este rótulo abre o conteúdo, ou
+  serve o conteúdo que está ao lado dele?**
 - **A contagem repete a da faixa de índice de propósito.** Quem chegou rolando
   nunca leu a faixa; quem chegou pela faixa confere que caiu no lugar certo.
 - **Ausência não é desenhada.** Seção sem dado não renderiza — sem "em breve",
