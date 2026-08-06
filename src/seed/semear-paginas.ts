@@ -224,8 +224,16 @@ const CONTATO = {
       itens: [
         {
           rotulo: "Quero comprar",
-          apoio:
-            "Diga a peça e a cidade. A Belmare indica a loja mais próxima que a tem, ou responde a dúvida de medida e acabamento antes de você ir até lá.",
+          /* ⚠️ **SEM APOIO, POR DECISÃO DO CLIENTE EM 05/08/2026.** A linha era
+             "Diga a peça e a cidade. A Belmare indica a loja mais próxima que a
+             tem, ou responde a dúvida de medida e acabamento antes de você ir
+             até lá." — instrução de como usar o canal, escrita antes de o
+             visitante ter decidido usá-lo. O rótulo já diz o que o caminho faz,
+             e o campo é opcional justamente para isso: "em branco, o caminho
+             fica só com o rótulo" (`collections/blocos.ts`). Os outros dois
+             caminhos desta página mantêm o apoio porque o rótulo deles não basta
+             — "Quero revender" precisa dizer que abre um formulário, e o de
+             arquiteto precisa nomear o que existe do outro lado. */
           destino: "whatsapp",
           contexto: "quero comprar e preciso saber qual loja trabalha com a peça",
         },
