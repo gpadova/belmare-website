@@ -561,7 +561,7 @@ círculo verde e aqui é um quadrado de 3rem no fio.
 
 O vocabulário de forma é retangular e ortogonal:
 
-- **Fio de 1px.** Reto, sem raio, sempre em `{colors.line}` — exceto três fios em `{colors.ink}`: a borda da faixa de ação, a borda do envio de formulário e a do balão fixo. É assim que esses três ganham peso sem virar preenchimento.
+- **Fio de 1px.** Reto, sem raio, sempre em `{colors.line}` — exceto **quatro** fios em `{colors.ink}`: a borda da faixa de ação, a borda do envio de formulário, a do balão fixo e, desde 06/08/2026, o fio que abre a banda de proposta de uma página livre. É assim que esses quatro ganham peso sem virar preenchimento. **A lista é de ELEMENTOS, não de classes de elemento:** o fio em tinta não pertence ao bloco de caminhos — pertence à banda que carrega o formulário. Em `/arquitetos` o mesmo bloco abre em `{colors.line}` como qualquer seção, porque ali ele é uma das três e não a página inteira. Fio em tinta em toda seção seria fio em tinta em nenhuma.
 - **Ícones — dois, e a lista é fechada.** A **seta**, em `viewBox 0 0 32 12`, traço de 1px, ponta reta, sem preenchimento, mesma espessura do fio. E o **glifo de WhatsApp**, em `viewBox 0 0 24 24`, traço de 1,5px com `strokeLinecap`/`strokeLinejoin` em `round` — a curva é o que o torna reconhecível, e ponta reta numa curva vira polígono facetado. Os dois em `currentColor` e com `vector-effect="non-scaling-stroke"`. **É o glifo, nunca a marca:** sem preenchimento e sem o verde oficial, porque um balão verde preenchido seria a marca de outra empresa dentro de uma interface que só tem cor num lugar, e não é este. Glifo tipográfico fazendo papel de ícone continua fora.
 - **Registro de sede.** Círculo com quatro braços de cruz, traço de 1,5 na legenda e de 1px no mapa — a marca de registro de desenho técnico.
 - **Registro de canto.** Uma cruz simples de 1px em `{colors.line}`, centrada nas quatro quinas da moldura de uma prancha. É a marca de esquadro de folha desenhada, e é irmã do registro de sede — mesma família, sem o círculo, porque marca de esquadro não é ponto de coordenada. **Só entra em moldura de prancha, e hoje isso é uma superfície só:** a PRANCHA 02, em `/representadas`.
@@ -848,8 +848,28 @@ montada no painel pertencer ao mesmo site que as desenhadas em código.
 - **Seção livre:** fio de 1px no topo, mesmo respiro vertical, teto de 64rem, margem direita aberta, **sem número na margem**. O título do bloco é `h2` sempre — o `h1` é da página inteira e é campo próprio, no topo. Dois `h1` numa rota é exatamente o que um construtor de blocos produz quando cada bloco escolhe o próprio nível.
 - **Caminhos:** a gramática da lista é a da **linha de documento**, não a das portas da home. Rótulo em h3 sublinhado no fio, apoio em support grafite com teto de 52ch, seta à direita, fio na base, teto de 52rem. Um caminho de WhatsApp leva o glifo à esquerda do rótulo e um `sr-only` "(abre o WhatsApp)".
 - **Um caminho de WhatsApp sem número cadastrado não vira linha morta — ele some.** Mesma regra da faixa de ação.
-- **Um caminho para formulário não entra na lista — vira a seção seguinte.** Um item de lista que, ao ser clicado, rola até um formulário sem nome é a pior versão das duas coisas.
+- **Um caminho para formulário não entra na lista.** Um item de lista que, ao ser clicado, rola até um formulário sem nome é a pior versão das duas coisas. O rótulo do caminho vira o `h2` que encabeça o formulário; a âncora `#proposta-comercial` continua existindo para quem chega por link direto.
 - **Ficha da Belmare:** endereço, telefones, e-mail, território e CNPJ não são digitados na página — são bloco, e leem do cadastro. Duas cópias de um telefone é como a segunda passa a estar errada.
+
+#### A banda de proposta — o segundo desenho do bloco de caminhos
+
+> **Nova em 06/08/2026, por decisão do cliente.** O bloco de caminhos tinha um
+> desenho só: lista, e — quando havia formulário — uma segunda seção empilhada
+> embaixo dela. Hoje tem dois, e quem escolhe é a presença do formulário. Só
+> `/contato` cai no segundo; `/arquitetos` não mudou um pixel.
+
+O que estava errado era o LUGAR, não o formulário. Em `/contato` ele chegava
+como a terceira banda de uma pilha — depois de um bloco de texto e de uma lista
+de duas linhas —, a **1170px do topo numa tela de 900**, e sozinho num poço de
+570px de largura no meio de uma página de 1440. A página inteira era uma fita
+estreita descendo pela margem esquerda de uma tela larga.
+
+- **Uma banda, duas colunas a partir de `lg`.** Formulário à esquerda, lista à direita, `grid-cols-2` com calha de `4rem`, dentro do mesmo teto de 64rem — 480px por coluna em 1440. **O teto não foi aberto:** duas colunas dentro dele continuam obedecendo A Regra do Teto de 64rem e a margem direita aberta.
+- **O formulário fica na coluna da margem.** A Regra da Margem Única reserva a margem esquerda para o que a página tem de mais pesado, e no telefone a ordem do markup é a ordem da leitura — então a coluna da margem é também a primeira quando as duas empilham. **Nenhum `order-*`:** quando a correção de um empilhamento exige um, quase sempre a coluna é que estava errada. Quem quer comprar não perde nada, porque o balão de WhatsApp é fixo em toda rota.
+- **A quebra é em `lg`, e não em `md`.** Em 768px as duas colunas dariam 320px cada: rótulo de caminho quebrando em duas linhas ao lado de um campo de formulário espremido. Duas colunas confortáveis ou uma, nunca duas apertadas.
+- **O título do bloco recua para mono versal em tinta.** Duas display de 42px lado a lado diriam que as colunas têm o mesmo peso, e elas não têm — uma leva a uma conversa que começa em um toque, a outra é o único lugar do site que pede dado pessoal. É o mesmo campo do painel, com o peso que o contexto pede, na gramática de Cabeçalho de seção. **O nível continua `h2` nas duas colunas:** o tamanho é do desenho, o nível é do documento, e rebaixar a lista para `h3` a faria soar subordinada ao formulário na leitura assistiva, o que ela não é.
+- **A banda abre em fio de tinta** — ver Fio de 1px, em Shapes.
+- **Sem a lista, a banda continua; sem o formulário, ela não existe.** Um bloco cujos caminhos de WhatsApp todos sumiram por falta de número cadastrado ainda desenha o formulário, que não depende de cadastro nenhum.
 
 ### Mapa de território
 
