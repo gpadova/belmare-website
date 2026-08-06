@@ -162,13 +162,6 @@ export async function RepresentadasGaleria() {
           })}
         </ul>
       </div>
-
-      <div className="px-5 md:px-8">
-        <p className="text-support mt-8 max-w-[68ch] text-graphite">
-          Imagens de referência, para mostrar a linha de cada fábrica. As
-          fotografias das marcas entram no lugar delas assim que chegarem.
-        </p>
-      </div>
     </section>
   );
 }

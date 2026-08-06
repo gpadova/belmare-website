@@ -112,18 +112,6 @@ export async function RegistrosDasRepresentadas() {
           );
         })}
       </ul>
-
-      {/* ⚠️ A legenda da prancha, 350px acima, diz "nenhuma peça DO QUADRO" — e
-          o escopo dela é o desenho, não estas miniaturas. Uma poltrona de corda
-          encostada em "Marê Mobília · Cambé · PR" é lida como peça da Marê, que
-          é exatamente a leitura que a abertura da marca e a prancha julgaram
-          grave o bastante para legendar. Deixar o meio do caminho sem
-          tratamento seria proteger as duas pontas e mentir no miolo. */}
-      <p className="text-support mt-10 max-w-[68ch] text-pretty text-graphite">
-        Imagens de referência, para mostrar a linha de cada fábrica. Não são
-        peças do catálogo delas. As fotografias das marcas entram no lugar
-        delas assim que chegarem.
-      </p>
     </section>
   );
 }
