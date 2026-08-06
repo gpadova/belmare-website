@@ -280,7 +280,7 @@ describe("o catálogo, do arquivo armazenado até a linha", () => {
     expect(catalogo.arquivo).toContain("catalogo");
 
     // E a faixa da página declara o custo do clique, lido do mesmo arquivo.
-    const secao = secoesDaRepresentada(marca).find((s) => s.id === "levar");
+    const secao = secoesDaRepresentada(marca).find((s) => s.id === "catalogos");
     expect(secao?.contagem).toBe("PDF 1,5 MB");
   });
 
@@ -331,7 +331,7 @@ describe("o catálogo, do arquivo armazenado até a linha", () => {
       "Linha Ânima",
     ]);
 
-    const secao = secoesDaRepresentada(marca).find((s) => s.id === "levar");
+    const secao = secoesDaRepresentada(marca).find((s) => s.id === "catalogos");
     expect(secao?.rotulo).toBe("Catálogos");
     expect(secao?.contagem).toBe("2");
   });

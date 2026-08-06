@@ -142,7 +142,7 @@ describe("a seção de catálogo na página da marca", () => {
   test("com um catálogo, a faixa declara o peso — é o custo do clique", () => {
     const secao = secoesDaRepresentada(
       marca("trisol", "Trisol", [catalogo({ mb: 24 })]),
-    ).find((s) => s.id === "levar");
+    ).find((s) => s.id === "catalogos");
 
     expect(secao?.rotulo).toBe("Catálogo");
     expect(secao?.contagem).toBe("PDF 24,0 MB");
@@ -157,7 +157,7 @@ describe("a seção de catálogo na página da marca", () => {
         catalogo(),
         catalogo(),
       ]),
-    ).find((s) => s.id === "levar");
+    ).find((s) => s.id === "catalogos");
 
     expect(secao?.rotulo).toBe("Catálogos");
     expect(secao?.contagem).toBe("3");

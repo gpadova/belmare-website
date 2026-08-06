@@ -67,6 +67,12 @@
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "66e8a50c83c3c724fcfe0769701b665c56cec220cc4f49cc1aee8bdfc07de94a"
     },
+    "payload": {
+      "source": "payloadcms/payload",
+      "sourceType": "github",
+      "skillPath": "tools/claude-plugin/skills/payload/SKILL.md",
+      "computedHash": "ecc3e51b13a323f7a390e5b7d82fa96b12e5221ba561c9e3925ce6aeb05f4190"
+    },
     "prototype": {
       "source": "mattpocock/skills",
       "sourceType": "github",

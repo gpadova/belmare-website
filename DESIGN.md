@@ -215,9 +215,9 @@ conceitual foram recusadas na mesma página em que esta foi escolhida.
 
 Onde a página é registro, a densidade continua sendo de amostrário: alinhamento
 visível e sem exceção, fichas de rótulo e valor, listas regradas com a medida à
-direita, blocos numerados na página de marca e uma prancha chaveada sobre
-fotografia. O que dá identidade nas duas pontas é a mesma coisa — a grade, o fio
-e o vazio —, não a decoração. O teste que o projeto aplica em si mesmo continua
+direita, cabeçalhos de seção em mono com a contagem à direita e uma prancha
+chaveada sobre fotografia. O que dá identidade nas duas pontas é a mesma coisa —
+a grade, o fio e o vazio —, não a decoração. O teste que o projeto aplica em si mesmo continua
 valendo inteiro: tire tudo menos tipografia, fio e foto, e o site ainda tem que
 ficar de pé.
 
@@ -470,11 +470,12 @@ mesma com a medida em `minmax(0,10rem)`. Teto de `64rem` nas duas. A fila de
 recortes é `minmax(0,6rem)` rótulo / `minmax(0,1fr)` opções a partir de `md`,
 empilhada abaixo.
 
-**Grade de bloco numerado:** `grid-cols-[5rem_minmax(0,64rem)]` com `2rem` de
-calha a partir de `md`. A coluna de 5rem carrega o número em mono; a de conteúdo
-tem teto de 64rem. Abaixo de `md` o número empilha acima do conteúdo, na mesma
-margem. **Ela existe hoje numa superfície só, a página de marca** — ver Bloco
-numerado, em Components.
+**Grade de bloco numerado: não existe mais** — a coluna de `5rem` que carregava o
+número saiu com a numeração em 05/08/2026, e a última superfície que a usava era
+a página de marca. Ver Cabeçalho de seção, em Components. A seção de registro
+hoje é uma coluna só, com teto de `64rem`; a ficha dentro dela tem teto próprio
+de `46rem`, porque uma régua que corre oitocentos pixels além do valor lê como
+tabela quebrada, não como ledger.
 
 **Ordem de empilhamento.** As duas rotas de índice de arquivo resolveram por
 deleção o que antes se resolvia com `flex`/`order-last`: enquanto havia coluna de
@@ -796,25 +797,35 @@ fixa no canto inferior direito (`1.25rem` / `2rem` da borda, `z-30`).
 - **Fundo sólido sempre**, não só no `hover` — ver A Regra do Chrome Fixo.
 - **Sem número cadastrado, o balão não existe.** Um elemento fixo, em toda rota, apontando para um `wa.me` inválido seria o pior caso de todos.
 
-### Bloco numerado
+### Cabeçalho de seção
 
-- **Estilo:** `<section>` aberta por fio de 1px no topo, número em mono grafite na coluna de `5rem`, conteúdo na coluna de teto `64rem`.
-- **Acessibilidade:** o número é `aria-hidden` — quem navega por títulos não precisa ouvir "zero um" antes de cada um.
-- **Numeração calculada:** a sequência corre sobre o que de fato renderizou, e a seção ausente não deixa vão. É o certo quando a ausência é a norma e varia por registro: as quatro fábricas têm quantidades muito diferentes de material declarado, e reservar números daria buracos diferentes em cada página.
+O que abre uma seção de registro: `<section>` com fio de 1px no topo, o rótulo em
+mono versal tinta à esquerda e a contagem em mono grafite à direita, na mesma
+linha de base. Conteúdo com teto de `64rem`. É a gramática de um cabeçalho de
+tabela de especificação, e é irmã da faixa de índice e das listas de
+`/catalogos` — as três declaram a mesma coisa: o que existe, e quanto.
 
-> ⚠️ **O BLOCO NUMERADO EXISTE HOJE NUMA SUPERFÍCIE SÓ — `marca/secao.tsx` —, E
-> ISSO É MUDANÇA DE 05/08/2026.** Este documento o descrevia como "a espinha de
-> `/quem-somos`, e o padrão reutilizável para qualquer rota de arquivo", com duas
-> semânticas de numeração: **reservada** (a seção ausente guarda o número dela) em
-> `/quem-somos` e **calculada** na página de marca. **A semântica reservada não
-> existe mais em lugar nenhum do código.** `/quem-somos` tinha seis blocos de `01`
-> a `06` porque a SEQUÊNCIA era o argumento — a rota ia do ano de fundação ao nome
-> antigo, do nome antigo à prancha —, e esse argumento caiu junto com a história
-> que ele sustentava. A seção livre (`paginas/secao.tsx`) nasceu já sem número,
-> pelo mesmo motivo: numa página montada no painel a ordem é conveniência de quem
-> montou, não argumento, e numerá-la empresta ao arranjo do operador uma
-> autoridade de documento que ele não tem. **Numerar seções que não são sequência
-> é o defeito; a página de marca continua numerando porque lá elas são.**
+- **A contagem repete a da faixa de índice de propósito.** Quem chegou rolando
+  nunca leu a faixa; quem chegou pela faixa confere que caiu no lugar certo.
+- **Ausência não é desenhada.** Seção sem dado não renderiza — sem "em breve",
+  sem célula em branco, sem título órfão. Ver Seção anulável.
+
+> ⚠️ **O BLOCO NUMERADO NÃO EXISTE MAIS EM SUPERFÍCIE NENHUMA — 05/08/2026.**
+> Este documento já havia registrado a queda dele em `/quem-somos` e o mantinha
+> vivo num lugar só, `marca/secao.tsx`, com o argumento de que ali as seções
+> **eram** sequência. Elas não eram, e a página de marca provou isso ao ser
+> medida: seis blocos numerados, seis títulos de 42px e seis fios estruturais
+> para transportar, na melhor fábrica, seis fatos técnicos — e na pior, três
+> declarações e um nome. **O aparato editorial ficou maior que a carga, e é isso,
+> não as frases, que lê como storytelling.** A numeração também nunca informou:
+> ninguém precisa saber que o catálogo é a segunda seção, ainda mais numa rota em
+> que a sequência é calculada e a mesma seção cai em posições diferentes conforme
+> a fábrica.
+>
+> **A regra que sobra é a que já estava escrita, agora sem exceção: numerar
+> seções que não são sequência é o defeito.** O sistema não tem mais nenhuma
+> sequência, então não tem mais nenhum número de seção. `--spacing-coluna-numero`
+> (`5rem`) ficou sem consumidor e sai no próximo passe de tokens.
 
 ### Seção anulável
 
@@ -822,9 +833,10 @@ O padrão que sustenta as páginas de marca e as duas seções nulas do site
 (`projetos-realizados.tsx` em `/quem-somos`, `catalogos-em-destaque.tsx` na home).
 
 - Seção sem dado renderiza `null` — sem markup vazio, sem título órfão, sem "em breve", sem célula em branco.
-- **A condição é o dado declarado, não o ativo em mãos.** "Para levar" ficou em zero pixels em todas as marcas enquanto *ter catálogo* e *ter o arquivo* eram a mesma condição — e não são: a Trisol publica a edição 2026 e a Belmare ainda não recebeu o PDF. Hoje a seção some só quando a fábrica **não declara documento nenhum**. Uma superfície declarando um fato em público enquanto a outra o esconde é o site sabendo de algo num lugar e fingindo ignorá-lo no outro.
+- **A condição é o ARQUIVO em mãos, não o documento declarado.** Esta linha dizia o contrário até 05/08/2026, e a inversão veio de um defeito que o cliente encontrou na tela: enquanto *ter catálogo* e *ter o PDF* eram condições diferentes, `/catalogos` mostrava três documentos anunciados para zero uploads, um deles parecendo clicável e apontando para lugar nenhum. **Sobe o arquivo, aparece a linha; não sobe, não aparece** — vale para catálogo e para bloco 3D, e o operador vê no site exatamente o que colocou no painel.
+- **A ausência vira canal de pedido, nunca linha fantasma.** É o padrão do setor, verificado em fonte primária: o Casoca acinzenta o formato que a fábrica não forneceu com o motivo escrito, o Architonic escreve `No 3D & BIM files available` e oferece `Request files`. Aqui a ausência não desenha linha nenhuma, e o fecho da página muda a mensagem pré-preenchida do WhatsApp para o pedido do arquivo que falta.
 - Campo com dado ausente e conhecido é escrito **por extenso** ("Origem não declarada"), nunca travessão.
-- O sumário da página é derivado da mesma função que monta as seções, o que torna impossível apontar para uma âncora que não existe.
+- O sumário da página é derivado da mesma função que monta as seções, o que torna impossível apontar para uma âncora que não existe. **E ele só é desenhado quando há o que sumarizar:** com apenas as duas seções incondicionais da página de marca, a faixa fixa diria "IDENTIFICAÇÃO · CONTATO" — um sumário anunciando que não há nada a anunciar, ocupando 40px do topo em toda rolagem para isso.
 
 ### Página livre (blocos do painel)
 

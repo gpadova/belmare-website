@@ -1,45 +1,119 @@
 import Image from "next/image";
 
+import { Ficha, FichaLinha } from "@/components/ficha";
+import { Logotipo } from "@/components/logotipo";
+import { TERRITORIO } from "@/lib/empresa";
+import { emLista } from "@/lib/frase";
 import {
   imagemLargaDaRepresentada,
+  informacoesDaRepresentada,
   type Representada,
 } from "@/lib/representadas";
 
 /**
- * 01 — A identificação. A abertura da página de marca.
+ * A identificação — e, depois de PRA-131, quase a página inteira.
  *
- * Uma fotografia sangrando de ponta a ponta e, abaixo dela, o registro: faixa
- * de identificação em mono, o nome em display, a linha da marca e o fato
- * que a define. A foto carrega, a tipografia mede — é a mesma divisão de
- * trabalho da abertura da home, aplicada a uma fábrica só.
+ * ⚠️ **A FOTOGRAFIA DESCEU E A FICHA SUBIU NO LUGAR DELA.** A página abria com a
+ * imagem sangrando de ponta a ponta e, logo abaixo, 86 caracteres explicando que
+ * a imagem é gerada. Numa rota cuja acusação era "pouca informação", a primeira
+ * tela gastava cerca de 480px de altura para mostrar uma fotografia genérica e
+ * desmenti-la em seguida — com o nome da fábrica, que é o motivo da visita,
+ * dividindo a dobra com o desmentido.
  *
- * ⚠️ **A legenda visível é obrigatória aqui, e não é excesso de zelo.** A
- * fotografia é gerada e cai imediatamente acima do nome da fábrica: nessa
- * posição, um arquiteto lê "peça da Marê", não "imagem de referência". `alt`
- * não resolve — ninguém que enxerga lê `alt`. É a mesma razão que obriga a
- * legenda da foto de fecho de `/quem-somos`, e as duas são as únicas legendas
- * visíveis de foto do site.
+ * A ordem nova é a que as referências próximas usam sem exceção, verificado em
+ * fonte primária em 05/08/2026: o Casoca abre a página de uma fábrica com nome,
+ * cidade/UF e contato; o Archiproducts com marca, nome e país. **Nenhuma
+ * plataforma de especificação abre com fotografia de ambiente em altura total.**
+ * É a mesma razão que já tinha deixado `/catalogos` sem nenhuma imagem: quando o
+ * visitante veio buscar um dado, fotografia de ambiente é ruído entre ele e o
+ * dado. A fotografia continua sendo a única cor da página — ela fecha o bloco em
+ * vez de abri-lo.
+ *
+ * ⚠️ **A FICHA ABSORVEU A SEÇÃO "O QUE A FÁBRICA INFORMA".** Como seção, aquelas
+ * linhas tinham título de 42px, fio, número e nota de rodapé — todo esse aparato
+ * para transportar duas linhas na Marê e três na Bux. Aqui elas saem coladas no
+ * nome, que é onde quem chega já está olhando. Ver `informacoesDaRepresentada`.
+ *
+ * ⚠️ **O `fato` SAIU DAQUI, E É UM CORTE, NÃO UM ESQUECIMENTO.** A mesma string
+ * era impressa três vezes no caminho até esta tela: cartão da home, ficha de
+ * `/representadas`, e de novo no topo desta — o visitante clicava para ver mais
+ * e recebia de volta exatamente o que o fez clicar. Ela continua viva onde ainda
+ * trabalha: nas duas listas que levam até aqui, e na `description` da rota, que é
+ * o resumo que o buscador mostra.
  *
  * ⚠️ A imagem é OUTRA que a da galeria da home, de propósito. Ver `acervo.ts`.
  */
 export function AberturaDaMarca({
   representada,
-  numero,
 }: {
   representada: Representada;
-  numero: string;
 }) {
   const imagem = imagemLargaDaRepresentada(representada);
+  const informacoes = informacoesDaRepresentada(
+    representada,
+    emLista(TERRITORIO),
+  );
 
   return (
-    <section id="identificacao" className="scroll-mt-36 md:scroll-mt-30">
-      <figure>
-        {/* ⚠️ 3/1 e não 21/9 a partir de `sm`. A 21/9 a foto pedia 612px de um
-            1440 e, num notebook de 1440×800, a primeira tela inteira era uma
-            fotografia genérica e a legenda do mock — com o nome da fábrica, que
-            é o motivo da visita, abaixo da dobra. O comp aprovado dá à imagem
-            cerca de um terço da tela; 3/1 devolve isso (480px) e ainda corta
-            céu e deck em vez das laterais, preservando o assunto. */}
+    <section
+      id="identificacao"
+      aria-labelledby="identificacao-titulo"
+      className="scroll-mt-36 px-5 pt-10 pb-12 md:scroll-mt-30 md:px-8 md:pt-14 md:pb-16"
+    >
+      <div className="max-w-[64rem]">
+        {/* A marca da fábrica encabeça a página dela, como já encabeça o cartão
+            na home e a ficha em `/representadas`. Esta rota era a única
+            superfície de uma marca que não mostrava a marca.
+
+            ⚠️ Sem o vetor a caixa não é desenhada: reservar espaço para o que
+            nunca vem abriria um vão de 40px acima do nome nas quatro páginas —
+            e hoje as quatro fábricas estão sem logotipo. Com o vetor, a altura
+            fixa em classe é o que impede o nome de saltar na primeira pintura. */}
+        {representada.logotipo ? (
+          <div className="mb-8 flex h-10 items-center md:h-12">
+            <Logotipo
+              src={representada.logotipo}
+              className="max-h-10 max-w-44 md:max-h-12 md:max-w-52"
+            />
+          </div>
+        ) : null}
+
+        <h1
+          id="identificacao-titulo"
+          className="text-display max-w-[14ch] font-normal text-balance"
+        >
+          {representada.nome}
+        </h1>
+
+        {/* O subtítulo, e a única frase corrida da página: o que esta fábrica
+            produz, nomeando um objeto. */}
+        <p className="text-body mt-5 max-w-[48ch] text-pretty">
+          {representada.resolve}.
+        </p>
+
+        {/* ⚠️ **46rem, E NÃO O TETO DE 64rem DA COLUNA.** Medido em 1440px: com o
+            teto largo, a régua de "Alumínio" corria oitocentos pixels além do
+            valor, e uma tabela cujo fio termina longe demais do dado lê como
+            quebrada, não como ledger. 46rem deixa a coluna de valor com cerca de
+            37rem — a mais longa das quatro fábricas ("Hugo Evandro, designer
+            interno — repertório escandinavo e japonês com toque brasileiro",
+            85 caracteres) ainda cabe numa linha, e o fio para perto do que
+            mede. */}
+        <Ficha className="mt-10 max-w-[46rem] md:mt-12">
+          {informacoes.map((informacao) => (
+            <FichaLinha key={informacao.rotulo} rotulo={informacao.rotulo}>
+              {informacao.valor}
+            </FichaLinha>
+          ))}
+        </Ficha>
+      </div>
+
+      {/* ⚠️ A figura sai do teto de 64rem e vai até a margem da página: ela é a
+          única cor da tela, e uma fotografia represada na largura de uma tabela
+          lê como ilustração de tabela. `-mx` desfaz a margem da seção em vez de
+          a seção abrir mão dela — o texto acima continua alinhado à mesma coluna
+          do resto do site. */}
+      <figure className="-mx-5 mt-12 md:-mx-8 md:mt-16">
         <div className="relative aspect-3/2 w-full bg-ink sm:aspect-3/1">
           <Image
             src={imagem.src}
@@ -51,52 +125,7 @@ export function AberturaDaMarca({
             className="object-cover"
           />
         </div>
-        {/* Grotesca em caixa baixa: 85 caracteres de frase em mono versal a
-            11px é grito e destrói a leitura — e esta é a única linha que separa
-            o site de apresentar imagem gerada como foto de produto. A
-            declaração mais importante da página não pode ser o texto menos
-            legível dela. */}
-        <figcaption className="text-support px-5 pt-3 text-graphite md:px-8">
-          Imagem de referência. Ela ilustra a linha da fábrica e não é uma peça
-          do catálogo dela.
-        </figcaption>
       </figure>
-
-      <div className="px-5 pt-10 pb-14 md:px-8 md:pt-14 md:pb-24">
-        <div className="grid gap-y-6 md:grid-cols-[5rem_minmax(0,64rem)] md:gap-x-8">
-          <p aria-hidden="true" className="mono h-fit text-graphite">
-            {numero}
-          </p>
-
-          <div className="min-w-0">
-            {/* A faixa NÃO repete o nome da marca — ele vem em display na linha
-                seguinte, e ler "TRISOL" logo acima de "Trisol" é o leitor
-                gastando um segundo com nada. Ela carrega o que o nome não diz:
-                de onde a fábrica é, e o território em que a Belmare a
-                representa — igual para todas, sem recorte por marca.
-
-                A Trisol não declara cidade em fonte nenhuma — só o DDD 48.
-                "Origem não declarada" com todas as letras: preencher com
-                "Florianópolis" porque o DDD bate seria inventar, e o leitor
-                desta página é exatamente quem repara nisso. */}
-            <p className="mono uppercase text-graphite">
-              {representada.base ?? "Origem não declarada"} · Sul do Brasil
-            </p>
-
-            <h1 className="text-display mt-4 max-w-[14ch] font-normal text-balance">
-              {representada.nome}
-            </h1>
-
-            <p className="text-body mt-6 max-w-[48ch] text-pretty">
-              {representada.resolve}.
-            </p>
-
-            <p className="text-support mt-3 max-w-[56ch] text-pretty text-graphite">
-              {representada.fato}
-            </p>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

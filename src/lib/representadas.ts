@@ -183,12 +183,30 @@ export const REPRESENTADAS: Representada[] = [
     parte: "Móvel",
     base: "Cambé · PR",
     fato: "Mais de 30 coleções, 8 designers assinantes",
+    /* ⚠️ **AS DUAS DECLARAÇÕES DA MARÊ SAÍRAM, E AS DUAS ERAM REPETIÇÃO —
+       PRA-131.** "Posicionamento: Mobiliário externo, em coleções assinadas" era
+       o `resolve` reescrito com a palavra de release que `abertura.tsx` já
+       derrubou do h1 em 05/08/2026. "Coleções: Mais de 30, todas com assinatura"
+       era o `fato` impresso quatro campos acima. Numa ficha de sete linhas isso
+       passa; numa de duas, a ficha inteira é o leitor recebendo de volta o que
+       acabou de ler.
+
+       A Marê é a marca com mais peças do portfólio e a que menos declara — não
+       publica material em fonte nenhuma. As linhas nascem aqui no dia em que ela
+       declarar.
+
+       ⚠️ Sobrou UMA linha, e ela é a única coisa que "Quem assina" carregava de
+       fato: os NOMES. A contagem não — "8 designers" é o `fato` outra vez, e
+       contar assinaturas não ajuda ninguém a especificar. O nome ajuda: é com
+       ele que o arquiteto defende a escolha para o cliente dele. As trinta
+       coleções atribuídas não cabem numa linha e não entram: elas voltam quando
+       existir onde pendurá-las, que é a peça. */
     declaracoes: [
       {
-        rotulo: "Posicionamento",
-        valor: "Mobiliário externo, em coleções assinadas",
+        rotulo: "Design",
+        valor:
+          "Daniela Ferro · Fabrício Roncca · Pepê Lima · Fernando Zanardi · Claudia Mazzieri · Camila Forbeck · Estúdio Galho · Estúdio Marê",
       },
-      { rotulo: "Coleções", valor: "Mais de 30, todas com assinatura" },
     ],
     /* As oito assinaturas e as coleções de cada uma, como a própria Marê
        publica. É o ativo editorial mais forte do portfólio inteiro e o eixo
@@ -286,6 +304,11 @@ export const REPRESENTADAS: Representada[] = [
       },
       { rotulo: "Prazo", valor: "Personalizados em até 30 dias" },
       { rotulo: "Ambiente", valor: "Externo e interno" },
+      /* Os dois nomes que a GDA publica. Ela divulga os designers e divulga as
+         coleções, e não diz quem assinou o quê — sem atribuição, o dado é o
+         nome, e nome cabe numa linha. Era uma seção inteira com dois nomes e a
+         coluna da direita vazia até PRA-131. */
+      { rotulo: "Design", valor: "Sérgio Matos · Guto Indio da Costa" },
     ],
     /* Dois nomes, sem coleção atribuída: a GDA publica os designers e publica
        as coleções, mas não diz quem assinou o quê. */
@@ -339,8 +362,12 @@ export const REPRESENTADAS: Representada[] = [
     parte: "Estofado",
     base: "Birigui · SP",
     fato: "Têxtil de performance: repelência, proteção UVA/UVB, antimofo",
+    /* ⚠️ **"SIGLA: BUX, DE BEST USER EXPERIENCE" SAIU — PRA-131.** Era verdade e
+       era fonte pública, e mesmo assim não é dado: não muda uma especificação,
+       não responde nenhuma das perguntas que o arquiteto faz, e ocupava a
+       primeira linha de uma ficha de três. Trivia de marca no topo de uma tabela
+       técnica é o que faz o leitor parar de acreditar nas linhas de baixo. */
     declaracoes: [
-      { rotulo: "Sigla", valor: "BUX, de Best User Experience" },
       {
         rotulo: "Têxtil",
         valor: "Repelência a líquidos, proteção UVA/UVB e antimofo",
@@ -348,6 +375,13 @@ export const REPRESENTADAS: Representada[] = [
       {
         rotulo: "Uso",
         valor: "Pet friendly, resistente a crianças, fácil limpeza",
+      },
+      /* O designer interno, pelo mesmo critério da GDA: a Bux publica o nome e
+         não atribui coleção nenhuma a ele. */
+      {
+        rotulo: "Design",
+        valor:
+          "Hugo Evandro, designer interno — repertório escandinavo e japonês com toque brasileiro",
       },
     ],
     designers: [
@@ -386,6 +420,16 @@ export const REPRESENTADAS: Representada[] = [
       { rotulo: "Reforço", valor: "Couro nos modelos premium" },
       { rotulo: "Vento", valor: "De 30 a 80 km/h, conforme o modelo" },
       { rotulo: "Garantia", valor: "De 6 a 36 meses, conforme o modelo" },
+      /* ⚠️ Os cinco modelos entram como LINHA porque são nomes próprios de
+         produto — a única fábrica das quatro cuja taxonomia nomeia peças em vez
+         de categorias. "Sofás, mesas, poltronas" da Marê e da GDA não voltam por
+         aqui: são substantivos que o arquiteto já conhece, e uma linha com
+         dezenove deles informa menos que a frase que já está sob o nome da
+         fábrica. */
+      {
+        rotulo: "Modelos",
+        valor: "Laterais: Zuri e Solene · Centrais: Vitta, Pub e Brisa",
+      },
     ],
     vocabulario: {
       eixo: "Haste",
@@ -481,69 +525,65 @@ export function paginaDaRepresentada(r: Representada): string {
  */
 export type Secao = {
   id: string;
-  numero: string;
   rotulo: string;
   /** Contagem declarada antes do clique, como formato e peso de arquivo. */
   contagem?: string;
 };
 
-export function secoesDaRepresentada(r: Representada): Secao[] {
-  const secoes: Omit<Secao, "numero">[] = [{ id: "identificacao", rotulo: "Identificação" }];
+/**
+ * Os blocos 3D desta fábrica — a única contagem que NÃO mora em `Representada`.
+ *
+ * ⚠️ **ENTRA POR PARÂMETRO PARA ESTA FUNÇÃO CONTINUAR PURA.** `Arquivo3D` é
+ * coleção própria no painel, com consulta assíncrona escopada por marca; a faixa
+ * de índice precisa da contagem ANTES do clique, que é a mesma regra que faz um
+ * arquivo declarar "SKP · 8,4 MB" antes do download. Quem já buscou passa o
+ * número — a rota lê uma vez e usa duas —, e esta função não aprende a ler o
+ * painel só para contar.
+ */
+export type AcervoDaMarca = {
+  blocos3d: number;
+};
 
-  if (r.declaracoes?.length) {
-    secoes.push({
-      id: "declara",
-      rotulo: "O que informa",
-      contagem: String(r.declaracoes.length),
-    });
-  }
+const SEM_ACERVO: AcervoDaMarca = { blocos3d: 0 };
 
-  if (r.designers?.length) {
-    secoes.push({
-      id: "assina",
-      rotulo: "Quem assina",
-      contagem: String(r.designers.length),
-    });
-  }
-
-  /* A seção existe se houver taxonomia OU coleções: as duas são vocabulário da
-     fábrica, e amarrar as coleções à existência de taxonomia matava o dado
-     justamente na Bux, a única marca sem taxonomia declarada (P30). Seria a
-     mesma classe de campo morto que as coleções da GDA já foram. */
-  if (r.vocabulario) {
-    /* ⚠️ Itens DISTINTOS, não a soma dos grupos. Na GDA os dois ambientes
-       repetem as mesmas seis categorias de propósito, e somar dava
-       "VOCABULÁRIO 12" — o leitor comparava com "MARÊ 19" e concluía que a GDA
-       tem o dobro do que tem. Numa faixa cujo argumento declarado é a contagem
-       honesta antes do clique, um contador que conta duas vezes derruba a
-       própria regra que a faixa existe para cumprir. */
-    const itens = new Set(
-      r.vocabulario.grupos.flatMap((grupo) =>
-        grupo.itens.map((item) => item.nome),
-      ),
-    );
-    secoes.push({
-      id: "vocabulario",
-      rotulo: "Vocabulário",
-      contagem: String(itens.size),
-    });
-  } else if (r.colecoes?.length) {
-    secoes.push({
-      id: "vocabulario",
-      rotulo: "Vocabulário",
-      contagem: String(r.colecoes.length),
-    });
-  }
+/**
+ * As seções que ESTA marca de fato tem, na ordem do documento.
+ *
+ * ⚠️ **A PÁGINA ENCOLHEU DE SEIS SEÇÕES PARA QUATRO — PRA-131, E O CORTE É O
+ * TRABALHO.** Saíram "O que a fábrica informa", "Quem assina" e "O vocabulário
+ * da fábrica". A razão de fundo é uma só, e ela é do cliente: **uma fábrica tem
+ * muitos produtos, e ficha técnica é do produto, não da fábrica.** Uma tabela de
+ * matéria e desempenho pendurada na MARCA só pode dizer o que vale para a linha
+ * inteira — e o que vale para a linha inteira ou é generalidade ("alumínio") ou
+ * é faixa ("de 30 a 80 km/h, conforme o modelo"), que é justamente o que não
+ * fecha uma especificação. A cota, o acabamento e o desempenho por modelo vivem
+ * no catálogo em PDF, e o site distribui esse catálogo em vez de replicá-lo.
+ *
+ * O que sobrou é o que a página de fato consegue responder: que fábrica é esta,
+ * algumas informações dela, e os arquivos que a Belmare tem para entregar.
+ *
+ * ⚠️ **A NUMERAÇÃO `01 02 03` SAIU JUNTO.** Ela existia para dar cadência de
+ * prancha a uma página de registro, e o que produzia era cerimônia: seis blocos
+ * numerados e seis títulos de 42px para carregar de três a seis fatos. A
+ * sequência nunca informou nada — ninguém precisa saber que os catálogos são a
+ * segunda seção, ainda mais numa rota onde a numeração é calculada e a mesma
+ * seção cai em posições diferentes conforme a fábrica.
+ */
+export function secoesDaRepresentada(
+  r: Representada,
+  acervo: AcervoDaMarca = SEM_ACERVO,
+): Secao[] {
+  const secoes: Secao[] = [{ id: "identificacao", rotulo: "Identificação" }];
 
   /* ⚠️ Com UM catálogo, o peso é a informação — a faixa existe para dizer o que
      custa o clique. Com vários, a quantidade volta a ser: "PDF 24,0 MB" ao lado
      de um rótulo no plural anunciaria o custo de um dos seis e esconderia os
-     outros cinco. Não há mais o caso "declarado sem arquivo": um catálogo é um
+     outros cinco. Não há o caso "declarado sem arquivo": um catálogo é um
      arquivo, então toda entrada aqui tem peso medido. */
   if (r.catalogos?.length) {
     const catalogos = r.catalogos;
     secoes.push({
-      id: "levar",
+      id: "catalogos",
       rotulo: catalogos.length === 1 ? "Catálogo" : "Catálogos",
       contagem:
         catalogos.length === 1
@@ -552,12 +592,51 @@ export function secoesDaRepresentada(r: Representada): Secao[] {
     });
   }
 
-  secoes.push({ id: "falar", rotulo: "Falar" });
+  /* ⚠️ **SEÇÃO PRÓPRIA, E NÃO JUNTO DO CATÁLOGO.** São dois trabalhos: um PDF se
+     lê para decidir, um bloco se baixa para desenhar hoje. As referências do
+     setor nomeiam os downloads pelo trabalho que fazem — `Data sheet`,
+     `3D(CAD)`, `Fabrics` —, não por um genérico "arquivos". */
+  if (acervo.blocos3d > 0) {
+    secoes.push({
+      id: "arquivos-3d",
+      rotulo: "Arquivos 3D",
+      contagem: String(acervo.blocos3d),
+    });
+  }
 
-  return secoes.map((secao, i) => ({
-    ...secao,
-    numero: String(i + 1).padStart(2, "0"),
-  }));
+  secoes.push({ id: "falar", rotulo: "Contato" });
+
+  return secoes;
+}
+
+/**
+ * As informações da fábrica — a ficha que abre a página, em rótulo e valor.
+ *
+ * ⚠️ **É A ÚNICA COISA QUE SOBROU DE "O QUE A FÁBRICA INFORMA", E ELA DEIXOU DE
+ * SER SEÇÃO PARA VIRAR PARTE DA IDENTIFICAÇÃO.** Como seção, ela tinha título de
+ * 42px, fio, número e uma nota de rodapé — todo esse aparato para transportar
+ * duas linhas na Marê e três na Bux. Como ficha de abertura, as mesmas linhas
+ * saem coladas no nome da fábrica, que é onde quem chega já está olhando.
+ *
+ * ⚠️ **AS DUAS PRIMEIRAS LINHAS SÃO DO SITE, O RESTO É DA FÁBRICA.** Origem e
+ * atendimento respondem "de onde sai" e "vocês atendem aqui?" — as duas
+ * perguntas que todo visitante faz e que nenhuma fábrica declara por nós. Da
+ * terceira linha em diante é transcrição: nas palavras dela, sem completar por
+ * simetria e sem reescrever para soar melhor.
+ *
+ * ⚠️ A Trisol não declara cidade em fonte nenhuma, só o DDD 48. "Não declarada"
+ * com todas as letras: preencher com "Florianópolis" porque o DDD bate seria
+ * inventar, e o leitor desta página é exatamente quem repara nisso.
+ */
+export function informacoesDaRepresentada(
+  r: Representada,
+  territorio: string,
+): Declaracao[] {
+  return [
+    { rotulo: "Origem", valor: r.base ?? "Não declarada" },
+    { rotulo: "Atendimento", valor: territorio },
+    ...(r.declaracoes ?? []),
+  ];
 }
 
 /**

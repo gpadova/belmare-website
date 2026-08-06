@@ -274,25 +274,16 @@ describe("o vocabulário e o filtro que ele autoriza", () => {
     ]);
   });
 
-  test("a contagem da faixa conta categoria distinta, não a soma dos grupos", () => {
-    // A GDA repete as mesmas categorias em externo e interno de propósito.
-    const representada = representadaDoPainel(
-      documento({
-        vocabulario: {
-          eixo: "Ambiente",
-          grupos: [
-            { nome: "Externo", slug: "externo", itens: [{ nome: "Sofás" }, { nome: "Mesas" }] },
-            { nome: "Interno", slug: "interno", itens: [{ nome: "Sofás" }, { nome: "Mesas" }] },
-          ],
-        },
-      }),
-    );
-
-    const secao = secoesDaRepresentada(representada).find(
-      (s) => s.id === "vocabulario",
-    );
-    expect(secao?.contagem).toBe("2");
-  });
+  /* ⚠️ **AQUI MORAVA "a contagem da faixa conta categoria distinta, não a soma
+     dos grupos" — E ELE SAIU COM A SEÇÃO QUE PROTEGIA (PRA-131).** O teste
+     existia porque a GDA repete as mesmas seis categorias em externo e interno
+     de propósito, e somar os grupos anunciava "12" numa faixa cujo argumento é a
+     contagem honesta. A seção "O vocabulário da fábrica" não existe mais — o
+     conteúdo dela era uma lista de substantivos que o arquiteto já conhece — e
+     não há mais contagem de categoria em faixa nenhuma. O dado continua no
+     painel: é ele que `collections/pecas.ts` consulta para recusar uma categoria
+     que não é da própria fábrica, e é essa garantia que
+     `pecas-consulta.integracao.test.ts` prova. */
 });
 
 describe("a fotografia que o painel entrega", () => {
