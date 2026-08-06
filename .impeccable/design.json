@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-05T19:00:00Z",
+  "generatedAt": "2026-08-06T03:30:00Z",
   "title": "Design System: Belmare Representações",
   "extensions": {
     "colorMeta": {
@@ -257,20 +257,20 @@
       "css": ".ds-balao { display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; background-color: var(--color-surface); color: var(--color-ink); border: 1px solid var(--color-ink); border-radius: 0; text-decoration: none; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-balao:hover { background-color: var(--color-paper); } .ds-balao:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } .ds-balao svg { width: 1.5rem; height: 1.5rem; } @media (prefers-reduced-motion: reduce) { .ds-balao { transition: none; } }"
     },
     {
-      "name": "Bloco numerado",
-      "kind": "custom",
-      "refersTo": "bloco",
-      "description": "Fio de 1px abrindo a seção, número em mono na coluna de margem de 5rem, conteúdo com teto de 64rem e margem direita aberta. O número é aria-hidden. Desde 05/08/2026 existe numa superfície só — a página de marca —, onde a numeração é calculada sobre o que de fato renderizou. /quem-somos perdeu a dela junto com a história que ela ordenava, e a seção de página livre nasceu sem número: numerar seções que não são sequência empresta autoridade de documento a um índice.",
-      "html": "<section class='ds-bloco'><div class='ds-bloco__grade'><p class='ds-bloco__numero' aria-hidden='true'>04</p><div class='ds-bloco__conteudo'><h2 class='ds-bloco__titulo'>Três estados. Um interlocutor.</h2><p class='ds-bloco__corpo'>Paraná, Santa Catarina e Rio Grande do Sul — o mesmo território para as quatro representadas, sem recorte por marca.</p></div></div></section>",
-      "css": ".ds-bloco { border-top: 1px solid var(--color-line); padding: 3rem 1.25rem 3.5rem; background: var(--color-paper); } .ds-bloco__grade { display: grid; row-gap: 1.5rem; } .ds-bloco__numero { height: fit-content; margin: 0; font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; color: var(--color-graphite); } .ds-bloco__conteudo { min-width: 0; } .ds-bloco__titulo { max-width: 18ch; margin: 0; font-family: var(--font-sans); font-size: clamp(1.75rem, 2.6vw, 2.625rem); font-weight: 400; line-height: 1.12; letter-spacing: -0.025em; text-wrap: balance; color: var(--color-ink); } .ds-bloco__corpo { max-width: 52ch; margin: 1.5rem 0 0; font-family: var(--font-sans); font-size: 1.0625rem; line-height: 1.55; text-wrap: pretty; color: var(--color-graphite); } @media (min-width: 48rem) { .ds-bloco { padding: 4rem 2rem 6rem; } .ds-bloco__grade { grid-template-columns: 5rem minmax(0, 64rem); column-gap: 2rem; } }"
-    },
-    {
       "name": "Pular para o conteúdo",
       "kind": "custom",
       "refersTo": "pular-conteudo",
       "description": "Skip link do layout: invisível até receber foco, e então tinta sobre papel no canto superior esquerdo. Renderizado aqui já no estado visível.",
       "html": "<a class='ds-pular-conteudo' href='#conteudo'>Ir para o conteúdo</a>",
       "css": ".ds-pular-conteudo { display: inline-block; padding: 0.5rem 0.75rem; background-color: var(--color-ink); color: var(--color-paper); font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; text-decoration: none; border-radius: 0; } .ds-pular-conteudo:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }"
+    },
+    {
+      "name": "Recorte",
+      "kind": "chip",
+      "refersTo": "recorte",
+      "description": "O filtro das duas rotas de índice de arquivo. Corpo em body, contagem em mono grafite ao lado, e um fio de 1px embaixo que só existe quando a opção está ativa — em repouso a borda é transparente, e é ela que reserva a altura para nada saltar na troca. Estado por tom e por fio, nunca por preenchimento nem por matiz. É <button> e não fura A Regra do Link: ele muda o que já está na tela sem navegar.",
+      "html": "<button class='ds-recorte ds-recorte--ativo' type='button' aria-pressed='true'><span>Todas</span><span class='ds-recorte__n'>12</span></button> <button class='ds-recorte' type='button' aria-pressed='false'><span>Marê Mobília</span><span class='ds-recorte__n'>4</span></button>",
+      "css": ".ds-recorte { display: inline-flex; align-items: baseline; gap: 0.5rem; flex-shrink: 0; font-family: var(--font-sans); font-size: 1.0625rem; line-height: 1.55; background: transparent; border: 0; border-bottom: 1px solid transparent; border-radius: 0; padding: 0.25rem 0; cursor: pointer; color: var(--color-graphite); transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-recorte:hover { color: var(--color-ink); } .ds-recorte--ativo { color: var(--color-ink); border-bottom-color: var(--color-ink); } .ds-recorte__n { font-family: var(--font-mono); font-size: 0.6875rem; line-height: 1.35; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; color: var(--color-graphite); } .ds-recorte:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; } @media (prefers-reduced-motion: reduce) { .ds-recorte { transition: none; } }"
     }
   ],
   "narrative": {
@@ -398,6 +398,11 @@
         "name": "A Regra do Link",
         "section": "components",
         "body": "Toda ação é link. Se algo precisar de mais peso, ganha fio em tinta e corpo maior — nunca preenchimento e canto. Os dois <button> do site não são ações de navegação: o recorte muda o que já está na tela, e o envio manda o formulário. Só o envio preenche, e só no hover."
+      },
+      {
+        "name": "A Regra da Coluna Vizinha",
+        "body": "O que decide de que lado de uma banda o formulário fica é uma pergunta só: a outra coluna SERVE ao formulário ou COMPETE com ele? Serve — é o argumento dele, o nome do arquivo, o peso, o que se recebe ao enviar — então ela vem primeiro, à esquerda no desktop e acima no telefone, porque é o que a pessoa precisa ler antes de decidir preencher, e o fio de 1px entre as colunas liga duas metades de uma coisa só. Compete — é um caminho alternativo, para outra pessoa — então o formulário toma a margem e lê primeiro, a coluna vizinha vira trilho secundário, e NÃO há fio entre elas: um fio diria que as duas metades formam um argumento, e elas são duas saídas concorrentes.",
+        "section": "components"
       }
     ],
     "dos": [
@@ -424,7 +429,8 @@
       "Do derivar o rótulo de um cabeçalho de coluna do dado que a coluna carrega hoje, e esconder o rótulo na largura em que a coluna não existe.",
       "Do dar target=\"_blank\" a todo link de arquivo. O atributo download é ignorado em URL de outra origem.",
       "Do derivar número exibido de função, nunca de literal.",
-      "Do apagar o elemento inteiro quando o dado que o sustenta não existe — a faixa de ação sem número, o balão sem número, o caminho de WhatsApp sem número. Menos página, nunca página quebrada."
+      "Do apagar o elemento inteiro quando o dado que o sustenta não existe — a faixa de ação sem número, o balão sem número, o caminho de WhatsApp sem número. Menos página, nunca página quebrada.",
+      "Do escolher o lado do formulário numa banda de duas colunas pela pergunta da Regra da Coluna Vizinha, e a quebra pela largura que sobra: duas colunas confortáveis ou uma, nunca duas apertadas. O pacote de /arquivos-3d parte em md porque a coluna de argumento tem teto de 20rem; a banda de proposta de /contato parte só em lg porque duas colunas iguais em 768px dariam 320px."
     ],
     "donts": [
       "Don't reabrir --radius-*, --shadow-* ou --drop-shadow-*. Eles estão em initial de propósito: as utilidades não existem, e essa impossibilidade é o sistema.",
@@ -444,7 +450,8 @@
       "Don't nomear uma marca numa seta apontando para fotografia gerada. A chamada nomeia a função; a legenda, fora do desenho, é que atribui.",
       "Don't desenhar sobre o próprio desenho. Moldura, carimbo, graticula e escala gráfica só entram onde o quadro é requisito do gráfico — foi por isso que a prancha de território virou mapa.",
       "Don't preencher campo vazio com dado plausível. O que não existe fica ausente.",
-      "Don't acrescentar campo ao formulário de proposta pelo painel. A lista é fixa em código, e um campo a mais é PR, não clique."
+      "Don't acrescentar campo ao formulário de proposta pelo painel. A lista é fixa em código, e um campo a mais é PR, não clique.",
+      "Don't desenhar fio em tinta em toda seção. Ele marca os quatro elementos que carregam mais peso que um divisor — a faixa de ação, o envio de formulário, o balão fixo e a banda de proposta —, e é do elemento, não da classe de bloco: o mesmo bloco de caminhos abre em fio de linha em /arquitetos. Fio em tinta em toda seção seria fio em tinta em nenhuma."
     ]
   }
 }

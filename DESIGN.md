@@ -69,7 +69,6 @@ spacing:
   bloco-base: "3.5rem"
   bloco-topo-desktop: "4rem"
   bloco-base-desktop: "6rem"
-  coluna-numero: "5rem"
   coluna-rotulo: "9rem"
   coluna-medida: "13rem"
   coluna-medida-3d: "10rem"
@@ -470,9 +469,19 @@ mesma com a medida em `minmax(0,10rem)`. Teto de `64rem` nas duas. A fila de
 recortes é `minmax(0,6rem)` rótulo / `minmax(0,1fr)` opções a partir de `md`,
 empilhada abaixo.
 
+**Grades de duas colunas, e as três são de conteúdo diferente:** a prancha de
+`/representadas` parte em `minmax(0,1.55fr)` desenho / `minmax(0,1fr)` legenda a
+partir de `md`, com a linha da legenda em `2.5rem` número / `minmax(0,1fr)` texto
+/ `2rem`; o mapa de `/quem-somos` é `minmax(0,1fr)` mapa / `26rem` ficha; e as
+duas **bandas de formulário** têm entrada própria em Components — o pacote de
+`/arquivos-3d` em `minmax(0,20rem)` argumento / `minmax(0,1fr)` formulário a
+partir de `md`, a banda de proposta em duas colunas iguais a partir de `lg`.
+
 **Grade de bloco numerado: não existe mais** — a coluna de `5rem` que carregava o
 número saiu com a numeração em 05/08/2026, e a última superfície que a usava era
-a página de marca. Ver Cabeçalho de seção, em Components. A seção de registro
+a página de marca. Ver Cabeçalho de seção, em Components. **O token
+`coluna-numero` saiu do frontmatter em 06/08/2026**, no passe de auditoria que
+esta linha pedia: nenhuma classe do projeto o consumia mais. A seção de registro
 hoje é uma coluna só, com teto de `64rem`; a ficha dentro dela tem teto próprio
 de `46rem`, porque uma régua que corre oitocentos pixels além do valor lê como
 tabela quebrada, não como ledger.
@@ -775,6 +784,34 @@ ferramenta que deixaria um operador bem-intencionado acrescentar CPF porque uma
 fábrica pediu, e isso é violação de minimização de dado criada por acidente.
 **Acrescentar um campo aqui é PR, não clique.**
 
+#### As duas bandas de formulário, e a regra que escolhe entre elas
+
+> **Registrado em 06/08/2026, no passe de auditoria.** O site tem dois lugares
+> onde o formulário aparece em duas colunas, e eles usam parâmetros opostos.
+> Isso não era erro nem estava escrito em lugar nenhum — os dois nasceram em
+> tickets diferentes e cada um resolveu o próprio problema. A auditoria os
+> colocou lado a lado e achou a regra que já governava os dois.
+
+| | **Pacote completo** (`/arquivos-3d`) | **Banda de proposta** (`/contato`) |
+|---|---|---|
+| Quebra | `md` | `lg` |
+| Colunas | `minmax(0,20rem)` / `minmax(0,1fr)` | duas iguais |
+| Formulário | à **direita** | à **esquerda**, na margem |
+| Entre as colunas | fio de 1px e `2rem` de recuo | calha de `4rem`, sem fio |
+| Abre em | fio de 1px `{colors.line}` | fio de 1px `{colors.ink}` |
+
+**A Regra da Coluna Vizinha.** O que decide de que lado o formulário fica é uma
+pergunta só: **a outra coluna serve ao formulário, ou compete com ele?**
+
+- **Serve** — é o argumento dele, o nome do arquivo, o peso, o que se recebe ao enviar. Então ela vem primeiro: à esquerda no desktop e acima no telefone, porque é o que a pessoa precisa ler ANTES de decidir preencher. É o pacote de `/arquivos-3d`, e é por isso que ali o fio entre as colunas faz sentido: ele liga duas metades de uma coisa só.
+- **Compete** — é um caminho alternativo, que leva a outro lugar e serve a outra pessoa. Então o formulário toma a margem e lê primeiro, e a coluna vizinha vira um trilho secundário. É `/contato`, e é por isso que ali NÃO há fio entre as colunas: um fio diria que as duas metades formam um argumento, e elas são duas saídas concorrentes.
+
+A quebra segue da mesma pergunta. O pacote parte em `md` porque a coluna de
+argumento tem teto de `20rem` e sobra largura para o formulário; a banda de
+proposta parte só em `lg` porque duas colunas iguais em 768px dariam 320px cada —
+rótulo de caminho quebrando em duas linhas ao lado de campo espremido. **Duas
+colunas confortáveis ou uma, nunca duas apertadas.**
+
 ### Faixa de ação
 
 `components/faixa-de-acao.tsx` (desenho) e `components/acao-de-fecho.tsx`
@@ -805,6 +842,15 @@ linha de base. Conteúdo com teto de `64rem`. É a gramática de um cabeçalho d
 tabela de especificação, e é irmã da faixa de índice e das listas de
 `/catalogos` — as três declaram a mesma coisa: o que existe, e quanto.
 
+- **O rótulo é tinta quando ENCABEÇA, grafite quando LEGENDA.** É a divisão que o
+  código já faz e que este documento não dizia: em tinta ficam os rótulos que
+  abrem uma seção ou uma coluna de conteúdo — `marca/secao.tsx`, as três colunas
+  do rodapé e a coluna de caminhos da banda de proposta. Em grafite ficam os que
+  apoiam outra coisa: o sobretítulo acima de um `h1`, o rótulo de ficha, a medida
+  em `formato · MB`, a legenda da prancha. **Uma exceção conhecida, e ela é
+  divergência e não regra:** `representadas/registros.tsx` encabeça a seção dela
+  em grafite. Encontrada na auditoria de 06/08/2026 e deixada como está — trocar
+  a cor de um `h2` em produção não é trabalho de um passe de documentação.
 - **A contagem repete a da faixa de índice de propósito.** Quem chegou rolando
   nunca leu a faixa; quem chegou pela faixa confere que caiu no lugar certo.
 - **Ausência não é desenhada.** Seção sem dado não renderiza — sem "em breve",
