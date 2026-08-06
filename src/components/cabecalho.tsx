@@ -7,11 +7,22 @@ import { buscarEmpresa } from "@/lib/empresa-consulta";
 import { NAVEGACAO } from "@/lib/site";
 
 /**
- * Quatro itens e o WhatsApp. `/arquitetos` fica fora — é destino da porta da
- * home, não item de navegação, e mantê-lo fora preserva o peso das portas.
+ * Cinco itens e o WhatsApp — `/contato` entrou em 06/08/2026, e o porquê está
+ * em `lib/site.ts`, junto da lista. `/arquitetos` fica fora: é destino da porta
+ * da home, não item de navegação, e mantê-lo fora preserva o peso daquela porta.
+ *
+ * ⚠️ **"CONTATO" E O WHATSAPP SÃO VIZINHOS E NÃO SÃO A MESMA OFERTA**, e o
+ * desenho já os separava antes de existir o vizinho: a navegação lista páginas,
+ * em grafite; o WhatsApp é ação, em tinta, com glifo, atrás de um fio vertical.
+ * Um leva à página com o formulário de proposta e a ficha da empresa, o outro
+ * abre uma conversa. Igualar os dois pesos é o que os tornaria redundantes.
  *
  * No mobile a navegação desce para uma segunda linha em vez de virar menu:
- * quatro itens não justificam esconder nada, e o arquiteto volta muitas vezes.
+ * cinco itens não justificam esconder nada, e o arquiteto volta muitas vezes.
+ * A faixa rola na horizontal e os itens cortados na borda dizem que há mais —
+ * é o mesmo desenho de quando eram quatro, e "Contato" é o que fica além da
+ * dobra. Aceito: a porta B da home e o rodapé continuam levando lá, e o balão
+ * fixo de WhatsApp nunca sai da tela.
  *
  * ⚠️ Sem número cadastrado no painel, o WhatsApp do topo simplesmente não é
  * desenhado — o cabeçalho fica com marca e navegação. Ver a nota em

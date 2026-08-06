@@ -121,8 +121,9 @@ Consequência: cada página de marca termina em contato da Belmare, não em `mai
 
 **Regra estrutural ✅ — cada coisa tem exatamente um pai, e nada atravessa.** `/catalogos/[marca]` foi eliminado: era um segundo índice das mesmas marcas, e obrigava quem já estava na Marê a voltar e descer pelo outro ramo para ver as peças dela. Agora existe **uma marca, uma página**, e ela carrega tudo. `/catalogos` permanece porque "catálogo" é a palavra que o arquiteto procura, e vira o que de fato é: a lista dos PDFs com marca, ano e peso.
 
-- **Navegação:** topo com `Quem somos · Representadas · Catálogos · Arquivos 3D` + WhatsApp. Rodapé com as quatro marcas, contato e endereço, território, Instagram, política de privacidade, CNPJ.
-- 🟡 `/arquitetos` fica **fora do menu** — é destino da porta da home, não item de navegação.
+- **Navegação:** topo com `Quem somos · Representadas · Catálogos · Arquivos 3D · Contato` + WhatsApp. Rodapé com as quatro marcas, contato e endereço, território, Instagram, política de privacidade, CNPJ.
+- ✅ `/arquitetos` fica **fora do menu** — é destino da porta da home, não item de navegação.
+- ✅ **`/contato` ENTROU no menu em 06/08/2026, por decisão do cliente.** Esta linha dizia, em 🟡, que as duas portas ficavam fora "para preservar o peso das portas". A metade que sobrou virou ✅ no mesmo dia, porque a assimetria é o argumento: `/arquitetos` é um hub de material e não pede dado de ninguém, enquanto `/contato` passou a carregar o **formulário de proposta comercial** — o único lugar do site onde um lead se cadastra, e a razão de o objetivo 2 ("recrutar lojistas") ter uma superfície própria. Uma página de captura alcançável só pela porta da home e pelo rodapé está escondida de quem chegou por qualquer uma das outras oito rotas.
 - Slugs estáveis, em português, sem acento: `/representadas/mare-mobilia`. **Uma URL canônica por marca**, não duas.
 - ✅ A home é deliberadamente contida: banner, as quatro marcas, duas portas. **Nada mais.** Essa contenção é decisão do cliente e deve ser defendida.
 - ✅ Sem "Onde comprar" na v1 — lista de lojas é volátil demais. A Belmare vira o roteador: o consumidor fala pelo WhatsApp e **ela indica a loja**. As duas metades da porta B convergem para `/contato`.

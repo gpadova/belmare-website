@@ -604,7 +604,8 @@ Regra do Link" e "Formulário de proposta", abaixo.
 - **Estilo:** itens em mono, caixa alta, grafite em repouso, tinta no `hover` (`transition-colors`, 150ms). Sem sublinhado, sem estado ativo por rota — o cabeçalho é do layout e aparece em todas as rotas, então nenhum item é marcado.
 - **Desktop:** faixa única de `4.5rem`, itens com `2rem` de espaço entre eles, WhatsApp à direita em tinta com o glifo à esquerda do rótulo, separado por fio vertical e `2rem` de recuo.
 - **Telefone:** segunda faixa de `2.5rem`, rolável na horizontal com `sem-barra` e `whitespace-nowrap`. Os itens cortados na borda são o indicador — nunca vira menu escondido.
-- **Fora da navegação:** rotas de destino de porta (`/arquitetos`, `/contato`) ficam de fora, para preservar o peso das portas.
+- **Fora da navegação:** `/arquitetos`, destino da porta A da home, e `/politica-de-privacidade`, que é rodapé. **`/contato` saiu desta lista em 06/08/2026, por decisão do cliente, e a assimetria é deliberada.** A regra era das duas portas juntas — um item de menu apontando para o mesmo lugar que uma porta rouba o peso da porta —, e ela continua valendo para `/arquitetos`, que é um hub de material e não pede dado de ninguém. O que mudou foi o que `/contato` é: ele deixou de ser um roteador entre comprar e revender e passou a carregar o formulário de proposta, o único lugar do site onde um lead se cadastra. **Uma página de captura alcançável só pela porta da home e pelo rodapé está escondida de quem chegou por qualquer outra rota** — e são oito das nove.
+- **"Contato" e o WhatsApp são vizinhos e não são a mesma oferta.** O desenho já os separava antes de existir o vizinho: a navegação lista páginas, em grafite; o WhatsApp é ação, em tinta, com glifo, atrás do fio vertical. Um leva à página com o formulário e a ficha, o outro abre uma conversa. **É igualar os dois pesos que os tornaria redundantes**, não a adjacência.
 
 ### Links de ação (o par mono + seta)
 

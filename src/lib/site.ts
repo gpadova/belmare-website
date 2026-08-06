@@ -16,19 +16,46 @@
  * como criar. O que ele pode editar é o que há DENTRO de cada página.
  *
  * ⚠️ `/arquitetos` fica fora da lista de propósito — é destino da porta da home,
- * não item de navegação, e mantê-lo fora preserva o peso das duas portas.
+ * não item de navegação, e mantê-lo fora preserva o peso daquela porta.
  *
- * ✅ **OS QUATRO RESOLVEM A PARTIR DE PRA-127.** `/arquivos-3d` foi o último
- * item do menu apontando para 404 — o menu prometia a rota desde o primeiro dia
- * porque a estrutura do site foi decidida de uma vez, e a rota chegou no último
- * ticket do projeto. É a versão boa do risco que a nota acima descreve: o item
- * de menu não é editável, então o buraco era um, era conhecido e tinha dono.
+ * ⚠️ **`/contato` ENTROU EM 06/08/2026, POR DECISÃO DO CLIENTE, E ISSO REVERTE
+ * METADE DE UMA REGRA — a outra metade continua de pé.** A regra dizia: as duas
+ * portas da home ficam fora do menu, porque um item de menu apontando para o
+ * mesmo lugar que uma porta rouba o peso da porta. O argumento continua bom, e
+ * é exatamente por isso que `/arquitetos` NÃO entrou junto.
+ *
+ * O que mudou foi o que `/contato` é. Quando a regra foi escrita, ela era a
+ * página que bifurcava entre comprar e revender — um roteador, e ninguém navega
+ * até um roteador. Hoje ela carrega o formulário de proposta comercial, que é o
+ * único lugar do site onde um lead se cadastra, e ele é a banda principal da
+ * página desde a reforma do mesmo dia. **Uma página que existe para capturar
+ * lead alcançável só pela porta da home e pelo rodapé é uma página escondida de
+ * quem chegou por qualquer outra rota** — que são oito das nove.
+ *
+ * `/arquitetos` continua fora porque nada nele mudou: é um hub de material, o
+ * arquiteto chega nele pela porta ou pelo fecho de uma página de marca, e ele
+ * não pede dado de ninguém.
+ *
+ * ⚠️ **CONTATO É O ÚLTIMO ITEM, E O WHATSAPP CONTINUA SEPARADO PELO FIO.** Os
+ * dois não são a mesma oferta e o desenho já os distingue: a navegação lista
+ * PÁGINAS, em grafite; o WhatsApp é uma AÇÃO, em tinta e com glifo, atrás de um
+ * fio vertical. É a mesma divisão que o site inteiro faz entre a conversa que
+ * começa em um toque e o formulário que fica registrado no painel.
+ *
+ * ✅ **TODOS RESOLVEM DESDE PRA-127.** `/arquivos-3d` foi o último item do menu
+ * apontando para 404 — o menu prometia a rota desde o primeiro dia porque a
+ * estrutura do site foi decidida de uma vez, e a rota chegou no último ticket do
+ * projeto. É a versão boa do risco que a nota acima descreve: o item de menu não
+ * é editável, então o buraco era um, era conhecido e tinha dono. `paginas.test.ts`
+ * guarda os dois lados disso e foi o que permitiu acrescentar `/contato` aqui
+ * sem conferir nada à mão.
  */
 export const NAVEGACAO = [
   { rotulo: "Quem somos", href: "/quem-somos" },
   { rotulo: "Representadas", href: "/representadas" },
   { rotulo: "Catálogos", href: "/catalogos" },
   { rotulo: "Arquivos 3D", href: "/arquivos-3d" },
+  { rotulo: "Contato", href: "/contato" },
 ] as const;
 
 /**
@@ -74,10 +101,13 @@ export const ROTAS_LIVRES = [
  * depois. Mesma regra que mantém a navegação fora do CMS, aplicada do lado do
  * painel.
  *
- * ⚠️ Não é a `NAVEGACAO`, e não deve virar ela: o menu tem quatro itens por
- * decisão de desenho (topo curto), enquanto um caminho pode apontar para
- * `/arquitetos` e `/contato`, que ficam FORA do menu justamente para preservar
- * o peso das duas portas da home.
+ * ⚠️ Não é a `NAVEGACAO`, e não deve virar ela — mas as duas se aproximaram em
+ * 06/08/2026, quando `/contato` entrou no menu, e a distinção precisa ser dita
+ * de novo porque o exemplo que a ilustrava mudou de lado. **Esta lista é o que
+ * RESOLVE; o menu é o que a estrutura do site ANUNCIA**, e ela é sempre a maior
+ * das duas. Hoje sobram fora do menu `/arquitetos`, que é destino de porta e
+ * continua fora pela razão de sempre, e `/politica-de-privacidade`, que é
+ * rodapé. Um caminho de painel pode apontar para os dois; o menu, não.
  */
 export const DESTINOS_DE_CAMINHO = [
   { href: "/representadas", rotulo: "Representadas" },

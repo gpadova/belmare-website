@@ -18,8 +18,14 @@ import { RotaLivre, metadataDaRotaLivre } from "@/components/paginas/rota-livre"
  * um bloco de texto e um bloco de caminhos — e é o bloco de caminhos que
  * impede a página de virar folheto, porque ele leva para onde o trabalho está.
  *
- * ⚠️ Ela fica FORA do menu, e continua fora: é destino da porta da home, e
- * mantê-la fora preserva o peso das duas portas (`lib/site.ts`).
+ * ⚠️ **ELA FICA FORA DO MENU, E CONTINUA FORA DEPOIS QUE `/contato` ENTROU** —
+ * 06/08/2026. A regra era das duas portas juntas; hoje vale só para esta, e a
+ * assimetria é o argumento, não um resto. `/contato` passou a carregar o
+ * formulário de proposta, que é onde um lead se cadastra, e uma página de
+ * captura precisa ser alcançável de qualquer rota. Aqui nada disso mudou: é um
+ * hub de material, chega-se a ele pela porta ou pelo fecho de uma página de
+ * marca, e ele não pede dado de ninguém. Sem lead para perder, um item de menu
+ * só rouba o peso da porta que já leva até aqui. Ver `lib/site.ts`.
  */
 export const revalidate = 86400;
 
